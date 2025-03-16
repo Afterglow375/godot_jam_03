@@ -5,9 +5,9 @@
 
 [node name="Main" type="Node"]
 
-[node name="Area2D" parent="." instance=ExtResource("1_5j86u")]
+[node name="Spaceship" parent="." instance=ExtResource("1_5j86u")]
 position = Vector2(758, 1103)
 
 [node name="Earth" parent="." instance=ExtResource("2_8coyu")]
-position = Vector2(1890, 848)
+position = Vector2(2403, 1086)
 linear_damp = 1.0
