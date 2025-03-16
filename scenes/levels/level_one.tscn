@@ -1,18 +1,13 @@
-[gd_scene load_steps=4 format=3 uid="uid://bv7v1282myvla"]
+[gd_scene load_steps=3 format=3 uid="uid://bv7v1282myvla"]
 
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="1_5j86u"]
-[ext_resource type="Texture2D" uid="uid://depds2gq2ws1a" path="res://assets/earth.png" id="2_e3iij"]
-[ext_resource type="Texture2D" uid="uid://grtclsyvb8ap" path="res://assets/sun.png" id="3_xkfa7"]
+[ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="2_8coyu"]
 
 [node name="Main" type="Node"]
 
 [node name="Area2D" parent="." instance=ExtResource("1_5j86u")]
 position = Vector2(758, 1103)
 
-[node name="Earth" type="Sprite2D" parent="."]
-position = Vector2(2158, 782)
-texture = ExtResource("2_e3iij")
-
-[node name="Sun" type="Sprite2D" parent="."]
-position = Vector2(3374, 1619)
-texture = ExtResource("3_xkfa7")
+[node name="Earth" parent="." instance=ExtResource("2_8coyu")]
+position = Vector2(1890, 848)
+linear_damp = 1.0

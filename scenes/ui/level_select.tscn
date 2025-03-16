@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://b251hcqjflmm1"]
+[gd_scene load_steps=2 format=3 uid="uid://cjr7qp3cu16n8"]
 
 [ext_resource type="Script" path="res://scripts/ui/level_select.gd" id="1_v2cip"]
 

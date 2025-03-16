@@ -19,3 +19,6 @@ texture = ExtResource("1_cwh5h")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
 texture = ExtResource("2_nj4ge")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
