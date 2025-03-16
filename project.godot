@@ -13,3 +13,9 @@ config_version=5
 config/name="godot_jam_03"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=3840
+window/stretch/mode="canvas_items"
+window/size/viewport_height=2160
