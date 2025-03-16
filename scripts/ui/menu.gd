@@ -9,7 +9,7 @@ func _on_start_button_pressed() -> void:
 
 
 func _on_level_select_button_pressed() -> void:
-	pass # Replace with function body.
+	get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")
 
 
 func _on_quit_button_pressed() -> void:
