@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://8fybiecfrkw6"]
+
+[ext_resource type="Texture2D" uid="uid://grtclsyvb8ap" path="res://assets/sun.png" id="1_50wgs"]
+[ext_resource type="Script" path="res://scripts/entities/sun.gd" id="1_jkyhw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4isk3"]
+radius = 364.0
+
+[node name="Sun" type="Area2D"]
+script = ExtResource("1_jkyhw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_50wgs")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_4isk3")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

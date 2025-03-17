@@ -48,3 +48,9 @@ func reset_score() -> void:
 func update_score_display() -> void:
 	if hud != null:
 		hud.get_node("ScoreLabel").text = str(score)
+
+# Calculate the final score based on number of shots and accuracy
+func calculate_final_score(accuracy_score: int) -> int:
+	var final_score = round(accuracy_score / score)
+	print(final_score)
+	return final_score

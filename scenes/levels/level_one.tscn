@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://bv7v1282myvla"]
+[gd_scene load_steps=8 format=3 uid="uid://bv7v1282myvla"]
 
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="1_5j86u"]
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_yjnxe"]
 [ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="2_8coyu"]
+[ext_resource type="PackedScene" uid="uid://8fybiecfrkw6" path="res://scenes/entities/sun.tscn" id="4_cft5a"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -86,3 +87,6 @@ physics_material_override = SubResource("PhysicsMaterial_cpj0v")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
 position = Vector2(39.2288, 1081)
 shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="Sun" parent="." instance=ExtResource("4_cft5a")]
+position = Vector2(2463, 1636)
