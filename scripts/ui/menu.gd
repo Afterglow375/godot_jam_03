@@ -5,7 +5,7 @@ func _ready() -> void:
 
 
 func _on_start_button_pressed() -> void:
-	pass # Replace with function body.
+	get_tree().change_scene_to_file("res://scenes/levels/level_one.tscn")
 
 
 func _on_level_select_button_pressed() -> void:

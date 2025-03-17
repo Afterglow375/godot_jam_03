@@ -1,7 +1,7 @@
 extends Control
 
 const levels = [
-	# none yet xD
+	"res://scenes/levels/level_one.tscn"
 ]
 
 func _ready():
