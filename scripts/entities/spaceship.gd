@@ -7,10 +7,14 @@ var is_mouse_held: bool = false
 var line: Line2D
 var current_line_end: Vector2 = Vector2.ZERO
 var drag_started_in_area: bool = false
+var level: Node = null  # Reference to the level
 
 func _ready():
 	line = $Line2D
 	line.clear_points()
+	
+	# Store reference to the level
+	level = get_tree().current_scene
 	
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
@@ -52,3 +56,11 @@ func launch_projectile() -> void:
 		
 		# Launch in the direction of the line with speed based on length
 		projectile.launch(current_line_end.normalized(), speed_multiplier)
+		
+		# Increment the score
+		increment_score()
+
+# Add 1 to the score
+func increment_score() -> void:
+	# Use the stored level reference
+	level.add_score(1)

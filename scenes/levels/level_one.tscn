@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://bv7v1282myvla"]
+[gd_scene load_steps=7 format=3 uid="uid://bv7v1282myvla"]
 
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="1_5j86u"]
+[ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_yjnxe"]
 [ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="2_8coyu"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
@@ -14,12 +15,13 @@ size = Vector2(3813.63, 79)
 size = Vector2(78.4575, 2160)
 
 [node name="Main" type="Node"]
+script = ExtResource("1_yjnxe")
 
 [node name="Spaceship" parent="." instance=ExtResource("1_5j86u")]
 position = Vector2(380, 1891)
 
 [node name="Earth" parent="." instance=ExtResource("2_8coyu")]
-position = Vector2(1728, 1866)
+position = Vector2(1614, 1728)
 linear_damp = 1.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
