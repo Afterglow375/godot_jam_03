@@ -3,7 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="1_5j86u"]
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_yjnxe"]
 [ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="2_8coyu"]
-[ext_resource type="PackedScene" uid="uid://8fybiecfrkw6" path="res://scenes/entities/sun.tscn" id="4_cft5a"]
+[ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_cft5a"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
