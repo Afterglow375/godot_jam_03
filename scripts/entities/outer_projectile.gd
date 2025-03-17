@@ -1,7 +1,5 @@
 extends Area2D
 
-var velocity: Vector2 = Vector2.ZERO
-const BASE_SPEED: float = 2000.0
 const PUSH_FORCE: float = 4000.0
 
 @export var lifetime: float = 5.0  # Time in seconds before projectile destroys itself
@@ -27,9 +25,6 @@ func _process(delta):
 		destroy()
 
 func _physics_process(delta):
-	# Update projectile position
-	position += velocity * delta
-	
 	# Process affected bodies
 	for body_data in affected_bodies:
 		var body: RigidBody2D = body_data[0]  # First element is the body
@@ -71,9 +66,8 @@ func _on_body_exited(body: Node2D) -> void:
 				affected_bodies.remove_at(i)
 				break
 
-func launch(direction: Vector2, speed_multiplier: float = 1.0) -> void:
-	velocity = -direction * (BASE_SPEED * speed_multiplier)
-
 # Call this to manually destroy the projectile
 func destroy() -> void:
-	queue_free()
+	# Get the parent (inner projectile) and destroy it
+	# This will also destroy this node as it's a child
+	get_parent().queue_free()
