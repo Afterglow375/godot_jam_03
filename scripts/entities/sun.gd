@@ -39,8 +39,6 @@ func update_score():
 	var radius = ($CollisionShape2D.shape.radius) if $CollisionShape2D.shape is CircleShape2D else 100
 	accuracy_score = calculate_score(distance, radius)
 
-	print("Current Score:", accuracy_score)  # Replace with UI update
-
 func calculate_score(distance: float, max_distance: float) -> int:
 	var score = max_score * (1.0 - clamp(distance / max_distance, 0.0, 1.0))
 	return round(score)
