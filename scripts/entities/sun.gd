@@ -47,3 +47,4 @@ func calculate_score(distance: float, max_distance: float) -> int:
 
 func round_win():
 	level.calculate_final_score(accuracy_score)
+	level.game_won()
