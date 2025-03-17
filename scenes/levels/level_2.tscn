@@ -1,0 +1,109 @@
+[gd_scene load_steps=8 format=3 uid="uid://6sgn2tbvxsie"]
+
+[ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_pjvny"]
+[ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_hylch"]
+[ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="3_efpp3"]
+[ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_63k5r"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mp8fg"]
+size = Vector2(3813.63, 79)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
+size = Vector2(71.5058, 2200)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_pjvny")
+
+[node name="Spaceship" parent="." instance=ExtResource("2_hylch")]
+position = Vector2(856, 1728)
+
+[node name="Earth" parent="." instance=ExtResource("3_efpp3")]
+position = Vector2(1614, 1728)
+linear_damp = 1.0
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_top = -79.0
+offset_right = 3814.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(1906.82, 39.5)
+shape = SubResource("RectangleShape2D_mp8fg")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_top = 2160.0
+offset_right = 3814.0
+offset_bottom = 2239.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect2"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect2/StaticBody2D"]
+position = Vector2(1906.82, 39.5)
+shape = SubResource("RectangleShape2D_mp8fg")
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+offset_left = -80.0
+offset_top = -1.0
+offset_right = -1.0
+offset_bottom = 2200.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect3"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect3/StaticBody2D"]
+position = Vector2(39.2288, 1081)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="ColorRect5" type="ColorRect" parent="."]
+offset_left = 2600.0
+offset_top = -984.0
+offset_right = 2672.0
+offset_bottom = 1217.0
+scale = Vector2(1.00691, 1)
+pivot_offset = Vector2(71.574, 2201)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect5"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect5/StaticBody2D"]
+position = Vector2(35.7529, 1101)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="ColorRect4" type="ColorRect" parent="."]
+offset_left = 3840.0
+offset_top = -1.0
+offset_right = 3919.0
+offset_bottom = 2200.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect4"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
+position = Vector2(39.2288, 1081)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="Sun" parent="." instance=ExtResource("4_63k5r")]
+position = Vector2(3264, 520)

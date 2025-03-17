@@ -103,7 +103,22 @@ func level_won() -> void:
 	win_popup.show()
 
 func _on_next_level():
-	pass # implementing this soon
+	var next_level_path = get_next_level_path()
+	get_tree().change_scene_to_file(next_level_path)
 
 func _on_retry_level() -> void:
 	reset_level()
+
+func get_next_level_path() -> String:
+	var current_scene_path = get_tree().current_scene.scene_file_path
+	if "level_" in current_scene_path:
+		var parts = current_scene_path.get_file().replace(".tscn", "").split("_")
+		if parts.size() > 1:
+			var level_number = parts[1].to_int()  # Extract number
+			var next_level_number = level_number + 1
+			var next_level_path = "res://scenes/levels/level_" + str(next_level_number) + ".tscn"
+
+			if ResourceLoader.exists(next_level_path):  # Ensure file exists
+				return next_level_path
+
+	return ""  # No next level found
