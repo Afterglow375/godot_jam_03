@@ -2,11 +2,8 @@ extends Area2D
 
 const PUSH_FORCE: float = 4000.0
 
-@export var lifetime: float = 5.0  # Time in seconds before projectile destroys itself
-
 # Using arrays of length 2 [body, radius] instead of dictionaries
 var affected_bodies: Array = []
-var time_alive: float = 0.0
 var force_radius: float = 100.0  # Default value, will be updated in _ready()
 
 func _ready():
@@ -18,11 +15,6 @@ func _ready():
 		if child is CollisionShape2D and child.shape is CircleShape2D:
 			force_radius = child.shape.radius
 			break
-
-func _process(delta):
-	time_alive += delta
-	if time_alive >= lifetime:
-		destroy()
 
 func _physics_process(delta):
 	# Process affected bodies
@@ -65,9 +57,3 @@ func _on_body_exited(body: Node2D) -> void:
 			if affected_bodies[i][0] == body:  # First element is the body
 				affected_bodies.remove_at(i)
 				break
-
-# Call this to manually destroy the projectile
-func destroy() -> void:
-	# Get the parent (inner projectile) and destroy it
-	# This will also destroy this node as it's a child
-	get_parent().queue_free()

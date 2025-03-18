@@ -99,9 +99,7 @@ func level_won() -> void:
 	if is_paused:
 		toggle_pause_menu()
 		
-	win_popup.set_scores(score, accuracy_score)
-	win_popup.play_victory_sound()
-	win_popup.show()
+	win_popup.show_victory_screen(score, accuracy_score)
 
 func _on_next_level():
 	var next_level_path = get_next_level_path()

@@ -11,6 +11,8 @@ var drag_started_in_area: bool = false
 var level: Node = null  # Reference to the level
 var ray_cast: RayCast2D = null  # RayCast for collision detection
 var shoot_sound: AudioStreamPlayer = null
+var can_shoot: bool = true  # True if user can shoot from spaceship, false if can't
+var earth: RigidBody2D = null  # Reference to the Earth node
 
 func _ready():
 	line = $SlingshotLine
@@ -21,9 +23,24 @@ func _ready():
 	# Store reference to the level
 	level = get_tree().current_scene
 	
+	# Get reference to the Earth node
+	earth = get_node("../Earth")
+	
+	# Connect to the Earth's signal
+	if earth:
+		earth.earth_stopped_moving.connect(_on_earth_stopped_moving)
+	
+	# Connect to the win popup's victory signal - need to wait until level is ready
+	call_deferred("connect_to_win_popup")
+	
+func connect_to_win_popup() -> void:
+	# The win popup is added by the level script, ensure it exists now
+	if level and level.has_method("add_win_popup") and level.win_popup:
+		level.win_popup.victory_achieved.connect(_on_victory_achieved)
+	
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and can_shoot:
 			drag_started_in_area = true
 			is_mouse_held = true
 
@@ -33,7 +50,7 @@ func _input(event):
 			if drag_started_in_area:  # Only launch if drag started in area
 				launch_projectile()
 				drag_started_in_area = false
-			
+
 				line.clear_points()
 				trajectory_line.clear_points()
 			is_mouse_held = false
@@ -85,6 +102,10 @@ func launch_projectile() -> void:
 		get_parent().add_child(projectile)
 		projectile.position = position
 		
+		# Connect to the projectile's destruction signal
+		if projectile.has_signal("projectile_destroyed"):
+			projectile.projectile_destroyed.connect(_on_projectile_destroyed)
+		
 		# Calculate speed multiplier based on line length (0.0 to 1.0)
 		var speed_multiplier: float = current_line_end.length() / MAX_LINE_LENGTH
 		
@@ -95,6 +116,33 @@ func launch_projectile() -> void:
 		increment_score()
 		
 		shoot_sound.play()
+		
+		# Disable shooting until reset externally
+		can_shoot = false
+
+# Handle projectile destroyed signal
+func _on_projectile_destroyed() -> void:
+	# Check if Earth is moving below threshold
+	if earth and earth.linear_velocity.length() <= earth.movement_threshold:
+		# Earth is not moving significantly, enable shooting immediately
+		can_shoot = true
+	# Otherwise wait for earth_stopped_moving signal
+
+# Handle earth stopped moving signal
+func _on_earth_stopped_moving() -> void:
+	# Enable shooting when Earth stops moving
+	can_shoot = true
+
+# Handle victory achieved signal
+func _on_victory_achieved() -> void:
+	# Disable shooting when level is won
+	can_shoot = false
+	
+	# Clear any active shooting UI
+	if is_mouse_held:
+		is_mouse_held = false
+		line.clear_points()
+		trajectory_line.clear_points()
 
 # Add 1 to the score
 func increment_score() -> void:

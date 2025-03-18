@@ -2,11 +2,18 @@ extends CanvasLayer
 
 signal next_level
 signal retry_level
+signal victory_achieved
 
 @onready var victory_sound: AudioStreamPlayer = $VictorySound
 
 func _ready():
 	hide()
+	
+func show_victory_screen(shot_count: int, accuracy_score: int) -> void:
+	emit_signal("victory_achieved")
+	set_scores(shot_count, accuracy_score)
+	play_victory_sound()
+	show()
 	
 func set_scores(shot_count: int, accuracy_score: int):
 	var total_score = 0 if shot_count == 0 else round(accuracy_score / shot_count)

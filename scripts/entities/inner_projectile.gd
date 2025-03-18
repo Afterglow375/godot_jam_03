@@ -1,8 +1,13 @@
 extends RigidBody2D
 
+signal projectile_destroyed
+
 @onready var wall_collision_sound: AudioStreamPlayer = $WallCollision
 
 const BASE_SPEED: float = 2000.0
+@export var lifetime: float = 5.0  # Time in seconds before projectile destroys itself
+
+var time_alive: float = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -12,7 +17,10 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	pass
+	# Check lifetime and destroy if expired
+	time_alive += delta
+	if time_alive >= lifetime:
+		destroy()
 	
 func _on_body_entered(body):
 	if body is StaticBody2D and not wall_collision_sound.playing:
@@ -25,4 +33,6 @@ func launch(direction: Vector2, speed_multiplier: float = 1.0) -> void:
 
 # Call this to manually destroy the projectile
 func destroy() -> void:
+	# Emit signal before destruction
+	projectile_destroyed.emit()
 	queue_free()

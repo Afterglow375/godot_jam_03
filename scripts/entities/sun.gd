@@ -1,7 +1,7 @@
 extends Area2D
 
 @export var max_score: int = 100  # Max score when perfectly centered
-@onready var earth: RigidBody2D = null  # Store reference to the Earth
+var earth: RigidBody2D = null  # Store reference to the Earth
 var updating_score: bool = false  # Track if we should update score
 var accuracy_score: int = 0
 var level: Node = null  # Reference to the level
@@ -22,7 +22,7 @@ func _on_body_exited(body):
 
 func _process(delta):
 	if updating_score and earth:
-		if earth.linear_velocity.length() > 2:  # Only update if Earth is actually moving
+		if earth.is_moving():  # Only update if Earth is actually moving
 			update_score()
 		else:
 			updating_score = false  # Stop updating when Earth stops moving
