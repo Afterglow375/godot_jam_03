@@ -1,10 +1,11 @@
-[gd_scene load_steps=4 format=3 uid="uid://ctfq16ucdtgys"]
+[gd_scene load_steps=5 format=3 uid="uid://ctfq16ucdtgys"]
 
-[ext_resource type="Texture2D" uid="uid://clqyml6hl7uvp" path="res://assets/alien.png" id="1_ayst8"]
 [ext_resource type="Script" path="res://scripts/entities/spaceship.gd" id="1_sllql"]
+[ext_resource type="Texture2D" uid="uid://clqyml6hl7uvp" path="res://assets/sprites/alien.png" id="2_u6ml1"]
+[ext_resource type="AudioStream" uid="uid://dakhme185xper" path="res://assets/audio/projectile_shot.wav" id="3_5wit6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c2t8e"]
-radius = 97.2523
+radius = 93.0054
 
 [node name="Spaceship" type="Area2D"]
 script = ExtResource("1_sllql")
@@ -12,8 +13,24 @@ script = ExtResource("1_sllql")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_c2t8e")
 
-[node name="Line2D" type="Line2D" parent="."]
-width = 4.0
+[node name="SlingshotLine" type="Line2D" parent="."]
+points = PackedVector2Array(157, 147)
+width = 8.0
+
+[node name="TrajectoryLine" type="Line2D" parent="."]
+width = 3.0
+default_color = Color(1, 1, 1, 0.627451)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="TrajectoryRaycast" type="RayCast2D" parent="."]
+collision_mask = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("1_ayst8")
+texture = ExtResource("2_u6ml1")
+
+[node name="ShootSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_5wit6")
+volume_db = -10.0

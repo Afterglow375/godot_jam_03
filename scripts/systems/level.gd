@@ -100,6 +100,7 @@ func level_won() -> void:
 		toggle_pause_menu()
 		
 	win_popup.set_scores(score, accuracy_score)
+	win_popup.play_victory_sound()
 	win_popup.show()
 
 func _on_next_level():

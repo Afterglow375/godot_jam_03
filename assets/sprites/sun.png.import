@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0dcofcpw16o"
-path="res://.godot/imported/earth.png-b790fa2fbb36e0da65275cb97291436e.ctex"
+uid="uid://grtclsyvb8ap"
+path="res://.godot/imported/sun.png-2f7ddfe3cc48d78724d0b0ed4563b20c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/earth.png"
-dest_files=["res://.godot/imported/earth.png-b790fa2fbb36e0da65275cb97291436e.ctex"]
+source_file="res://assets/sprites/sun.png"
+dest_files=["res://.godot/imported/sun.png-2f7ddfe3cc48d78724d0b0ed4563b20c.ctex"]
 
 [params]
 
