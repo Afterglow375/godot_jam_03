@@ -28,4 +28,5 @@ window/stretch/mode="canvas_items"
 
 [gui]
 
-theme/custom_font="res://assets/sprites/InterTight-Light.ttf"
+theme/custom="res://assets/themes/theme.tres"
+theme/custom_font="res://assets/themes/Orbitron-Regular.ttf"

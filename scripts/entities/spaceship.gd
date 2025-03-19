@@ -27,16 +27,14 @@ func _ready():
 	earth = get_node("../Earth")
 	
 	# Connect to the Earth's signal
-	if earth:
-		earth.earth_stopped_moving.connect(_on_earth_stopped_moving)
+	earth.earth_stopped_moving.connect(_on_earth_stopped_moving)
 	
 	# Connect to the win popup's victory signal - need to wait until level is ready
 	call_deferred("connect_to_win_popup")
 	
 func connect_to_win_popup() -> void:
 	# The win popup is added by the level script, ensure it exists now
-	if level and level.has_method("add_win_popup") and level.win_popup:
-		level.win_popup.victory_achieved.connect(_on_victory_achieved)
+	level.win_popup.victory_achieved.connect(_on_victory_achieved)
 	
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:

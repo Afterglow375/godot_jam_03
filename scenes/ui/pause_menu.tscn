@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://du7btdyj4ge44"]
+[gd_scene load_steps=2 format=3 uid="uid://du7btdyj4ge44"]
 
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_0pi5o"]
-[ext_resource type="FontFile" uid="uid://bcf67jwh7668c" path="res://assets/sprites/InterTight-Light.ttf" id="2_0v0cw"]
 
 [node name="CanvasLayer" type="CanvasLayer"]
 script = ExtResource("1_0pi5o")
@@ -47,21 +46,16 @@ offset_right = 39.5
 offset_bottom = 33.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 40
+theme_override_constants/separation = 100
 
 [node name="Continue" type="Button" parent="Control/Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_0v0cw")
-theme_override_font_sizes/font_size = 128
 text = "Continue"
 
 [node name="Retry" type="Button" parent="Control/Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("2_0v0cw")
-theme_override_font_sizes/font_size = 128
 text = "Retry"
 
 [node name="Exit" type="Button" parent="Control/Panel/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 128
 text = "Exit"

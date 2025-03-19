@@ -24,7 +24,7 @@ offset_right = 704.0
 offset_bottom = 171.5
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/h_separation = 50
+theme_override_constants/h_separation = 200
 theme_override_constants/v_separation = 50
 columns = 3
 

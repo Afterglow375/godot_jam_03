@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://bcf67jwh7668c"
-path="res://.godot/imported/InterTight-Light.ttf-97ed74a48b5ffb52e7731685c4abf9ee.fontdata"
+uid="uid://byabw4vvgclf7"
+path="res://.godot/imported/Orbitron-Regular.ttf-cf2a7530327750abb8644aa6edcadb66.fontdata"
 
 [deps]
 
-source_file="res://assets/sprites/InterTight-Light.ttf"
-dest_files=["res://.godot/imported/InterTight-Light.ttf-97ed74a48b5ffb52e7731685c4abf9ee.fontdata"]
+source_file="res://assets/themes/Orbitron-Regular.ttf"
+dest_files=["res://.godot/imported/Orbitron-Regular.ttf-cf2a7530327750abb8644aa6edcadb66.fontdata"]
 
 [params]
 
@@ -27,12 +27,7 @@ Fallbacks=null
 fallbacks=[]
 Compress=null
 compress=true
-preload=[{
-"chars": [],
-"glyphs": [],
-"name": "New Configuration",
-"size": Vector2i(16, 0)
-}]
+preload=[]
 language_support={}
 script_support={}
 opentype_features={}
