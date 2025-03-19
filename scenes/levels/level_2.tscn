@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://6sgn2tbvxsie"]
+[gd_scene load_steps=9 format=3 uid="uid://6sgn2tbvxsie"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_pjvny"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_hylch"]
 [ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="3_efpp3"]
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_63k5r"]
+[ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_gdxui"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -107,3 +108,9 @@ shape = SubResource("RectangleShape2D_ab1l3")
 
 [node name="Sun" parent="." instance=ExtResource("4_63k5r")]
 position = Vector2(3264, 520)
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(1896, 1080)
+scale = Vector2(1.05926, 1.05926)
+texture = ExtResource("5_gdxui")
