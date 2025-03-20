@@ -1,16 +1,56 @@
-[gd_scene load_steps=8 format=3 uid="uid://bhyk5hbgs2hno"]
+[gd_scene load_steps=17 format=3 uid="uid://bhyk5hbgs2hno"]
 
 [ext_resource type="Script" path="res://scripts/entities/inner_projectile.gd" id="1_guw06"]
 [ext_resource type="Script" path="res://scripts/entities/outer_projectile.gd" id="2_p2sqb"]
 [ext_resource type="Texture2D" uid="uid://bvf6nvimyp48e" path="res://assets/sprites/projectile_bg.png" id="3_qwixt"]
 [ext_resource type="Texture2D" uid="uid://2pu4singbj38" path="res://assets/sprites/projectile.png" id="4_3mbai"]
 [ext_resource type="AudioStream" uid="uid://c5u8usi7w5iht" path="res://assets/audio/projectile_wall.wav" id="5_5pssr"]
+[ext_resource type="Texture2D" uid="uid://cvdhxwe3ul1b0" path="res://assets/sprites/circle_particle.png" id="6_10a14"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kllct"]
 radius = 36.1248
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c8q60"]
 radius = 318.705
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gpk4v"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_i0iv8"]
+max_value = 0.8
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.1, 0), 0.0, 0.0, 0, 0, Vector2(0.186667, 0.8), 0.0, 0.0, 0, 0, Vector2(0.566667, 0.8), 0.0, 0.0, 0, 0, Vector2(0.9, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_ib8b3"]
+curve = SubResource("Curve_i0iv8")
+
+[sub_resource type="Gradient" id="Gradient_378r3"]
+colors = PackedColorArray(0.370001, 0.280914, 0.877917, 1, 0.508346, 0.766275, 0.98854, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_t4ln8"]
+gradient = SubResource("Gradient_378r3")
+
+[sub_resource type="Curve" id="Curve_27ywt"]
+min_value = 0.5
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0933333, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.505494), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ytos1"]
+curve = SubResource("Curve_27ywt")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_neni7"]
+particle_flag_disable_z = true
+spread = 0.0
+radial_velocity_min = 150.0
+radial_velocity_max = 150.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -10.0
+radial_accel_max = -10.0
+scale_min = 0.15
+scale_max = 0.15
+scale_curve = SubResource("CurveTexture_ytos1")
+color_ramp = SubResource("GradientTexture1D_t4ln8")
+alpha_curve = SubResource("CurveTexture_ib8b3")
 
 [node name="Inner Projectile" type="RigidBody2D"]
 collision_layer = 2
@@ -36,6 +76,26 @@ texture = ExtResource("4_3mbai")
 
 [node name="WallCollision" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_5pssr")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_gpk4v")
+amount = 100
+process_material = SubResource("ParticleProcessMaterial_neni7")
+texture = ExtResource("6_10a14")
+lifetime = 2.5
+preprocess = 0.25
+speed_scale = 1.1
+local_coords = true
+trail_enabled = true
+trail_lifetime = 0.01
+trail_sections = 5
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(0.301961, 0.270588, 0.698039, 1)
+energy = 0.76
+shadow_color = Color(0.956863, 0.709804, 0.505882, 1)
+texture = ExtResource("6_10a14")
+texture_scale = 1.5
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_entered" from="Outer Projectile" to="Outer Projectile" method="_on_body_entered"]
