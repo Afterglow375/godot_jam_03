@@ -24,6 +24,10 @@ func _process(delta: float) -> void:
 		earth_stopped_moving.emit()
 		was_moving = false
 		
+func _physics_process(delta):
+	if linear_velocity.length() < 10.0:  # If speed is very low
+		linear_velocity = Vector2.ZERO  # Force stop
+		
 func is_moving() -> bool:
 	return linear_velocity.length() > movement_threshold
 
