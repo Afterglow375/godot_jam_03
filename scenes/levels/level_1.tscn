@@ -21,10 +21,10 @@ size = Vector2(78.4575, 2160)
 script = ExtResource("1_sxrjf")
 
 [node name="Spaceship" parent="." instance=ExtResource("2_rb7ic")]
-position = Vector2(380, 1891)
+position = Vector2(568, 1155)
 
 [node name="Earth" parent="." instance=ExtResource("3_txab0")]
-position = Vector2(1614, 1728)
+position = Vector2(1780, 884)
 linear_damp = 1.0
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -91,7 +91,7 @@ position = Vector2(39.2288, 1081)
 shape = SubResource("RectangleShape2D_ab1l3")
 
 [node name="Sun" parent="." instance=ExtResource("4_3tws1")]
-position = Vector2(2463, 1636)
+position = Vector2(3011, 1245)
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -1
