@@ -63,6 +63,8 @@ func _process(delta):
 		if length > MAX_LINE_LENGTH:
 			current_line_end = mouse_pos.normalized() * MAX_LINE_LENGTH
 		
+		level.update_charge_bar(length)
+		
 		# Draw the input line
 		line.clear_points()
 		line.add_point(Vector2.ZERO)  # Center of the Area2D
@@ -117,6 +119,8 @@ func launch_projectile() -> void:
 		
 		# Disable shooting until reset externally
 		can_shoot = false
+		
+		level.update_charge_bar(0)
 
 # Handle projectile destroyed signal
 func _on_projectile_destroyed() -> void:

@@ -1,6 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://ta2p14py4etx"]
+[gd_scene load_steps=3 format=3 uid="uid://ta2p14py4etx"]
 
 [ext_resource type="Script" path="res://scripts/ui/hud.gd" id="1_yjnxe"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6cabo"]
+bg_color = Color(0, 0.498039, 0.129412, 1)
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_yjnxe")
@@ -9,11 +12,21 @@ script = ExtResource("1_yjnxe")
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_top = 30.0
-offset_right = 1.0
-offset_bottom = 185.0
+offset_left = -1880.0
+offset_top = 1960.0
+offset_right = -1773.0
+offset_bottom = 2122.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 128
 text = "0"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="ChargeBar" type="ProgressBar" parent="."]
+offset_left = 192.0
+offset_top = 1984.0
+offset_right = 1638.0
+offset_bottom = 2109.0
+theme_override_font_sizes/font_size = 64
+theme_override_styles/fill = SubResource("StyleBoxFlat_6cabo")
+max_value = 500.0

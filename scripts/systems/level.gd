@@ -10,6 +10,7 @@ var pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var pause_menu: CanvasLayer = null
 var is_paused: bool = false
 var level_finished: bool = false
+var charge_bar: ProgressBar = null
 
 func _ready() -> void:
 	add_hud()
@@ -85,6 +86,13 @@ func reset_score() -> void:
 func update_score_display() -> void:
 	if hud != null:
 		hud.get_node("ScoreLabel").text = str(score)
+
+func update_charge_bar(new_value) -> void:
+	if charge_bar == null and hud != null:
+		charge_bar = hud.get_node("ChargeBar")
+	
+	if charge_bar:
+		charge_bar.value = new_value
 
 # Calculate the final score based on number of shots and accuracy
 func calculate_final_score(accuracy_score: int) -> int:
