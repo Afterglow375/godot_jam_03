@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://bhyk5hbgs2hno"]
+[gd_scene load_steps=20 format=3 uid="uid://bhyk5hbgs2hno"]
 
 [ext_resource type="Script" path="res://scripts/entities/inner_projectile.gd" id="1_guw06"]
 [ext_resource type="Script" path="res://scripts/entities/outer_projectile.gd" id="2_p2sqb"]
+[ext_resource type="Shader" path="res://shaders/projectile.gdshader" id="3_2tpfj"]
 [ext_resource type="Texture2D" uid="uid://bvf6nvimyp48e" path="res://assets/sprites/projectile_bg.png" id="3_qwixt"]
 [ext_resource type="Texture2D" uid="uid://2pu4singbj38" path="res://assets/sprites/projectile.png" id="4_3mbai"]
 [ext_resource type="AudioStream" uid="uid://c5u8usi7w5iht" path="res://assets/audio/projectile_wall.wav" id="5_5pssr"]
@@ -12,6 +13,14 @@ radius = 36.1248
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c8q60"]
 radius = 318.705
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ehkc1"]
+shader = ExtResource("3_2tpfj")
+shader_parameter/charge_amount = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ixpjg"]
+shader = ExtResource("3_2tpfj")
+shader_parameter/charge_amount = 0.0
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gpk4v"]
 blend_mode = 1
@@ -69,9 +78,11 @@ script = ExtResource("2_p2sqb")
 shape = SubResource("CircleShape2D_c8q60")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ehkc1")
 texture = ExtResource("3_qwixt")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_ixpjg")
 texture = ExtResource("4_3mbai")
 
 [node name="WallCollision" type="AudioStreamPlayer" parent="."]

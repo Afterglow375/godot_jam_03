@@ -1,5 +1,7 @@
 extends Area2D
 
+signal projectile_created(projectile)
+
 const MAX_LINE_LENGTH: float = 500.0  # Adjust this value to change max length
 const ProjectileScene: PackedScene = preload("res://scenes/entities/projectile.tscn")
 
@@ -10,7 +12,6 @@ var current_line_end: Vector2 = Vector2.ZERO
 var drag_started_in_area: bool = false
 var level: Node = null  # Reference to the level
 var ray_cast: RayCast2D = null  # RayCast for collision detection
-var shoot_sound: AudioStreamPlayer = null
 var can_shoot: bool = true  # True if user can shoot from spaceship, false if can't
 var earth: RigidBody2D = null  # Reference to the Earth node
 
@@ -18,7 +19,6 @@ func _ready():
 	line = $SlingshotLine
 	trajectory_line = $TrajectoryLine
 	ray_cast = $TrajectoryRaycast
-	shoot_sound = $ShootSound
 	
 	# Store reference to the level
 	level = get_tree().current_scene
@@ -103,8 +103,7 @@ func launch_projectile() -> void:
 		projectile.position = position
 		
 		# Connect to the projectile's destruction signal
-		if projectile.has_signal("projectile_destroyed"):
-			projectile.projectile_destroyed.connect(_on_projectile_destroyed)
+		projectile.projectile_destroyed.connect(_on_projectile_destroyed)
 		
 		# Calculate speed multiplier based on line length (0.0 to 1.0)
 		var speed_multiplier: float = current_line_end.length() / MAX_LINE_LENGTH
@@ -112,10 +111,11 @@ func launch_projectile() -> void:
 		# Launch in the direction of the line with speed based on length
 		projectile.launch(current_line_end.normalized(), speed_multiplier)
 		
+		# Emit signal that projectile was created
+		projectile_created.emit(projectile)
+		
 		# Increment the score
 		increment_score()
-		
-		shoot_sound.play()
 		
 		# Disable shooting until reset externally
 		can_shoot = false

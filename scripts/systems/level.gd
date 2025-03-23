@@ -12,6 +12,9 @@ var is_paused: bool = false
 var level_finished: bool = false
 var charge_bar: ProgressBar = null
 
+# Get reference to the AudioManager singleton
+@onready var audio_manager = get_node("/root/AudioManager")
+
 func _ready() -> void:
 	add_hud()
 	add_pause_menu()
@@ -101,7 +104,12 @@ func calculate_final_score(accuracy_score: int) -> int:
 	return final_score
 	
 func level_won() -> void:
+	if level_finished:
+		return
+		
 	level_finished = true
+	calculate_final_score(accuracy_score)
+	audio_manager.play(audio_manager.Audio.TADAA)
 	
 	# If paused, unpause the level first
 	if is_paused:

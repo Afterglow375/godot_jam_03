@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://bm8xkbphah7sv"]
+[gd_scene load_steps=2 format=3 uid="uid://bm8xkbphah7sv"]
 
 [ext_resource type="Script" path="res://scripts/ui/win_popup.gd" id="1_8d536"]
-[ext_resource type="AudioStream" uid="uid://c3w7enuyymyka" path="res://assets/audio/626950__maikkihapsis__tadaa.wav" id="3_4seb8"]
 
 [node name="WinPopup" type="CanvasLayer"]
 script = ExtResource("1_8d536")
@@ -79,11 +78,6 @@ text = "Retry"
 [node name="LevelSelectButton" type="Button" parent="Panel/HBoxContainer"]
 layout_mode = 2
 text = "Level Select"
-
-[node name="VictorySound" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_4seb8")
-volume_db = -10.0
-pitch_scale = 1.34
 
 [connection signal="pressed" from="Panel/HBoxContainer/NextLevelButton" to="." method="_on_next_level_button_pressed"]
 [connection signal="pressed" from="Panel/HBoxContainer/RetryButton" to="." method="_on_retry_button_pressed"]
