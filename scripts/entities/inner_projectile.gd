@@ -10,6 +10,7 @@ signal explosion_triggered(fade_time)
 
 # Get reference to the AudioManager singleton
 @onready var audio_manager = get_node("/root/AudioManager")
+@onready var GPUParticles: GPUParticles2D = $GPUParticles2D
 
 const BASE_SPEED: float = 2000.0
 @export var lifetime: float = 5.0  # Time in seconds before projectile destroys itself
@@ -31,7 +32,9 @@ func _ready() -> void:
 	# Enable contact monitoring for collision detection
 	contact_monitor = true
 	max_contacts_reported = 1
-	set_charge_amount(0)
+	
+	# Set initial charge amount
+	set_charge_amount(0.0)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -64,6 +67,9 @@ func _process(delta: float) -> void:
 	if charging_explosion and not fading:
 		charge_time += delta
 		
+		if !GPUParticles.is_playing():
+			GPUParticles.play()
+		
 		# Calculate normalized charge progress (clamped between 0 and 1)
 		var charge_progress: float = min(charge_time / explosion_charge_time, 0.95)  # Cap at 0.95 for shader
 		
@@ -77,8 +83,8 @@ func set_charge_amount(value: float) -> void:
 	for sprite in sprites:
 		var charge_shader: ShaderMaterial = sprite.material
 		if charge_shader:
-			charge_shader.set_shader_parameter("charge_amount", value)	
-	
+			charge_shader.set_shader_parameter("charge_amount", value)
+
 func _on_body_entered(body: Node) -> void:
 	if body is StaticBody2D:
 		# Play the wall collision sound

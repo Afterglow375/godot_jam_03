@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://bhyk5hbgs2hno"]
+[gd_scene load_steps=24 format=3 uid="uid://bhyk5hbgs2hno"]
 
 [ext_resource type="Script" path="res://scripts/entities/inner_projectile.gd" id="1_guw06"]
 [ext_resource type="Script" path="res://scripts/entities/outer_projectile.gd" id="2_p2sqb"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://2pu4singbj38" path="res://assets/sprites/projectile.png" id="4_3mbai"]
 [ext_resource type="AudioStream" uid="uid://c5u8usi7w5iht" path="res://assets/audio/projectile_wall.wav" id="5_5pssr"]
 [ext_resource type="Texture2D" uid="uid://cvdhxwe3ul1b0" path="res://assets/sprites/circle_particle.png" id="6_10a14"]
+[ext_resource type="Script" path="res://scripts/entities/projectile_particles.gd" id="8_ijriy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kllct"]
 radius = 36.1248
@@ -18,11 +19,11 @@ radius = 318.705
 shader = ExtResource("3_2tpfj")
 shader_parameter/charge_amount = 0.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ixpjg"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4ex77"]
 shader = ExtResource("3_2tpfj")
 shader_parameter/charge_amount = 0.0
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_gpk4v"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lxrrs"]
 blend_mode = 1
 
 [sub_resource type="Curve" id="Curve_i0iv8"]
@@ -61,6 +62,153 @@ scale_curve = SubResource("CurveTexture_ytos1")
 color_ramp = SubResource("GradientTexture1D_t4ln8")
 alpha_curve = SubResource("CurveTexture_ib8b3")
 
+[sub_resource type="Animation" id="Animation_ocn7g"]
+length = 0.001
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:process_material:radial_velocity_min")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [150.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:process_material:radial_velocity_max")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [150.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:process_material:orbit_velocity_min")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:process_material:orbit_velocity_max")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:process_material:color_ramp")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [SubResource("GradientTexture1D_t4ln8")]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:process_material:color")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_bdl2o"]
+resource_name = "charging_explosion"
+length = 0.4
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:process_material:radial_velocity_min")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [150.0, 300.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:process_material:radial_velocity_max")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [150.0, 300.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:process_material:orbit_velocity_min")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.05]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:process_material:orbit_velocity_max")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 0.05]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:process_material:color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.26),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_vr501"]
+_data = {
+"RESET": SubResource("Animation_ocn7g"),
+"charging_explosion": SubResource("Animation_bdl2o")
+}
+
 [node name="Inner Projectile" type="RigidBody2D"]
 collision_layer = 2
 collision_mask = 2
@@ -69,12 +217,14 @@ lock_rotation = true
 script = ExtResource("1_guw06")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+visible = false
 shape = SubResource("CircleShape2D_kllct")
 
 [node name="Outer Projectile" type="Area2D" parent="."]
 script = ExtResource("2_p2sqb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Outer Projectile"]
+visible = false
 shape = SubResource("CircleShape2D_c8q60")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -82,14 +232,14 @@ material = SubResource("ShaderMaterial_ehkc1")
 texture = ExtResource("3_qwixt")
 
 [node name="Sprite2D2" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_ixpjg")
+material = SubResource("ShaderMaterial_4ex77")
 texture = ExtResource("4_3mbai")
 
 [node name="WallCollision" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_5pssr")
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_gpk4v")
+material = SubResource("CanvasItemMaterial_lxrrs")
 amount = 100
 process_material = SubResource("ParticleProcessMaterial_neni7")
 texture = ExtResource("6_10a14")
@@ -100,6 +250,12 @@ local_coords = true
 trail_enabled = true
 trail_lifetime = 0.01
 trail_sections = 5
+script = ExtResource("8_ijriy")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GPUParticles2D"]
+libraries = {
+"": SubResource("AnimationLibrary_vr501")
+}
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 color = Color(0.301961, 0.270588, 0.698039, 1)
