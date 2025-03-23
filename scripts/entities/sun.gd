@@ -44,6 +44,7 @@ func _process(delta):
 		
 		# When Earth stops moving and the projectile is no longer alive, trigger win
 		if not earth.is_moving() and not projectile_alive:
+			level.calculate_final_score(accuracy_score)
 			level.level_won()
 
 func update_score():
