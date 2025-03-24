@@ -34,7 +34,7 @@ var _audio_data = {
 	},
 	Audio.TADAA: {
 		"path": "res://assets/audio/626950__maikkihapsis__tadaa.wav", 
-		"volume": -5.0
+		"volume": -8.0
 	}
 }
 

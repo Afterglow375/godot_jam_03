@@ -24,7 +24,7 @@ script = ExtResource("1_pjvny")
 position = Vector2(856, 1728)
 
 [node name="Earth" parent="." instance=ExtResource("3_efpp3")]
-position = Vector2(1614, 1728)
+position = Vector2(1613, 1725)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = -79.0
