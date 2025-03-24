@@ -2,12 +2,10 @@ extends RigidBody2D
 
 signal earth_stopped_moving
 
-var earth_wall: AudioStreamPlayer = null
 var was_moving: bool = false
 var movement_threshold: float = 2.0  # Consider earth stopped when velocity is below this threshold
 
 func _ready():
-	earth_wall = $EarthWallSound
 	# Enable contact monitoring for collision detection
 	contact_monitor = true
 	max_contacts_reported = 1
@@ -39,4 +37,4 @@ func get_collision_radius() -> float:
 	return 0.0
 
 func _on_body_entered(body):
-	earth_wall.play()
+	AudioManager.play(AudioManager.Audio.EARTH_WALL)
