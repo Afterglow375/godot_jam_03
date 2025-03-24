@@ -7,7 +7,8 @@ enum Audio {
 	EARTH_WALL,
 	DETONATE_EXPLOSION_CHARGE,
 	DETONATE_EXPLOSION,
-	TADAA
+	TADAA,
+	SUN_HIT
 }
 
 # Dictionary mapping Audio to their file paths and default volumes
@@ -35,6 +36,10 @@ var _audio_data = {
 	Audio.TADAA: {
 		"path": "res://assets/audio/626950__maikkihapsis__tadaa.wav", 
 		"volume": -8.0
+	},
+	Audio.SUN_HIT: {
+		"path": "res://assets/audio/sun hit sound.wav", 
+		"volume": -5.0
 	}
 }
 
