@@ -25,8 +25,8 @@ var _audio_data = {
 		"volume": -2.0
 	},
 	Audio.PROJECTILE_SOUND: {
-		"path": "res://assets/audio/projectile sound.wav", 
-		"volume": -5.0,
+		"path": "res://assets/audio/projectile sound2.wav", 
+		"volume": -1.0,
 		"max_distance": 3000.0
 	},
 	Audio.EXPLOSION_FIZZLE: {
