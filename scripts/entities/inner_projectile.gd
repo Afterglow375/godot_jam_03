@@ -7,6 +7,7 @@ signal explosion_triggered(fade_time)
 
 @onready var outer_projectile: Area2D = $"Outer Projectile"
 @onready var sprites: Array[Sprite2D] = [$Sprite2D, $Sprite2D2]
+var projectile_sound_player: AudioStreamPlayer2D = null  # Persistent audio player
 
 # Get reference to the AudioManager singleton
 @onready var audio_manager = get_node("/root/AudioManager")
@@ -35,9 +36,26 @@ func _ready() -> void:
 	
 	# Set initial charge amount
 	set_charge_amount(0.0)
+	
+	# Connect to tree_exiting to clean up sound when scene changes
+	tree_exiting.connect(_on_tree_exiting)
+	
+	# Create the positional sound player
+	projectile_sound_player = audio_manager.play_positional(
+		AudioManager.Audio.PROJECTILE_SOUND,
+		outer_projectile.global_position,
+		false,
+		false
+	)
+	
+	projectile_sound_player.play()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Update the sound position to match the outer projectile's position
+	if projectile_sound_player and is_instance_valid(projectile_sound_player):
+		projectile_sound_player.global_position = outer_projectile.global_position
+	
 	# Handle fade animation timing
 	if fading:
 		fade_time += delta
@@ -140,5 +158,15 @@ func trigger_explosion() -> void:
 
 # Call this to immediately destroy the projectile
 func destroy() -> void:
+	# Clean up the sound player
+	if projectile_sound_player and is_instance_valid(projectile_sound_player):
+		projectile_sound_player.queue_free()
+	
 	projectile_destroyed.emit()
 	queue_free()
+
+func _on_tree_exiting() -> void:
+	# Clean up the sound player if it exists
+	if projectile_sound_player and is_instance_valid(projectile_sound_player):
+		projectile_sound_player.stop()
+		projectile_sound_player.queue_free()

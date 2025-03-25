@@ -4,6 +4,7 @@ extends Node
 enum Audio {
 	PROJECTILE_SHOT,
 	PROJECTILE_WALL,
+	PROJECTILE_SOUND,
 	EARTH_WALL,
 	DETONATE_EXPLOSION_CHARGE,
 	DETONATE_EXPLOSION,
@@ -22,6 +23,11 @@ var _audio_data = {
 	Audio.PROJECTILE_WALL: {
 		"path": "res://assets/audio/projectile_wall.wav", 
 		"volume": -2.0
+	},
+	Audio.PROJECTILE_SOUND: {
+		"path": "res://assets/audio/projectile sound.wav", 
+		"volume": -5.0,
+		"max_distance": 3000.0
 	},
 	Audio.EXPLOSION_FIZZLE: {
 		"path": "res://assets/audio/explosion_fizzle.wav", 
@@ -48,8 +54,9 @@ var _audio_data = {
 		"volume": -14.0
 	},
 	Audio.EARTH_PUSH: {
-		"path": "res://assets/audio/earth push sound2.wav", 
-		"volume": -5.0
+		"path": "res://assets/audio/earth push sound.wav", 
+		"volume": 0.0,
+		"max_distance": 3000.0
 	}
 }
 
@@ -66,7 +73,7 @@ func _ready() -> void:
 
 # Play an audio clip at the specified volume (can override default volume)
 # Returns the created AudioStreamPlayer so you can connect to its signals if needed
-func play(clip_id: int, override_volume: float = -100, play: bool = true, delete: bool = true) -> AudioStreamPlayer:
+func play(clip_id: int, override_volume: float = -100, autoplay: bool = true, autocleanup: bool = true) -> AudioStreamPlayer:
 	if not _audio_data.has(clip_id):
 		push_error("AudioManager: Invalid audio clip ID: " + str(clip_id))
 		return null
@@ -84,12 +91,49 @@ func play(clip_id: int, override_volume: float = -100, play: bool = true, delete
 	var volume = override_volume if override_volume != -100 else _audio_data[clip_id]["volume"]
 	player.volume_db = volume
 	
-	# Connect the finished signal to auto-cleanup
-	if delete:
+	# Connect the finished signal to auto-cleanup if enabled
+	if autocleanup:
 		player.finished.connect(player.queue_free)
 	
-	# Play the sound
-	if play:
+	# Play the sound if autoplay is enabled
+	if autoplay:
+		player.play()
+	
+	return player
+
+# Play an audio clip at a specific 2D position
+# Returns the created AudioStreamPlayer2D so you can connect to its signals if needed
+func play_positional(clip_id: int, position: Vector2, override_volume: float = -100, autoplay: bool = true, autocleanup: bool = true) -> AudioStreamPlayer2D:
+	if not _audio_data.has(clip_id):
+		push_error("AudioManager: Invalid audio clip ID: " + str(clip_id))
+		return null
+		
+	if not _preloaded_audio.has(clip_id) or _preloaded_audio[clip_id] == null:
+		push_error("AudioManager: Audio clip not preloaded: " + str(clip_id))
+		return null
+	
+	# Create a new AudioStreamPlayer2D
+	var player = AudioStreamPlayer2D.new()
+	add_child(player)
+	
+	# Set the stream and volume
+	player.stream = _preloaded_audio[clip_id]
+	var volume = override_volume if override_volume != -100 else _audio_data[clip_id]["volume"]
+	player.volume_db = volume
+	
+	# Set the position
+	player.position = position
+	
+	# Set max_distance if specified in _audio_data
+	if _audio_data[clip_id].has("max_distance"):
+		player.max_distance = _audio_data[clip_id]["max_distance"]
+	
+	# Connect the finished signal to auto-cleanup if enabled
+	if autocleanup:
+		player.finished.connect(player.queue_free)
+	
+	# Play the sound if autoplay is enabled
+	if autoplay:
 		player.play()
 	
 	return player
