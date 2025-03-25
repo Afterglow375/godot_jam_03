@@ -11,6 +11,7 @@ var pause_menu: CanvasLayer = null
 var is_paused: bool = false
 var level_finished: bool = false
 var charge_bar: ProgressBar = null
+var bonus_points: int = 0
 
 # Get reference to the AudioManager singleton
 @onready var audio_manager = get_node("/root/AudioManager")
@@ -80,9 +81,15 @@ func add_score(points: int) -> void:
 	score += points
 	update_score_display()
 
+# Add bonus points (separate from regular score)
+func add_bonus_points(points: int) -> void:
+	bonus_points = points
+	win_popup.show_victory_screen(score, accuracy_score, bonus_points)
+
 # Reset the score to zero
 func reset_score() -> void:
 	score = 0
+	bonus_points = 0
 	update_score_display()
 
 # Update the score label
@@ -115,7 +122,7 @@ func level_won() -> void:
 	if is_paused:
 		toggle_pause_menu()
 		
-	win_popup.show_victory_screen(score, accuracy_score)
+	win_popup.show_victory_screen(score, accuracy_score, bonus_points)
 
 func _on_next_level():
 	var next_level_path = get_next_level_path()
@@ -137,3 +144,9 @@ func get_next_level_path() -> String:
 				return next_level_path
 
 	return ""  # No next level found
+
+# Show win popup
+func show_win_popup() -> void:
+	if win_popup != null:
+		win_popup.show_victory_screen(score, accuracy_score, bonus_points)
+		win_popup.show()

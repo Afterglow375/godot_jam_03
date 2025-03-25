@@ -7,16 +7,17 @@ signal victory_achieved
 func _ready():
 	hide()
 	
-func show_victory_screen(shot_count: int, accuracy_score: int) -> void:
+func show_victory_screen(shot_count: int, accuracy_score: int, bonus_score: int) -> void:
 	emit_signal("victory_achieved")
-	set_scores(shot_count, accuracy_score)
+	set_scores(shot_count, accuracy_score, bonus_score)
 	show()
 	
-func set_scores(shot_count: int, accuracy_score: int):
-	var total_score = 0 if shot_count == 0 else round(accuracy_score / shot_count)
+func set_scores(shot_count: int, accuracy_score: int, bonus_score: int):
+	var total_score = 0 if shot_count == 0 else round(accuracy_score / shot_count) + bonus_score
 
 	$Panel/VBoxContainer/ShotsLabel.text = "Shots Taken: " + str(shot_count)
 	$Panel/VBoxContainer/AccuracyLabel.text = "Accuracy Score: " + str(accuracy_score)
+	$Panel/VBoxContainer/BonusPointsLabel.text = "Bonus Score: " + str(bonus_score)
 	$Panel/VBoxContainer/TotalScoreLabel.text = "Total Score: " + str(total_score)
 
 func _on_level_select_button_pressed() -> void:

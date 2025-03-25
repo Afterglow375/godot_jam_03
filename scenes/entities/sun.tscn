@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://bk1ng8ft4k13r"]
+[gd_scene load_steps=10 format=3 uid="uid://bk1ng8ft4k13r"]
 
 [ext_resource type="Script" path="res://scripts/entities/sun.gd" id="1_jkyhw"]
 [ext_resource type="Texture2D" uid="uid://grtclsyvb8ap" path="res://assets/sprites/sun.png" id="2_qms23"]
 [ext_resource type="Script" path="res://scripts/entities/sun_gravity.gd" id="3_dgyxk"]
 [ext_resource type="Shader" path="res://shaders/godrays.gdshader" id="4_s4lem"]
+[ext_resource type="Script" path="res://scripts/entities/bonus_area.gd" id="4_vh0lo"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4isk3"]
 radius = 364.0
@@ -26,6 +27,9 @@ shader_parameter/ray2_intensity = 0.0
 shader_parameter/color = Color(1, 0.901961, 0.65098, 0.0431373)
 shader_parameter/hdr = true
 shader_parameter/seed = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0nr1j"]
+radius = 125.0
 
 [node name="Sun" type="Area2D"]
 script = ExtResource("1_jkyhw")
@@ -56,6 +60,12 @@ offset_bottom = 2000.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="BonusArea" type="Area2D" parent="."]
+script = ExtResource("4_vh0lo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BonusArea"]
+shape = SubResource("CircleShape2D_0nr1j")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

@@ -4,6 +4,7 @@ extends Area2D
 var earth: RigidBody2D = null  # Store reference to the Earth
 var updating_score: bool = false  # Track if we should update score
 var accuracy_score: int = 0
+var min_accuracy_score: int = 100 # Always award at least 100 points
 var level: Node = null  # Reference to the level
 var projectile_alive: bool = false  # Track if projectile is still alive
 var level_won_flag: bool = false  # Flag to track if level has been won
@@ -96,5 +97,5 @@ func update_score() -> Dictionary:
 	return {"distance": distance, "radius": radius}
 
 func calculate_score(distance: float, max_distance: float) -> int:
-	var score = max_score * (1.0 - clamp(distance / max_distance, 0.0, 1.0))
+	var score = max_score * (1.0 - clamp(distance / max_distance, 0.0, 1.0)) + min_accuracy_score
 	return round(score)

@@ -48,6 +48,10 @@ text = "Shots: 0"
 layout_mode = 2
 text = "Accuracy: 0"
 
+[node name="BonusPointsLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+text = "Bonus Points: 0"
+
 [node name="TotalScoreLabel" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
 text = "Total Score: 0"
