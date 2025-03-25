@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://qq5sl5yrgvht"
+path="res://.godot/imported/earth push sound2.wav-2cc4a03dd0aa405bf55255ee7a4ebb0e.sample"
+
+[deps]
+
+source_file="res://assets/audio/earth push sound2.wav"
+dest_files=["res://.godot/imported/earth push sound2.wav-2cc4a03dd0aa405bf55255ee7a4ebb0e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

@@ -58,7 +58,9 @@ func _process(delta: float) -> void:
 		# Check lifetime and destroy if expired
 		time_alive += delta
 		if time_alive >= lifetime:
-			destroy()
+			audio_manager.play(audio_manager.Audio.EXPLOSION_FIZZLE)
+			fading = true
+			fade_time = 0.0
 		# Check for explosion trigger with direct mouse button check
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			start_charging_explosion()

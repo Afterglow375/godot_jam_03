@@ -7,19 +7,25 @@ enum Audio {
 	EARTH_WALL,
 	DETONATE_EXPLOSION_CHARGE,
 	DETONATE_EXPLOSION,
+	EXPLOSION_FIZZLE,
 	TADAA,
-	SUN_HIT
+	SUN_HIT,
+	EARTH_PUSH
 }
 
 # Dictionary mapping Audio to their file paths and default volumes
 var _audio_data = {
 	Audio.PROJECTILE_SHOT: {
 		"path": "res://assets/audio/projectile_shot.wav", 
-		"volume": -10.0
+		"volume": -14.0
 	},
 	Audio.PROJECTILE_WALL: {
 		"path": "res://assets/audio/projectile_wall.wav", 
 		"volume": -2.0
+	},
+	Audio.EXPLOSION_FIZZLE: {
+		"path": "res://assets/audio/explosion_fizzle.wav", 
+		"volume": -1.0
 	},
 	Audio.EARTH_WALL: {
 		"path": "res://assets/audio/earth_wall.wav", 
@@ -27,18 +33,22 @@ var _audio_data = {
 	},
 	Audio.DETONATE_EXPLOSION_CHARGE: {
 		"path": "res://assets/audio/detonate_explosion_charge.wav", 
-		"volume": -1.0
+		"volume": -6.0
 	},
 	Audio.DETONATE_EXPLOSION: {
 		"path": "res://assets/audio/detonate_explosion.wav", 
-		"volume": 0.0
+		"volume": -5.0
 	},
 	Audio.TADAA: {
 		"path": "res://assets/audio/626950__maikkihapsis__tadaa.wav", 
-		"volume": -8.0
+		"volume": -14.0
 	},
 	Audio.SUN_HIT: {
 		"path": "res://assets/audio/sun hit sound.wav", 
+		"volume": -14.0
+	},
+	Audio.EARTH_PUSH: {
+		"path": "res://assets/audio/earth push sound2.wav", 
 		"volume": -5.0
 	}
 }
@@ -56,7 +66,7 @@ func _ready() -> void:
 
 # Play an audio clip at the specified volume (can override default volume)
 # Returns the created AudioStreamPlayer so you can connect to its signals if needed
-func play(clip_id: int, override_volume: float = -100) -> AudioStreamPlayer:
+func play(clip_id: int, override_volume: float = -100, play: bool = true, delete: bool = true) -> AudioStreamPlayer:
 	if not _audio_data.has(clip_id):
 		push_error("AudioManager: Invalid audio clip ID: " + str(clip_id))
 		return null
@@ -75,9 +85,11 @@ func play(clip_id: int, override_volume: float = -100) -> AudioStreamPlayer:
 	player.volume_db = volume
 	
 	# Connect the finished signal to auto-cleanup
-	player.finished.connect(player.queue_free)
+	if delete:
+		player.finished.connect(player.queue_free)
 	
 	# Play the sound
-	player.play()
+	if play:
+		player.play()
 	
 	return player

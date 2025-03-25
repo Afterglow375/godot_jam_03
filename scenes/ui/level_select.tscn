@@ -25,7 +25,7 @@ offset_bottom = 171.5
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/h_separation = 200
-theme_override_constants/v_separation = 50
+theme_override_constants/v_separation = 200
 columns = 3
 
 [node name="LevelButton1" type="Button" parent="GridContainer"]
@@ -43,6 +43,16 @@ text = "Level 2"
 layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Level 3"
+
+[node name="LevelButton4" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 4"
+
+[node name="LevelButton5" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 5"
 
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 1

@@ -1,10 +1,15 @@
 extends Area2D
 
 const PUSH_FORCE: float = 4000.0
+const FADE_DURATION: float = 0.1  # Fade in/out duration in seconds
 
 # Using arrays of length 2 [body, radius] instead of dictionaries
 var affected_bodies: Array = []
 var force_radius: float = 100.0  # Default value, will be updated in _ready()
+var push_sound_player: AudioStreamPlayer = null  # Persistent audio player
+
+# Get reference to the AudioManager singleton
+@onready var audio_manager = get_node("/root/AudioManager")
 
 func _ready():
 	# Enable detection of bodies entering/exiting for the body_entered/exited signals
@@ -15,6 +20,18 @@ func _ready():
 		if child is CollisionShape2D and child.shape is CircleShape2D:
 			force_radius = child.shape.radius
 			break
+	
+	# Create a new AudioStreamPlayer directly
+	push_sound_player = AudioStreamPlayer.new()
+	add_child(push_sound_player)
+	
+	# Get the audio stream from AudioManager
+	push_sound_player.stream = audio_manager._preloaded_audio[AudioManager.Audio.EARTH_PUSH]
+	push_sound_player.volume_db = -5.0
+	
+	# Create automatic looping using the finished signal
+	push_sound_player.stream = push_sound_player.stream.duplicate()
+	push_sound_player.finished.connect(func(): if affected_bodies.size() > 0: push_sound_player.play())
 
 func _physics_process(delta):
 	# Process affected bodies
@@ -49,6 +66,18 @@ func _on_body_entered(body: Node2D) -> void:
 		
 		# Store body and radius as a simple array of length 2
 		affected_bodies.append([body, body_radius])
+		
+		# Start playing the push sound if it exists
+		if push_sound_player and not push_sound_player.playing:
+			# Fade in the sound
+			push_sound_player.volume_db = -40.0  # Start very quiet
+			
+			# Create a tween for fading in
+			var tween = create_tween()
+			tween.tween_property(push_sound_player, "volume_db", -5.0, FADE_DURATION)
+			
+			# Start playing
+			push_sound_player.play()
 
 func _on_body_exited(body: Node2D) -> void:
 	if body is RigidBody2D:
@@ -57,3 +86,12 @@ func _on_body_exited(body: Node2D) -> void:
 			if affected_bodies[i][0] == body:  # First element is the body
 				affected_bodies.remove_at(i)
 				break
+		
+		# If no more bodies are affected, fade out and stop the sound
+		if affected_bodies.size() == 0 and push_sound_player and push_sound_player.playing:
+			# Create a tween for fading out
+			var tween = create_tween()
+			tween.tween_property(push_sound_player, "volume_db", -40.0, FADE_DURATION)
+			
+			# Stop the player after fade completes
+			tween.tween_callback(func(): push_sound_player.stop())
