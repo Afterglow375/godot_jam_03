@@ -1,14 +1,31 @@
-[gd_scene load_steps=6 format=3 uid="uid://bk1ng8ft4k13r"]
+[gd_scene load_steps=8 format=3 uid="uid://bk1ng8ft4k13r"]
 
 [ext_resource type="Script" path="res://scripts/entities/sun.gd" id="1_jkyhw"]
 [ext_resource type="Texture2D" uid="uid://grtclsyvb8ap" path="res://assets/sprites/sun.png" id="2_qms23"]
 [ext_resource type="Script" path="res://scripts/entities/sun_gravity.gd" id="3_dgyxk"]
+[ext_resource type="Shader" path="res://shaders/godrays.gdshader" id="4_s4lem"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4isk3"]
 radius = 364.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_02rcq"]
 radius = 897.733
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kty65"]
+shader = ExtResource("4_s4lem")
+shader_parameter/spread = 0.5
+shader_parameter/cutoff = 0.01
+shader_parameter/falloff = 0.2
+shader_parameter/edge_fade = 0.067
+shader_parameter/outer_edge_fade = 0.635
+shader_parameter/ray_length_variation = 0.365
+shader_parameter/speed = 2.0
+shader_parameter/ray1_density = 8.0
+shader_parameter/ray2_density = 30.0
+shader_parameter/ray2_intensity = 0.0
+shader_parameter/color = Color(1, 0.901961, 0.65098, 0.0431373)
+shader_parameter/hdr = true
+shader_parameter/seed = 5.0
 
 [node name="Sun" type="Area2D"]
 script = ExtResource("1_jkyhw")
@@ -24,6 +41,21 @@ script = ExtResource("3_dgyxk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GravityArea"]
 shape = SubResource("CircleShape2D_02rcq")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_kty65")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]
