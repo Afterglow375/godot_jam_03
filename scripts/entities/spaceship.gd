@@ -16,14 +16,19 @@ var can_shoot: bool = true  # True if user can shoot from spaceship, false if ca
 var earth: RigidBody2D = null  # Reference to the Earth node
 var sprite: Sprite2D = null  # Reference to the sprite node
 var target_rotation: float = 0.0  # Target rotation for smooth rotation
-var target_scale_x: float = 1.0  # Target y scale for smooth flipping
+var target_scale_x: float = 1.0  # Target x scale for smooth flipping
+var target_scale: Vector2 = Vector2(1.0, 1.0)  # Target scale for hover effect
+var base_scale: Vector2 = Vector2(1.0, 1.0)  # Base scale of the sprite
+var hover_scale: Vector2 = Vector2(1.2, 1.2)  # Scale when hovered
 var rotation_speed: float = 10.0  # Adjust for faster/slower rotation
+var is_hovered: bool = false  # Whether the mouse is hovering over the Area2D
 
 func _ready():
 	line = $SlingshotLine
 	trajectory_line = $TrajectoryLine
 	ray_cast = $TrajectoryRaycast
 	sprite = $Sprite2D  # Get reference to the spaceship sprite
+	base_scale = sprite.scale  # Store the original scale
 	
 	# Store reference to the level
 	level = get_tree().current_scene
@@ -36,6 +41,10 @@ func _ready():
 	
 	# Connect to the win popup's victory signal - need to wait until level is ready
 	call_deferred("connect_to_win_popup")
+	
+	# Connect mouse enter/exit signals
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 	
 func connect_to_win_popup() -> void:
 	# The win popup is added by the level script, ensure it exists now
@@ -104,9 +113,16 @@ func _process(delta):
 		target_rotation = 0.0
 		target_scale_x = 1.0
 	
+	# Set target scale based on hover state
+	if is_hovered or is_mouse_held:
+		target_scale = hover_scale
+	else:
+		target_scale = base_scale
+	
 	# Apply smooth rotation and scaling
 	sprite.rotation = lerp_angle(sprite.rotation, target_rotation, delta * rotation_speed)
-	sprite.scale.x = lerp(sprite.scale.x, target_scale_x, delta * rotation_speed)
+	sprite.scale.x = lerp(sprite.scale.x, target_scale_x * target_scale.x, delta * rotation_speed)
+	sprite.scale.y = lerp(sprite.scale.y, target_scale.y, delta * rotation_speed)
 
 # Updates the trajectory line using a raycast to detect wall collisions
 func update_trajectory_line(direction: Vector2) -> void:
@@ -185,3 +201,11 @@ func _on_victory_achieved() -> void:
 func increment_score() -> void:
 	# Use the stored level reference
 	level.add_score(1)
+
+# Handle mouse entered signal
+func _on_mouse_entered() -> void:
+	is_hovered = true
+
+# Handle mouse exited signal
+func _on_mouse_exited() -> void:
+	is_hovered = false

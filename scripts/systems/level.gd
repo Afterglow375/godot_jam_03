@@ -35,8 +35,8 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
-		# Check for the R key press to reset the level/score
-		if event.keycode == KEY_R:
+		# Check for the R key press to reset the level/score (only when not paused)
+		if event.keycode == KEY_R and not game_manager.is_paused():
 			reset_score()
 			reset_level()
 		# Check for Escape key press to toggle pause menu

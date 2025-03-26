@@ -12,19 +12,19 @@ func _ready() -> void:
 	$Control/Panel/VBoxContainer/Exit.pressed.connect(_on_exit_pressed)
 
 func _on_continue_pressed() -> void:
-	# Call the level's toggle_pause_menu function
+	# Call the level's toggle_pause_menu function to properly unpause the game
 	level.toggle_pause_menu()
 
 func _on_retry_pressed() -> void:
-	# First unpause the game
-	get_tree().paused = false
+	# First unpause the game using the game manager
+	level.game_manager.set_pause_state(false)
 	
 	level.reset_score()
 	level.reset_level()
 
 func _on_exit_pressed() -> void:
-	# First unpause the game
-	get_tree().paused = false
+	# First unpause the game using the game manager
+	level.game_manager.set_pause_state(false)
 	
 	# Go to the main menu
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
