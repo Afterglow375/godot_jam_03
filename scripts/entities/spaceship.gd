@@ -14,11 +14,16 @@ var level: Node = null  # Reference to the level
 var ray_cast: RayCast2D = null  # RayCast for collision detection
 var can_shoot: bool = true  # True if user can shoot from spaceship, false if can't
 var earth: RigidBody2D = null  # Reference to the Earth node
+var sprite: Sprite2D = null  # Reference to the sprite node
+var target_rotation: float = 0.0  # Target rotation for smooth rotation
+var target_scale_x: float = 1.0  # Target y scale for smooth flipping
+var rotation_speed: float = 10.0  # Adjust for faster/slower rotation
 
 func _ready():
 	line = $SlingshotLine
 	trajectory_line = $TrajectoryLine
 	ray_cast = $TrajectoryRaycast
+	sprite = $Sprite2D  # Get reference to the spaceship sprite
 	
 	# Store reference to the level
 	level = get_tree().current_scene
@@ -75,6 +80,33 @@ func _process(delta):
 		
 		# Update trajectory line using raycast
 		update_trajectory_line(direction)
+		
+		# Rotate only the spaceship sprite to point away from the mouse cursor
+		if mouse_pos != Vector2.ZERO:  # Avoid division by zero
+			# Determine if mouse is on the right side
+			var is_right_side: bool = mouse_pos.x > 0
+			
+			# Set target x scale based on mouse position
+			target_scale_x = -1 if is_right_side else 1
+			
+			# Calculate angle away from mouse position
+			var angle: float = mouse_pos.angle()
+			
+			# Set target rotation based on which side the mouse is on
+			if is_right_side:
+				# Base rotation that makes sprite point away from the mouse
+				target_rotation = angle
+			else:
+				# Normal rotation when on the left side
+				target_rotation = angle + PI
+	else:
+		# When mouse is not held, set targets to return to original position
+		target_rotation = 0.0
+		target_scale_x = 1.0
+	
+	# Apply smooth rotation and scaling
+	sprite.rotation = lerp_angle(sprite.rotation, target_rotation, delta * rotation_speed)
+	sprite.scale.x = lerp(sprite.scale.x, target_scale_x, delta * rotation_speed)
 
 # Updates the trajectory line using a raycast to detect wall collisions
 func update_trajectory_line(direction: Vector2) -> void:
