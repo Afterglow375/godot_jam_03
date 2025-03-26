@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjr7qp3cu16n8"]
+[gd_scene load_steps=3 format=3 uid="uid://cjr7qp3cu16n8"]
 
 [ext_resource type="Script" path="res://scripts/ui/level_select.gd" id="1_v2cip"]
+[ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="2_ug2qf"]
 
 [node name="LevelSelect" type="Control"]
 layout_mode = 3
@@ -69,5 +70,11 @@ grow_horizontal = 0
 grow_vertical = 0
 theme_override_font_sizes/font_size = 128
 text = "Back"
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(1913, 1083)
+scale = Vector2(1.0224, 1.04861)
+texture = ExtResource("2_ug2qf")
 
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
