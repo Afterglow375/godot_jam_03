@@ -14,8 +14,8 @@ signal explosion_triggered(fade_time)
 @onready var outer_projectile: Area2D = $"Inner Projectile/Outer Projectile"
 var projectile_sound_player: AudioStreamPlayer2D = null  # Persistent audio player
 
-# Get reference to the AudioManager singleton
 @onready var audio_manager = get_node("/root/AudioManager")
+@onready var game_manager = get_node("/root/GameManager")
 
 # Constants and export variables
 const BASE_SPEED: float = 2000.0
@@ -83,8 +83,8 @@ func _process(delta: float) -> void:
 		if fade_time >= fade_duration:
 			destroy_container()
 	
-	# Only check for input when not already charging, fading, or destroying
-	if not charging_explosion and not fading:
+	# Only check for input when not already charging, fading, or destroying AND game is not paused
+	if not charging_explosion and not fading and not game_manager.is_paused():
 		# Check lifetime and destroy if expired
 		time_alive += delta
 		if time_alive >= lifetime:
@@ -95,8 +95,8 @@ func _process(delta: float) -> void:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			start_charging_explosion()
 	
-	# Handle explosion charging
-	if charging_explosion and not fading:
+	# Handle explosion charging - only continue if game is not paused
+	if charging_explosion and not fading and not game_manager.is_paused():
 		charge_time += delta
 		
 		# Calculate normalized charge progress (clamped between 0 and 1)
@@ -147,11 +147,13 @@ func trigger_explosion() -> void:
 	inner_projectile.freeze = true  # Freeze the RigidBody2D
 	
 	# Apply force to all rigidbodies in the outer projectile area
-	var bodies = outer_projectile.get_overlapping_bodies()
-	for body in bodies:
-		if body is RigidBody2D and body != inner_projectile:
-			var direction = (body.global_position - inner_projectile.global_position).normalized()
-			body.apply_central_impulse(direction * explosion_force)
+	# Only if the game is not paused
+	if not game_manager.is_paused():
+		var bodies = outer_projectile.get_overlapping_bodies()
+		for body in bodies:
+			if body is RigidBody2D and body != inner_projectile:
+				var direction = (body.global_position - inner_projectile.global_position).normalized()
+				body.apply_central_impulse(direction * explosion_force)
 	
 	# Stop charging and start fading
 	charging_explosion = false

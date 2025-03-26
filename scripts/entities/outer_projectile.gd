@@ -8,8 +8,8 @@ var affected_bodies: Array = []
 var force_radius: float = 100.0  # Default value, will be updated in _ready()
 var push_sound_player: AudioStreamPlayer2D = null  # Persistent audio player
 
-# Get reference to the AudioManager singleton
 @onready var audio_manager = get_node("/root/AudioManager")
+@onready var game_manager = get_node("/root/GameManager")
 
 func _ready():
 	# Enable detection of bodies entering/exiting for the body_entered/exited signals
@@ -25,6 +25,10 @@ func _ready():
 	tree_exiting.connect(_on_tree_exiting)
 
 func _physics_process(delta):
+	# Skip force application when game is paused
+	if game_manager.is_paused():
+		return
+		
 	# Process affected bodies
 	for body_data in affected_bodies:
 		var body: RigidBody2D = body_data[0]  # First element is the body

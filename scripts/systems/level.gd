@@ -8,13 +8,14 @@ var score: int = 0
 var accuracy_score: int = 0
 var pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var pause_menu: CanvasLayer = null
-var is_paused: bool = false
 var level_finished: bool = false
 var charge_bar: ProgressBar = null
 var bonus_points: int = 0
 
 # Get reference to the AudioManager singleton
 @onready var audio_manager = get_node("/root/AudioManager")
+# Get reference to the GameManager singleton
+@onready var game_manager = get_node("/root/GameManager")
 
 func _ready() -> void:
 	add_hud()
@@ -44,14 +45,11 @@ func _input(event: InputEvent) -> void:
 
 # Toggle the pause menu visibility and level pause state
 func toggle_pause_menu() -> void:
-	is_paused = !is_paused
+	game_manager.toggle_pause()
 	
 	if pause_menu != null:
-		pause_menu.visible = is_paused
-	
-	# Pause/unpause the level
-	get_tree().paused = is_paused
-	
+		pause_menu.visible = game_manager.is_paused()
+
 # Reload the current level
 func reset_level() -> void:
 	get_tree().change_scene_to_file(scene_file_path)
@@ -119,7 +117,7 @@ func level_won() -> void:
 	audio_manager.play(audio_manager.Audio.TADAA)
 	
 	# If paused, unpause the level first
-	if is_paused:
+	if game_manager.is_paused():
 		toggle_pause_menu()
 		
 	win_popup.show_victory_screen(score, accuracy_score, bonus_points)
