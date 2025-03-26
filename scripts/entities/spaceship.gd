@@ -98,21 +98,24 @@ func update_trajectory_line(direction: Vector2) -> void:
 
 func launch_projectile() -> void:
 	if current_line_end.length() > 0:
-		var projectile: Node = ProjectileScene.instantiate()
-		get_parent().add_child(projectile)
-		projectile.position = position
+		var projectile_container = ProjectileScene.instantiate()
+		get_parent().add_child(projectile_container)
+		projectile_container.position = position
 		
-		# Connect to the projectile's destruction signal
-		projectile.projectile_destroyed.connect(_on_projectile_destroyed)
+		# Wait one frame for the viewport to initialize properly
+		await get_tree().process_frame
+		
+		# Connect to the projectile container's destruction signal
+		projectile_container.projectile_destroyed.connect(_on_projectile_destroyed)
 		
 		# Calculate speed multiplier based on line length (0.0 to 1.0)
 		var speed_multiplier: float = current_line_end.length() / MAX_LINE_LENGTH
 		
 		# Launch in the direction of the line with speed based on length
-		projectile.launch(current_line_end.normalized(), speed_multiplier)
+		projectile_container.launch(current_line_end.normalized(), speed_multiplier)
 		
 		# Emit signal that projectile was created
-		projectile_created.emit(projectile)
+		projectile_created.emit(projectile_container)
 		
 		# Increment the score
 		increment_score()

@@ -1,15 +1,22 @@
-[gd_scene load_steps=28 format=3 uid="uid://bhyk5hbgs2hno"]
+[gd_scene load_steps=9 format=3 uid="uid://bhyk5hbgs2hno"]
 
-[ext_resource type="Script" path="res://scripts/entities/inner_projectile.gd" id="1_guw06"]
+[ext_resource type="Script" path="res://scripts/entities/projectile_container.gd" id="1_dmigf"]
+[ext_resource type="PackedScene" uid="uid://blwm6rg4d2q03" path="res://scenes/entities/projectile_visuals.tscn" id="1_l3tkf"]
 [ext_resource type="Script" path="res://scripts/entities/outer_projectile.gd" id="2_p2sqb"]
 [ext_resource type="Shader" path="res://shaders/projectile.gdshader" id="3_2tpfj"]
-[ext_resource type="Texture2D" uid="uid://bvf6nvimyp48e" path="res://assets/sprites/projectile_bg.png" id="3_qwixt"]
-[ext_resource type="Texture2D" uid="uid://2pu4singbj38" path="res://assets/sprites/projectile.png" id="4_3mbai"]
-[ext_resource type="AudioStream" uid="uid://c5u8usi7w5iht" path="res://assets/audio/projectile_wall.wav" id="5_5pssr"]
-[ext_resource type="Texture2D" uid="uid://cvdhxwe3ul1b0" path="res://assets/sprites/circle_particle.png" id="6_10a14"]
-[ext_resource type="Script" path="res://scripts/entities/projectile_particles.gd" id="8_ijriy"]
-[ext_resource type="Shader" path="res://shaders/energy_beam_points.gdshader" id="9_hl7ht"]
-[ext_resource type="Shader" path="res://shaders/godrays.gdshader" id="10_2h1qu"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h07pw"]
+shader = ExtResource("3_2tpfj")
+shader_parameter/charge_amount = 0.0
+shader_parameter/opacity = 1.0
+shader_parameter/edge_distortion = 0.0
+shader_parameter/distortion_speed = 0.0
+shader_parameter/edge_opacity = 0.0
+shader_parameter/unpremultiply_alpha = true
+shader_parameter/black_threshold = 0.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_snqth"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kllct"]
 radius = 36.1248
@@ -17,327 +24,45 @@ radius = 36.1248
 [sub_resource type="CircleShape2D" id="CircleShape2D_c8q60"]
 radius = 318.705
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_ehkc1"]
-shader = ExtResource("3_2tpfj")
-shader_parameter/charge_amount = 0.0
-shader_parameter/opacity = 1.0
-shader_parameter/edge_distortion = 0.008
-shader_parameter/distortion_speed = 2.472
-shader_parameter/edge_opacity = 0.0
+[node name="Projectile" type="Node2D"]
+script = ExtResource("1_dmigf")
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4ex77"]
-shader = ExtResource("3_2tpfj")
-shader_parameter/charge_amount = 0.0
-shader_parameter/opacity = 1.0
-shader_parameter/edge_distortion = 0.03
-shader_parameter/distortion_speed = 1.0
-shader_parameter/edge_opacity = 1.2
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 800.0
+offset_bottom = 800.0
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lxrrs"]
-blend_mode = 1
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(800, 800)
+render_target_update_mode = 4
 
-[sub_resource type="Curve" id="Curve_i0iv8"]
-max_value = 0.8
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.1, 0), 0.0, 0.0, 0, 0, Vector2(0.186667, 0.8), 0.0, 0.0, 0, 0, Vector2(0.566667, 0.8), 0.0, 0.0, 0, 0, Vector2(0.9, 0), 0.0, 0.0, 0, 0]
-point_count = 5
+[node name="ProjectileVisuals" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_l3tkf")]
+position = Vector2(400, 400)
 
-[sub_resource type="CurveTexture" id="CurveTexture_ib8b3"]
-curve = SubResource("Curve_i0iv8")
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_h07pw")
+offset_right = 800.0
+offset_bottom = 800.0
+texture = SubResource("ViewportTexture_snqth")
 
-[sub_resource type="Gradient" id="Gradient_378r3"]
-colors = PackedColorArray(0.370001, 0.280914, 0.877917, 1, 0.508346, 0.766275, 0.98854, 1)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_t4ln8"]
-gradient = SubResource("Gradient_378r3")
-
-[sub_resource type="Curve" id="Curve_27ywt"]
-min_value = 0.5
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0933333, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.505494), 0.0, 0.0, 0, 0]
-point_count = 3
-
-[sub_resource type="CurveTexture" id="CurveTexture_ytos1"]
-curve = SubResource("Curve_27ywt")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_neni7"]
-particle_flag_disable_z = true
-spread = 0.0
-radial_velocity_min = 150.0
-radial_velocity_max = 150.0
-gravity = Vector3(0, 0, 0)
-radial_accel_min = -10.0
-radial_accel_max = -10.0
-scale_min = 0.15
-scale_max = 0.15
-scale_curve = SubResource("CurveTexture_ytos1")
-color_ramp = SubResource("GradientTexture1D_t4ln8")
-alpha_curve = SubResource("CurveTexture_ib8b3")
-
-[sub_resource type="Animation" id="Animation_ocn7g"]
-length = 0.001
-step = 0.25
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:process_material:radial_velocity_min")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [150.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:process_material:radial_velocity_max")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [150.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:process_material:orbit_velocity_min")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".:process_material:orbit_velocity_max")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [0.0]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:process_material:color_ramp")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [SubResource("GradientTexture1D_t4ln8")]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath(".:process_material:color")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_bdl2o"]
-resource_name = "charging_explosion"
-length = 0.4
-step = 0.01
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".:process_material:radial_velocity_min")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [150.0, 300.0]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".:process_material:radial_velocity_max")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [150.0, 300.0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".:process_material:orbit_velocity_min")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 0.05]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath(".:process_material:orbit_velocity_max")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.4),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 0.05]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath(".:process_material:color")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.25, 0.26),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 0, 0, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_vr501"]
-_data = {
-"RESET": SubResource("Animation_ocn7g"),
-"charging_explosion": SubResource("Animation_bdl2o")
-}
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_6mta0"]
-shader = ExtResource("9_hl7ht")
-shader_parameter/start_point = Vector2(0.5, 0.5)
-shader_parameter/end_point = Vector2(0.5, 0.5)
-shader_parameter/beam_width = 1.0
-shader_parameter/energy = 4.58
-shader_parameter/roughness = 3
-shader_parameter/frequency = 10
-shader_parameter/opacity = 1.0
-shader_parameter/speed = 1.0
-shader_parameter/thickness = 0.005
-shader_parameter/outline_thickness = 0.1
-shader_parameter/glow = 1.079
-shader_parameter/outline_glow = 0.383
-shader_parameter/color = Color(0.91, 1, 1, 1)
-shader_parameter/outline_color = Color(0.501961, 0.309804, 0.960784, 1)
-shader_parameter/progress = 0.753
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_x7wq0"]
-shader = ExtResource("10_2h1qu")
-shader_parameter/spread = 0.511
-shader_parameter/cutoff = -0.012
-shader_parameter/falloff = 0.672
-shader_parameter/edge_fade = 0.15
-shader_parameter/outer_edge_fade = 0.311
-shader_parameter/ray_length_variation = 0.118
-shader_parameter/speed = 10.0
-shader_parameter/ray1_density = 8.0
-shader_parameter/ray2_density = 30.0
-shader_parameter/ray2_intensity = 0.0
-shader_parameter/color = Color(0.435294, 0.407843, 0.564706, 0.0313726)
-shader_parameter/hdr = true
-shader_parameter/seed = 5.0
-
-[node name="Inner Projectile" type="RigidBody2D"]
+[node name="Inner Projectile" type="RigidBody2D" parent="."]
 collision_layer = 2
 collision_mask = 2
 gravity_scale = 0.0
 lock_rotation = true
-script = ExtResource("1_guw06")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Inner Projectile"]
 visible = false
 shape = SubResource("CircleShape2D_kllct")
 
-[node name="Outer Projectile" type="Area2D" parent="."]
+[node name="Outer Projectile" type="Area2D" parent="Inner Projectile"]
 script = ExtResource("2_p2sqb")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Outer Projectile"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Inner Projectile/Outer Projectile"]
 visible = false
 shape = SubResource("CircleShape2D_c8q60")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-material = SubResource("ShaderMaterial_ehkc1")
-scale = Vector2(1.25, 1.25)
-texture = ExtResource("3_qwixt")
-
-[node name="Sprite2D2" type="Sprite2D" parent="."]
-visible = false
-material = SubResource("ShaderMaterial_4ex77")
-texture = ExtResource("4_3mbai")
-
-[node name="WallCollision" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("5_5pssr")
-
-[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_lxrrs")
-amount = 100
-process_material = SubResource("ParticleProcessMaterial_neni7")
-texture = ExtResource("6_10a14")
-lifetime = 2.5
-preprocess = 0.25
-speed_scale = 1.1
-local_coords = true
-trail_enabled = true
-trail_lifetime = 0.01
-trail_sections = 5
-script = ExtResource("8_ijriy")
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="GPUParticles2D"]
-libraries = {
-"": SubResource("AnimationLibrary_vr501")
-}
-
-[node name="PointLight2D" type="PointLight2D" parent="."]
-color = Color(0.301961, 0.270588, 0.698039, 1)
-energy = 0.76
-shadow_color = Color(0.956863, 0.709804, 0.505882, 1)
-texture = ExtResource("6_10a14")
-texture_scale = 1.5
-
-[node name="ColorRect" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_6mta0")
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -350.0
-offset_right = 350.0
-offset_bottom = 350.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect2" type="ColorRect" parent="."]
-material = SubResource("ShaderMaterial_x7wq0")
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -350.0
-offset_top = -350.0
-offset_right = 350.0
-offset_bottom = 350.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="body_entered" from="Outer Projectile" to="Outer Projectile" method="_on_body_entered"]
-[connection signal="body_exited" from="Outer Projectile" to="Outer Projectile" method="_on_body_exited"]
+[connection signal="body_entered" from="Inner Projectile" to="Inner Projectile" method="_on_body_entered"]
+[connection signal="body_entered" from="Inner Projectile/Outer Projectile" to="Inner Projectile/Outer Projectile" method="_on_body_entered"]
+[connection signal="body_exited" from="Inner Projectile/Outer Projectile" to="Inner Projectile/Outer Projectile" method="_on_body_exited"]
