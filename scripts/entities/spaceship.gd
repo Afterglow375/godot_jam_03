@@ -4,10 +4,13 @@ signal projectile_created(projectile)
 
 const MAX_LINE_LENGTH: float = 500.0  # Adjust this value to change max length
 const ProjectileScene: PackedScene = preload("res://scenes/entities/projectile.tscn")
+const MAX_BOUNCES: int = 5  # Maximum number of bounces to simulate
+const BASE_SPEED: float = 2000.0  # Match the value from projectile_container.gd
 
 var is_mouse_held: bool = false
 var line: Line2D
 var trajectory_line: Line2D = null  # Line for trajectory
+var trajectory_end: Sprite2D = null  # Reference to the end sprite
 var current_line_end: Vector2 = Vector2.ZERO
 var drag_started_in_area: bool = false
 var level: Node = null  # Reference to the level
@@ -22,13 +25,19 @@ var base_scale: Vector2 = Vector2(1.0, 1.0)  # Base scale of the sprite
 var hover_scale: Vector2 = Vector2(1.2, 1.2)  # Scale when hovered
 var rotation_speed: float = 10.0  # Adjust for faster/slower rotation
 var is_hovered: bool = false  # Whether the mouse is hovering over the Area2D
+var speed_multiplier: float = 0.0  # Speed multiplier based on line length
 
 func _ready():
 	line = $SlingshotLine
 	trajectory_line = $TrajectoryLine
+	trajectory_end = $TrajectoryEnd
 	ray_cast = $TrajectoryRaycast
 	sprite = $Sprite2D  # Get reference to the spaceship sprite
 	base_scale = sprite.scale  # Store the original scale
+	
+	# Hide trajectory end sprite initially
+	if trajectory_end:
+		trajectory_end.visible = false
 	
 	# Store reference to the level
 	level = get_tree().current_scene
@@ -65,6 +74,11 @@ func _input(event):
 
 				line.clear_points()
 				trajectory_line.clear_points()
+				
+				# Hide trajectory end sprite
+				if trajectory_end:
+					trajectory_end.visible = false
+					
 			is_mouse_held = false
 
 func _process(delta):
@@ -87,7 +101,10 @@ func _process(delta):
 		# Calculate the direction and show trajectory 
 		var direction: Vector2 = -current_line_end.normalized()
 		
-		# Update trajectory line using raycast
+		# Calculate speed multiplier based on line length (0.0 to 1.0)
+		speed_multiplier = current_line_end.length() / MAX_LINE_LENGTH
+		
+		# Update trajectory line using raycast with bounces
 		update_trajectory_line(direction)
 		
 		# Rotate only the spaceship sprite to point away from the mouse cursor
@@ -112,6 +129,10 @@ func _process(delta):
 		# When mouse is not held, set targets to return to original position
 		target_rotation = 0.0
 		target_scale_x = 1.0
+		
+		# Hide trajectory end sprite when not drawing
+		if trajectory_end and trajectory_end.visible:
+			trajectory_end.visible = false
 	
 	# Set target scale based on hover state
 	if is_hovered or is_mouse_held:
@@ -124,25 +145,122 @@ func _process(delta):
 	sprite.scale.x = lerp(sprite.scale.x, target_scale_x * target_scale.x, delta * rotation_speed)
 	sprite.scale.y = lerp(sprite.scale.y, target_scale.y, delta * rotation_speed)
 
-# Updates the trajectory line using a raycast to detect wall collisions
+# Updates the trajectory line with multiple bounces
 func update_trajectory_line(direction: Vector2) -> void:
 	trajectory_line.clear_points()
 	
-	# Add start point (spaceship position)
-	trajectory_line.add_point(Vector2.ZERO)
+	# Make sure trajectory starts at the same position as the slingshot line
+	trajectory_line.add_point(Vector2.ZERO)  # Center of the Area2D/spaceship
 	
-	# Set raycast direction and distance
-	ray_cast.target_position = direction * 5000  # Long enough to hit any wall
-	ray_cast.force_raycast_update()
+	var current_position: Vector2 = Vector2.ZERO  # Start at the center of the spaceship
+	var current_direction: Vector2 = direction
+	var velocity: Vector2 = direction * (BASE_SPEED * speed_multiplier)
 	
-	# Add endpoint based on collision
-	if ray_cast.is_colliding():
-		# Get collision point in local coordinates
-		var collision_point: Vector2 = to_local(ray_cast.get_collision_point())
-		trajectory_line.add_point(collision_point)
-	else:
-		# If no collision, just show a very long line
-		trajectory_line.add_point(direction * 2000)
+	# Further reduce effective lifetime to match actual visual behavior
+	var effective_lifetime: float = 4  # Experimentally adjusted for visual accuracy
+	
+	# Store the final trajectory point for the end sprite
+	var final_trajectory_point: Vector2 = Vector2.ZERO
+	
+	# Keep track of the last valid collision normal for fallback
+	var last_valid_normal: Vector2 = Vector2.ZERO
+	
+	# Process bounces
+	for bounce in range(MAX_BOUNCES + 1):  # +1 for initial ray
+		# If no more lifetime, stop calculating
+		if effective_lifetime <= 0:
+			break
+			
+		# Offset the raycast position slightly to avoid self-collision issues
+		var raycast_start_position = current_position + current_direction * 0.1
+		
+		# Set raycast direction and distance
+		ray_cast.global_position = to_global(raycast_start_position)
+		ray_cast.target_position = current_direction * 5000  # Long distance to ensure we hit walls
+		ray_cast.force_raycast_update()
+		
+		if ray_cast.is_colliding():
+			var collision_point: Vector2 = to_local(ray_cast.get_collision_point())
+			var collision_normal: Vector2 = ray_cast.get_collision_normal()
+			
+			# Handle zero or invalid normals
+			if collision_normal.length_squared() < 0.01:
+				if last_valid_normal != Vector2.ZERO:
+					collision_normal = last_valid_normal
+				else:
+					# If we don't have a valid normal from before, use a perpendicular to direction
+					collision_normal = Vector2(-current_direction.y, current_direction.x).normalized()
+			else:
+				# Store this valid normal for future use
+				last_valid_normal = collision_normal
+			
+			# Ensure the normal is normalized
+			collision_normal = collision_normal.normalized()
+			
+			# Calculate time to reach collision point
+			var distance_to_collision: float = (collision_point - current_position).length()
+			var time_to_collision: float = distance_to_collision / velocity.length()
+			
+			# If we would run out of lifetime before hitting the wall
+			if time_to_collision > effective_lifetime:
+				# Calculate where the projectile would fizzle out
+				var max_distance: float = velocity.length() * effective_lifetime
+				var fizzle_point: Vector2 = current_position + current_direction * max_distance
+				trajectory_line.add_point(fizzle_point)
+				final_trajectory_point = fizzle_point
+				break
+			
+			# Add a point slightly before the collision point to fix visual glitches
+			var pre_collision_point: Vector2 = collision_point - current_direction * 0.5
+			trajectory_line.add_point(pre_collision_point)
+			
+			# Add collision point to trajectory
+			trajectory_line.add_point(collision_point)
+			
+			# Calculate bounce direction with special handling for vertical surfaces
+			var bounced_direction: Vector2
+			if current_direction.y < -0.7 and collision_normal.y > 0.7:
+				# For upward trajectories hitting downward-facing surfaces, use a simpler bounce
+				bounced_direction = Vector2(current_direction.x, -current_direction.y)
+			else:
+				# Use the standard bounce for all other cases
+				bounced_direction = current_direction.bounce(collision_normal)
+			
+			# Add a small random perturbation to avoid getting stuck in identical bounce patterns
+			bounced_direction = bounced_direction.normalized()
+			
+			# Ensure the bounced direction is valid
+			if bounced_direction.length_squared() < 0.01:
+				bounced_direction = Vector2(-current_direction.x, -current_direction.y).normalized()
+			
+			# Add a point slightly after the collision with the new direction to fix visual glitches
+			var post_collision_point: Vector2 = collision_point + bounced_direction * 0.5
+			trajectory_line.add_point(post_collision_point)
+			
+			# Update remaining lifetime
+			effective_lifetime -= time_to_collision
+			
+			# If this was our last bounce, stop
+			if bounce == MAX_BOUNCES:
+				final_trajectory_point = collision_point
+				break
+				
+			# Update direction and position for next raycast
+			current_direction = bounced_direction
+			current_position = collision_point
+		else:
+			# No collision, calculate fizzle point based on remaining lifetime
+			var max_distance: float = velocity.length() * effective_lifetime
+			var fizzle_point: Vector2 = current_position + current_direction * max_distance
+			trajectory_line.add_point(fizzle_point)
+			final_trajectory_point = fizzle_point
+			break
+	
+	# Update trajectory end sprite position and visibility
+	if trajectory_end and trajectory_line.get_point_count() > 0:
+		# Show and position the end sprite at the final trajectory point
+		trajectory_end.visible = true
+		trajectory_end.position = final_trajectory_point
 
 func launch_projectile() -> void:
 	if current_line_end.length() > 0:
@@ -196,6 +314,10 @@ func _on_victory_achieved() -> void:
 		is_mouse_held = false
 		line.clear_points()
 		trajectory_line.clear_points()
+		
+		# Hide trajectory end sprite
+		if trajectory_end:
+			trajectory_end.visible = false
 
 # Add 1 to the score
 func increment_score() -> void:

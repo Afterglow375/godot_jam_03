@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bv7v1282myvla"]
+[gd_scene load_steps=11 format=3 uid="uid://bv7v1282myvla"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_sxrjf"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_rb7ic"]
@@ -11,6 +11,9 @@
 friction = 0.0
 bounce = 1.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u1e3m"]
+size = Vector2(3813.65, 79)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mp8fg"]
 size = Vector2(3813.63, 79)
 
@@ -20,11 +23,14 @@ size = Vector2(78.4575, 2160)
 [node name="Main" type="Node"]
 script = ExtResource("1_sxrjf")
 
-[node name="Spaceship" parent="." instance=ExtResource("2_rb7ic")]
-position = Vector2(568, 1155)
+[node name="Sun" parent="." instance=ExtResource("4_3tws1")]
+position = Vector2(3011, 1245)
 
 [node name="Earth" parent="." instance=ExtResource("3_txab0")]
 position = Vector2(1783, 880)
+
+[node name="Spaceship" parent="." instance=ExtResource("2_rb7ic")]
+position = Vector2(568, 1155)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = -79.0
@@ -39,7 +45,7 @@ metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
 position = Vector2(1906.82, 39.5)
-shape = SubResource("RectangleShape2D_mp8fg")
+shape = SubResource("RectangleShape2D_u1e3m")
 
 [node name="ColorRect2" type="ColorRect" parent="."]
 offset_top = 2160.0
@@ -88,9 +94,6 @@ physics_material_override = SubResource("PhysicsMaterial_cpj0v")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
 position = Vector2(39.2288, 1081)
 shape = SubResource("RectangleShape2D_ab1l3")
-
-[node name="Sun" parent="." instance=ExtResource("4_3tws1")]
-position = Vector2(3011, 1245)
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -1

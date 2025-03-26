@@ -22,3 +22,4 @@ mono_crash.*.json
 
 #addons/
 images/
+.cursor/

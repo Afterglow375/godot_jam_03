@@ -7,7 +7,6 @@
 radius = 111.0
 
 [node name="Earth" type="RigidBody2D"]
-z_index = 1
 mass = 0.6
 gravity_scale = 0.0
 linear_damp = 1.8

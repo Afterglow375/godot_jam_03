@@ -88,7 +88,14 @@ func _process(delta: float) -> void:
 		# Check lifetime and destroy if expired
 		time_alive += delta
 		if time_alive >= lifetime:
+			# Freeze projectile position when fizzling out
+			inner_projectile.linear_velocity = Vector2.ZERO
+			inner_projectile.freeze = true
+			
+			# Play fizzle sound
 			audio_manager.play(audio_manager.Audio.EXPLOSION_FIZZLE)
+			
+			# Start fading
 			fading = true
 			fade_time = 0.0
 		# Check for explosion trigger with direct mouse button check

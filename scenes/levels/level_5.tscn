@@ -26,11 +26,14 @@ size = Vector2(74.4852, 819)
 [node name="Main" type="Node"]
 script = ExtResource("1_ir042")
 
-[node name="Spaceship" parent="." instance=ExtResource("2_6hpmu")]
-position = Vector2(1920, 1080)
+[node name="Sun" parent="." instance=ExtResource("4_3m205")]
+position = Vector2(581, 1535)
 
 [node name="Earth" parent="." instance=ExtResource("3_qu1mo")]
 position = Vector2(2603, 1535)
+
+[node name="Spaceship" parent="." instance=ExtResource("2_6hpmu")]
+position = Vector2(1920, 1080)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = -79.0
@@ -142,9 +145,6 @@ physics_material_override = SubResource("PhysicsMaterial_cpj0v")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect7/StaticBody2D"]
 position = Vector2(37.2422, 409.5)
 shape = SubResource("RectangleShape2D_svd45")
-
-[node name="Sun" parent="." instance=ExtResource("4_3m205")]
-position = Vector2(581, 1535)
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -1
