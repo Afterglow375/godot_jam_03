@@ -82,7 +82,6 @@ func add_score(points: int) -> void:
 # Add bonus points (separate from regular score)
 func add_bonus_points(points: int) -> void:
 	bonus_points = points
-	win_popup.show_victory_screen(score, accuracy_score, bonus_points)
 
 # Reset the score to zero
 func reset_score() -> void:
@@ -120,6 +119,8 @@ func level_won() -> void:
 	if game_manager.is_paused():
 		toggle_pause_menu()
 		
+	# Wait a short moment to ensure bonus points are calculated
+	await get_tree().create_timer(0.1).timeout
 	win_popup.show_victory_screen(score, accuracy_score, bonus_points)
 
 func _on_next_level():
