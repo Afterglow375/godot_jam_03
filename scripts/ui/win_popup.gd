@@ -5,6 +5,7 @@ signal retry_level
 signal victory_achieved
 
 var tween: Tween = null
+var tween_duration: float = 0.6
 
 func _ready():
 	hide()
@@ -26,7 +27,7 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	shots_label.text = "Shots Taken: 0"
 	tween.tween_method(
 		func(value): shots_label.text = "Shots Taken: " + str(round(value)),
-		0.0, shot_count, 1.0
+		0.0, shot_count, tween_duration
 	)
 	
 	# Animate accuracy score
@@ -34,7 +35,7 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	accuracy_label.text = "Accuracy Score: 0"
 	tween.parallel().tween_method(
 		func(value): accuracy_label.text = "Accuracy Score: " + str(round(value)),
-		0.0, accuracy_score, 1.0
+		0.0, accuracy_score, tween_duration
 	)
 	
 	# Animate bonus score
@@ -42,7 +43,7 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	bonus_label.text = "Bonus Score: 0"
 	tween.parallel().tween_method(
 		func(value): bonus_label.text = "Bonus Score: " + str(round(value)),
-		0.0, bonus_score, 1.0
+		0.0, bonus_score, tween_duration
 	)
 	
 	# Animate total score after all other scores are done
@@ -51,7 +52,7 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	total_label.text = "Total Score: 0"
 	tween.tween_method(
 		func(value): total_label.text = "Total Score: " + str(round(value)),
-		0.0, total_score, 1.0
+		0.0, total_score, tween_duration
 	)
 
 func _on_level_select_button_pressed() -> void:
