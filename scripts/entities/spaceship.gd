@@ -1,6 +1,7 @@
 extends Area2D
 
 signal projectile_created(projectile)
+signal angle_changed(new_angle)
 
 const MAX_LINE_LENGTH: float = 500.0  # Adjust this value to change max length
 const ProjectileScene: PackedScene = preload("res://scenes/entities/projectile.tscn")
@@ -118,6 +119,14 @@ func _process(delta):
 			# Calculate angle away from mouse position
 			var angle: float = mouse_pos.angle()
 			
+			# Convert angle to degrees for display
+			var angle_deg: float = rad_to_deg(angle)
+			# Normalize to 0-360 range
+			if angle_deg < 0:
+				angle_deg += 360.0
+			# Emit signal with the angle in degrees
+			angle_changed.emit(angle_deg)
+			
 			# Set target rotation based on which side the mouse is on
 			if is_right_side:
 				# Base rotation that makes sprite point away from the mouse
@@ -165,71 +174,53 @@ func update_trajectory_line(direction: Vector2) -> void:
 	# Keep track of the last valid collision normal for fallback
 	var last_valid_normal: Vector2 = Vector2.ZERO
 	
-	# Process bounces
-	for bounce in range(MAX_BOUNCES + 1):  # +1 for initial ray
-		# If no more lifetime, stop calculating
+	for bounce in range(MAX_BOUNCES + 1):
 		if effective_lifetime <= 0:
 			break
 			
-		# Offset the raycast position slightly to avoid self-collision issues
 		var raycast_start_position = current_position + current_direction * 0.1
 		
-		# Set raycast direction and distance
 		ray_cast.global_position = to_global(raycast_start_position)
-		ray_cast.target_position = current_direction * 5000  # Long distance to ensure we hit walls
+		ray_cast.target_position = current_direction * 5000
 		ray_cast.force_raycast_update()
 		
 		if ray_cast.is_colliding():
 			var collision_point: Vector2 = to_local(ray_cast.get_collision_point())
 			var collision_normal: Vector2 = ray_cast.get_collision_normal()
 			
-			# Handle zero or invalid normals
 			if collision_normal.length_squared() < 0.01:
 				if last_valid_normal != Vector2.ZERO:
 					collision_normal = last_valid_normal
 				else:
-					# If we don't have a valid normal from before, use a perpendicular to direction
 					collision_normal = Vector2(-current_direction.y, current_direction.x).normalized()
 			else:
-				# Store this valid normal for future use
 				last_valid_normal = collision_normal
 			
-			# Ensure the normal is normalized
 			collision_normal = collision_normal.normalized()
 			
-			# Calculate time to reach collision point
 			var distance_to_collision: float = (collision_point - current_position).length()
 			var time_to_collision: float = distance_to_collision / velocity.length()
 			
-			# If we would run out of lifetime before hitting the wall
 			if time_to_collision > effective_lifetime:
-				# Calculate where the projectile would fizzle out
 				var max_distance: float = velocity.length() * effective_lifetime
 				var fizzle_point: Vector2 = current_position + current_direction * max_distance
 				trajectory_line.add_point(fizzle_point)
 				final_trajectory_point = fizzle_point
 				break
 			
-			# Add a point slightly before the collision point to fix visual glitches
 			var pre_collision_point: Vector2 = collision_point - current_direction * 0.5
 			trajectory_line.add_point(pre_collision_point)
 			
-			# Add collision point to trajectory
 			trajectory_line.add_point(collision_point)
 			
-			# Calculate bounce direction with special handling for vertical surfaces
 			var bounced_direction: Vector2
 			if current_direction.y < -0.7 and collision_normal.y > 0.7:
-				# For upward trajectories hitting downward-facing surfaces, use a simpler bounce
 				bounced_direction = Vector2(current_direction.x, -current_direction.y)
 			else:
-				# Use the standard bounce for all other cases
 				bounced_direction = current_direction.bounce(collision_normal)
 			
-			# Add a small random perturbation to avoid getting stuck in identical bounce patterns
 			bounced_direction = bounced_direction.normalized()
 			
-			# Ensure the bounced direction is valid
 			if bounced_direction.length_squared() < 0.01:
 				bounced_direction = Vector2(-current_direction.x, -current_direction.y).normalized()
 			
@@ -237,19 +228,15 @@ func update_trajectory_line(direction: Vector2) -> void:
 			var post_collision_point: Vector2 = collision_point + bounced_direction * 0.5
 			trajectory_line.add_point(post_collision_point)
 			
-			# Update remaining lifetime
 			effective_lifetime -= time_to_collision
 			
-			# If this was our last bounce, stop
 			if bounce == MAX_BOUNCES:
 				final_trajectory_point = collision_point
 				break
 				
-			# Update direction and position for next raycast
 			current_direction = bounced_direction
 			current_position = collision_point
 		else:
-			# No collision, calculate fizzle point based on remaining lifetime
 			var max_distance: float = velocity.length() * effective_lifetime
 			var fizzle_point: Vector2 = current_position + current_direction * max_distance
 			trajectory_line.add_point(fizzle_point)

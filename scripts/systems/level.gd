@@ -10,6 +10,7 @@ var pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var pause_menu: CanvasLayer = null
 var level_finished: bool = false
 var charge_bar: ProgressBar = null
+var spaceship: Area2D = null
 var bonus_points: int = 0
 
 # Get reference to the AudioManager singleton
@@ -32,6 +33,22 @@ func _ready() -> void:
 	
 	# Set process input to work even when paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# Connect to spaceship signals (deferred to ensure nodes are ready)
+	call_deferred("connect_spaceship_signals")
+
+# Connect spaceship signals once the level is fully set up
+func connect_spaceship_signals() -> void:
+	# Find spaceship in the scene
+	spaceship = find_child("Spaceship", true)
+	
+	if spaceship != null:
+		# Connect the angle_changed signal to update the HUD
+		spaceship.angle_changed.connect(_on_spaceship_angle_changed)
+
+# Handle angle changed signal from spaceship
+func _on_spaceship_angle_changed(new_angle: float) -> void:
+	hud.update_angle(new_angle)
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
@@ -58,7 +75,13 @@ func reset_level() -> void:
 func add_hud() -> void:
 	hud = hud_scene.instantiate()
 	add_child(hud)
+	# Initialize charge_bar reference
+	call_deferred("_setup_charge_bar")
 	
+# Setup charge bar reference after HUD is added to scene tree
+func _setup_charge_bar() -> void:
+	charge_bar = hud.get_node("MarginContainer/VBoxContainer/MarginContainer/ChargeBar")
+
 # Add the win popup to this level
 func add_win_popup() -> void:
 	win_popup = win_popup_scene.instantiate()
@@ -91,15 +114,10 @@ func reset_score() -> void:
 
 # Update the score label
 func update_score_display() -> void:
-	if hud != null:
-		hud.get_node("ScoreLabel").text = str(score)
+	hud.update_score(score)
 
 func update_charge_bar(new_value) -> void:
-	if charge_bar == null and hud != null:
-		charge_bar = hud.get_node("ChargeBar")
-	
-	if charge_bar:
-		charge_bar.value = new_value
+	charge_bar.value = new_value
 
 # Calculate the final score based on number of shots and accuracy
 func calculate_final_score(accuracy_score: int) -> int:
