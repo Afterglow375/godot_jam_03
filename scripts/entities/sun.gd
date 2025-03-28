@@ -1,5 +1,7 @@
 extends Area2D
 
+signal accuracy_score_changed(new_score: int)
+
 @export var max_score: int = 100  # Max score when perfectly centered
 var earth: RigidBody2D = null  # Store reference to the Earth
 var updating_score: bool = false  # Track if we should update score
@@ -93,6 +95,9 @@ func update_score() -> Dictionary:
 
 	var radius = $CollisionShape2D.shape.radius
 	accuracy_score = calculate_score(distance, radius)
+	
+	# Emit signal when accuracy score changes
+	accuracy_score_changed.emit(accuracy_score)
 	
 	return {"distance": distance, "radius": radius}
 

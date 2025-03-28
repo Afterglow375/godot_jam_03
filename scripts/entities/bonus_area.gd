@@ -1,5 +1,7 @@
 extends Area2D
 
+signal bonus_points_changed(points: int)
+
 var earth: RigidBody2D = null
 var bonus_area_radius: float = 0.0
 var earth_radius: float = 0.0
@@ -8,30 +10,24 @@ var has_awarded_bonus: bool = false
 var movement_threshold: float = 2  # Threshold to determine if Earth has stopped moving
 
 func _ready() -> void:
-	# Get reference to Earth
+	# Get Earth's radius from its collision shape
 	earth = get_node("/root/Main/Earth")
-	if earth != null:
-		# Get Earth's radius from its collision shape
-		var collision_shape = earth.get_node("CollisionShape2D")
-		if collision_shape != null:
-			earth_radius = collision_shape.shape.radius
+	var earth_collision_shape = earth.get_node("CollisionShape2D")
+	earth_radius = earth_collision_shape.shape.radius
 	
 	# Get bonus area radius from its collision shape
 	var collision_shape = get_node("CollisionShape2D")
 	bonus_area_radius = collision_shape.shape.radius
 
 func _process(_delta: float) -> void:
-	if earth != null and has_overlapping_bodies():
+	if has_overlapping_bodies():
 		# Check if Earth has stopped moving
-		if earth.linear_velocity.length() < movement_threshold:
-			var overlap_ratio = calculate_overlap()
-			if overlap_ratio > 0:
-				var bonus_points = int(overlap_ratio * max_bonus_points)
-				if bonus_points > 0:
-					# Get the level node and add the bonus points
-					var level = get_node("/root/Main")
-					if level != null:
-						level.add_bonus_points(bonus_points)
+		var overlap_ratio = calculate_overlap()
+		if overlap_ratio > 0:
+			var bonus_points = int(overlap_ratio * max_bonus_points)
+			if bonus_points > 0:
+				# Emit signal when bonus points are awarded
+				bonus_points_changed.emit(bonus_points)
 
 func calculate_overlap() -> float:
 	if earth == null or bonus_area_radius <= 0 or earth_radius <= 0:

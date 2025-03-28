@@ -270,7 +270,7 @@ func launch_projectile() -> void:
 		# Emit signal that projectile was created
 		projectile_created.emit(projectile_container)
 		
-		# Increment the score
+		# Increment the shots count
 		increment_score()
 		
 		# Disable shooting until reset externally
@@ -306,10 +306,10 @@ func _on_victory_achieved() -> void:
 		if trajectory_end:
 			trajectory_end.visible = false
 
-# Add 1 to the score
+# Add 1 to the shots count
 func increment_score() -> void:
 	# Use the stored level reference
-	level.add_score(1)
+	level.add_shots(1)
 
 # Handle mouse entered signal
 func _on_mouse_entered() -> void:

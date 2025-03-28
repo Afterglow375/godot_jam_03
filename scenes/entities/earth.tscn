@@ -1,10 +1,48 @@
-[gd_scene load_steps=4 format=3 uid="uid://861gfsuj7lom"]
+[gd_scene load_steps=13 format=3 uid="uid://861gfsuj7lom"]
 
 [ext_resource type="Script" path="res://scripts/entities/earth.gd" id="1_in325"]
 [ext_resource type="Texture2D" uid="uid://b0dcofcpw16o" path="res://assets/sprites/earth.png" id="2_k7k3a"]
+[ext_resource type="Texture2D" uid="uid://de7eithyh7eo1" path="res://addons/kenney_particle_pack/circle_05.png" id="3_d5tlu"]
+[ext_resource type="PackedScene" uid="uid://bgs863c2jpump" path="res://scenes/ui/damage_numbers.tscn" id="3_j1wuq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7ujfu"]
 radius = 111.0
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_q1ngn"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_hbwos"]
+offsets = PackedFloat32Array(0, 0.213115, 0.508197, 1)
+colors = PackedColorArray(0.937255, 0.901961, 0.556863, 0, 0.964706, 0.760784, 0.458824, 0.321569, 1, 0.564706, 0.32549, 0.733333, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_55igj"]
+gradient = SubResource("Gradient_hbwos")
+
+[sub_resource type="Curve" id="Curve_i2jee"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.56044), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_x76lp"]
+curve = SubResource("Curve_i2jee")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_6amd6"]
+lifetime_randomness = 0.05
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 110.0
+emission_ring_radius = 110.0
+emission_ring_inner_radius = 25.0
+inherit_velocity_ratio = -0.25
+gravity = Vector3(0, -98, 0)
+linear_accel_min = 100.0
+linear_accel_max = 100.0
+scale_min = 0.2
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_x76lp")
+color_ramp = SubResource("GradientTexture1D_55igj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ad1r"]
 
 [node name="Earth" type="RigidBody2D"]
 mass = 0.6
@@ -17,5 +55,18 @@ shape = SubResource("CircleShape2D_7ujfu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_k7k3a")
+
+[node name="FireParticles" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_q1ngn")
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_6amd6")
+texture = ExtResource("3_d5tlu")
+lifetime = 1.2
+local_coords = true
+trail_lifetime = 0.01
+
+[node name="DamageNumbers" parent="." instance=ExtResource("3_j1wuq")]
+material = SubResource("ShaderMaterial_7ad1r")
+position = Vector2(0, -158)
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

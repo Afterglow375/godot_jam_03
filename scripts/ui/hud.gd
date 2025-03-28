@@ -1,25 +1,25 @@
 extends CanvasLayer
 
-var score: int = 0
+var shots: int = 0
 var angle: float = 0.0
 
 func _ready() -> void:
-	update_score_display()
+	update_shots_display()
 	update_angle_display()
 
-# Update the score and display
-func update_score(new_score: int) -> void:
-	score = new_score
-	update_score_display()
+# Update the shots count and display
+func update_shots(new_shots: int) -> void:
+	shots = new_shots
+	update_shots_display()
 
-# Add points to the current score
-func add_score(points: int) -> void:
-	score += points
-	update_score_display()
+# Add shots to the current count
+func add_shots(points: int) -> void:
+	shots += points
+	update_shots_display()
 
-# Update the score label
-func update_score_display() -> void:
-	$MarginContainer/VBoxContainer/ScoreLabel.text = "Shots: " + str(score)
+# Update the shots label
+func update_shots_display() -> void:
+	$MarginContainer/VBoxContainer/ScoreLabel.text = "Shots: " + str(shots)
 
 # Update the angle display
 func update_angle(new_angle: float) -> void:

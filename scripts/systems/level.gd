@@ -4,7 +4,7 @@ var hud_scene = preload("res://scenes/ui/HUD.tscn")
 var win_popup_scene = preload("res://scenes/ui/win_popup.tscn")
 var hud: CanvasLayer = null
 var win_popup: CanvasLayer = null
-var score: int = 0
+var shots: int = 0
 var accuracy_score: int = 0
 var pause_menu_scene = preload("res://scenes/ui/pause_menu.tscn")
 var pause_menu: CanvasLayer = null
@@ -35,16 +35,17 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	# Connect to spaceship signals (deferred to ensure nodes are ready)
-	call_deferred("connect_spaceship_signals")
+	call_deferred("connect_signals")
 
-# Connect spaceship signals once the level is fully set up
-func connect_spaceship_signals() -> void:
+# Connect signals once the level is fully set up
+func connect_signals() -> void:
 	# Find spaceship in the scene
 	spaceship = find_child("Spaceship", true)
-	
-	if spaceship != null:
-		# Connect the angle_changed signal to update the HUD
-		spaceship.angle_changed.connect(_on_spaceship_angle_changed)
+	spaceship.angle_changed.connect(_on_spaceship_angle_changed)
+		
+	# Find and connect to bonus area signals
+	var bonus_area: Area2D = find_child("BonusArea", true)
+	bonus_area.bonus_points_changed.connect(_on_bonus_points_changed)
 
 # Handle angle changed signal from spaceship
 func _on_spaceship_angle_changed(new_angle: float) -> void:
@@ -54,7 +55,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed:
 		# Check for the R key press to reset the level/score (only when not paused)
 		if event.keycode == KEY_R and not game_manager.is_paused():
-			reset_score()
+			reset_shots()
 			reset_level()
 		# Check for Escape key press to toggle pause menu
 		elif event.keycode == KEY_ESCAPE and not level_finished:
@@ -92,29 +93,25 @@ func add_pause_menu() -> void:
 	pause_menu = pause_menu_scene.instantiate()
 	add_child(pause_menu)
 
-# Update the score and display
-func update_score(new_score: int) -> void:
-	score = new_score
-	update_score_display()
+# Update the shots count and display
+func update_shots(new_shots: int) -> void:
+	shots = new_shots
+	update_shots_display()
 
-# Add points to the current score
-func add_score(points: int) -> void:
-	score += points
-	update_score_display()
+# Add shots to the current count
+func add_shots(points: int) -> void:
+	shots += points
+	update_shots_display()
 
-# Add bonus points (separate from regular score)
-func add_bonus_points(points: int) -> void:
-	bonus_points = points
-
-# Reset the score to zero
-func reset_score() -> void:
-	score = 0
+# Reset the shots count to zero
+func reset_shots() -> void:
+	shots = 0
 	bonus_points = 0
-	update_score_display()
+	update_shots_display()
 
-# Update the score label
-func update_score_display() -> void:
-	hud.update_score(score)
+# Update the shots label
+func update_shots_display() -> void:
+	hud.update_shots(shots)
 
 func update_charge_bar(new_value) -> void:
 	charge_bar.value = new_value
@@ -122,7 +119,7 @@ func update_charge_bar(new_value) -> void:
 # Calculate the final score based on number of shots and accuracy
 func calculate_final_score(accuracy_score: int) -> int:
 	self.accuracy_score = accuracy_score
-	var final_score = round(accuracy_score / score)
+	var final_score = round(accuracy_score / shots)
 	return final_score
 	
 func level_won() -> void:
@@ -139,7 +136,7 @@ func level_won() -> void:
 		
 	# Wait a short moment to ensure bonus points are calculated
 	await get_tree().create_timer(0.1).timeout
-	win_popup.show_victory_screen(score, accuracy_score, bonus_points)
+	win_popup.show_victory_screen(shots, accuracy_score, bonus_points)
 
 func _on_next_level():
 	var next_level_path = get_next_level_path()
@@ -165,5 +162,9 @@ func get_next_level_path() -> String:
 # Show win popup
 func show_win_popup() -> void:
 	if win_popup != null:
-		win_popup.show_victory_screen(score, accuracy_score, bonus_points)
+		win_popup.show_victory_screen(shots, accuracy_score, bonus_points)
 		win_popup.show()
+
+# Handle bonus points changed signal
+func _on_bonus_points_changed(points: int) -> void:
+	bonus_points = points
