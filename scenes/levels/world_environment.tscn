@@ -3,7 +3,9 @@
 [sub_resource type="Environment" id="Environment_pf8xo"]
 background_mode = 3
 glow_enabled = true
-glow_intensity = 4.08
+glow_intensity = 1.05
+glow_strength = 0.7
+glow_blend_mode = 0
 glow_hdr_threshold = 0.0
 
 [node name="WorldEnvironment" type="WorldEnvironment"]
