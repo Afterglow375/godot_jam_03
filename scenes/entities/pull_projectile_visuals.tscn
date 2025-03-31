@@ -1,0 +1,167 @@
+[gd_scene load_steps=20 format=3 uid="uid://blwm6rg4d2q03"]
+
+[ext_resource type="Shader" path="res://shaders/projectile_visual.gdshader" id="1_sgme4"]
+[ext_resource type="Texture2D" uid="uid://bvf6nvimyp48e" path="res://assets/sprites/projectile_bg.png" id="2_gtx5u"]
+[ext_resource type="Shader" path="res://shaders/projectile.gdshader" id="3_up51p"]
+[ext_resource type="Texture2D" uid="uid://2pu4singbj38" path="res://assets/sprites/projectile.png" id="4_dweva"]
+[ext_resource type="Texture2D" uid="uid://cvdhxwe3ul1b0" path="res://assets/sprites/circle_particle.png" id="6_simtq"]
+[ext_resource type="Shader" path="res://shaders/energy_beam_points.gdshader" id="8_js0qn"]
+[ext_resource type="Shader" path="res://shaders/godrays.gdshader" id="9_ud7gc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oc0mk"]
+shader = ExtResource("1_sgme4")
+shader_parameter/edge_distortion = 0.03
+shader_parameter/distortion_speed = 2.0
+shader_parameter/edge_opacity = 0.0
+shader_parameter/custom_color = Color(0.494118, 0.768627, 0.854902, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_csqb1"]
+shader = ExtResource("3_up51p")
+shader_parameter/charge_amount = 0.0
+shader_parameter/charge_color = Color(1, 0.1, 0.1, 1)
+shader_parameter/opacity = 1.0
+shader_parameter/edge_distortion = 0.03
+shader_parameter/distortion_speed = 1.0
+shader_parameter/edge_opacity = 1.2
+shader_parameter/unpremultiply_alpha = true
+shader_parameter/black_threshold = 0.05
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_64d5n"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_x5tlt"]
+max_value = 0.8
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.1, 0), 0.0, 0.0, 0, 0, Vector2(0.186667, 0.8), 0.0, 0.0, 0, 0, Vector2(0.606667, 0.8), 0.0, 0.0, 0, 0, Vector2(0.773333, 0), 0.0, 0.0, 0, 0]
+point_count = 5
+
+[sub_resource type="CurveTexture" id="CurveTexture_ib8b3"]
+curve = SubResource("Curve_x5tlt")
+
+[sub_resource type="Gradient" id="Gradient_yr4be"]
+colors = PackedColorArray(0.370001, 0.280914, 0.877917, 1, 0.509804, 0.764706, 0.988235, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_t4ln8"]
+gradient = SubResource("Gradient_yr4be")
+
+[sub_resource type="Curve" id="Curve_c5c7m"]
+min_value = 0.5
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.0933333, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.505494), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_ytos1"]
+curve = SubResource("Curve_c5c7m")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qnalj"]
+particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 0.0
+emission_ring_radius = 350.0
+emission_ring_inner_radius = 350.0
+spread = 0.0
+radial_velocity_min = -150.0
+radial_velocity_max = -150.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -10.0
+radial_accel_max = -10.0
+scale_min = 0.15
+scale_max = 0.15
+scale_curve = SubResource("CurveTexture_ytos1")
+color_ramp = SubResource("GradientTexture1D_t4ln8")
+alpha_curve = SubResource("CurveTexture_ib8b3")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iwhsg"]
+shader = ExtResource("8_js0qn")
+shader_parameter/start_point = Vector2(0.5, 0.5)
+shader_parameter/end_point = Vector2(0.5, 0.5)
+shader_parameter/beam_width = 1.0
+shader_parameter/energy = 4.58
+shader_parameter/roughness = 3
+shader_parameter/frequency = 5
+shader_parameter/opacity = 1.0
+shader_parameter/speed = 1.0
+shader_parameter/thickness = 0.005
+shader_parameter/outline_thickness = 0.1
+shader_parameter/glow = 1.079
+shader_parameter/outline_glow = 0.383
+shader_parameter/color = Color(0.91, 1, 1, 1)
+shader_parameter/outline_color = Color(0.309804, 0.482353, 0.705882, 1)
+shader_parameter/progress = 0.753
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_iatfd"]
+shader = ExtResource("9_ud7gc")
+shader_parameter/spread = 0.511
+shader_parameter/cutoff = -0.012
+shader_parameter/falloff = 0.672
+shader_parameter/edge_fade = 0.15
+shader_parameter/outer_edge_fade = 0.311
+shader_parameter/ray_length_variation = 0.118
+shader_parameter/speed = 10.0
+shader_parameter/ray1_density = 8.0
+shader_parameter/ray2_density = 30.0
+shader_parameter/ray2_intensity = 0.0
+shader_parameter/color = Color(0.345098, 0.439216, 0.572549, 0.0431373)
+shader_parameter/hdr = true
+shader_parameter/seed = 5.0
+
+[node name="ProjectileVisuals" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_oc0mk")
+scale = Vector2(1.25, 1.25)
+texture = ExtResource("2_gtx5u")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_csqb1")
+texture = ExtResource("4_dweva")
+
+[node name="WallCollision" type="AudioStreamPlayer" parent="."]
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_64d5n")
+amount = 100
+process_material = SubResource("ParticleProcessMaterial_qnalj")
+texture = ExtResource("6_simtq")
+lifetime = 2.5
+preprocess = 2.0
+speed_scale = 1.1
+local_coords = true
+trail_enabled = true
+trail_lifetime = 0.01
+trail_sections = 5
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(0.301961, 0.270588, 0.698039, 1)
+energy = 0.76
+shadow_color = Color(0.956863, 0.709804, 0.505882, 1)
+texture = ExtResource("6_simtq")
+texture_scale = 1.5
+
+[node name="BlinkingMiddleLight" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_iwhsg")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -350.0
+offset_right = 350.0
+offset_bottom = 350.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Godrays" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_iatfd")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -350.0
+offset_top = -350.0
+offset_right = 350.0
+offset_bottom = 350.0
+grow_horizontal = 2
+grow_vertical = 2

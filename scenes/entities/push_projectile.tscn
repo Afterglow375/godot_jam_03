@@ -1,13 +1,14 @@
 [gd_scene load_steps=9 format=3 uid="uid://bhyk5hbgs2hno"]
 
-[ext_resource type="Script" path="res://scripts/entities/projectile_container.gd" id="1_dmigf"]
-[ext_resource type="PackedScene" uid="uid://blwm6rg4d2q03" path="res://scenes/entities/projectile_visuals.tscn" id="1_l3tkf"]
-[ext_resource type="Script" path="res://scripts/entities/outer_projectile.gd" id="2_p2sqb"]
-[ext_resource type="Shader" path="res://shaders/projectile.gdshader" id="3_2tpfj"]
+[ext_resource type="Script" path="res://scripts/entities/push_projectile.gd" id="1_hjru8"]
+[ext_resource type="PackedScene" uid="uid://cvv88tlpbi6xj" path="res://scenes/entities/push_projectile_visuals.tscn" id="2_w8j5l"]
+[ext_resource type="Shader" path="res://shaders/projectile.gdshader" id="3_bbjj7"]
+[ext_resource type="Script" path="res://scripts/entities/push_outer_projectile.gd" id="4_2su5v"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_h07pw"]
-shader = ExtResource("3_2tpfj")
+shader = ExtResource("3_bbjj7")
 shader_parameter/charge_amount = 0.0
+shader_parameter/charge_color = Color(1, 0, 0, 1)
 shader_parameter/opacity = 1.0
 shader_parameter/edge_distortion = 0.0
 shader_parameter/distortion_speed = 0.0
@@ -25,7 +26,7 @@ radius = 36.1248
 radius = 318.705
 
 [node name="Projectile" type="Node2D"]
-script = ExtResource("1_dmigf")
+script = ExtResource("1_hjru8")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
 offset_right = 800.0
@@ -37,7 +38,7 @@ handle_input_locally = false
 size = Vector2i(800, 800)
 render_target_update_mode = 4
 
-[node name="ProjectileVisuals" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_l3tkf")]
+[node name="ProjectileVisuals" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_w8j5l")]
 position = Vector2(400, 400)
 
 [node name="TextureRect" type="TextureRect" parent="."]
@@ -57,7 +58,7 @@ visible = false
 shape = SubResource("CircleShape2D_kllct")
 
 [node name="Outer Projectile" type="Area2D" parent="Inner Projectile"]
-script = ExtResource("2_p2sqb")
+script = ExtResource("4_2su5v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Inner Projectile/Outer Projectile"]
 visible = false

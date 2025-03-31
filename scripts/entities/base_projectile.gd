@@ -1,11 +1,11 @@
 extends Node2D
-# This script contains merged functionality from inner_projectile.gd and projectile_container.gd
+# Base class for projectile containers with shared functionality
 
 # Signals
 signal projectile_destroyed
 signal explosion_charged
-signal charging_started(charge_time)
-signal explosion_triggered(fade_time)
+signal charging_started(charge_time: float)
+signal explosion_triggered(fade_time: float)
 
 # Node references
 @onready var inner_projectile: RigidBody2D = $"Inner Projectile"
@@ -21,7 +21,6 @@ var projectile_sound_player: AudioStreamPlayer2D = null  # Persistent audio play
 const BASE_SPEED: float = 2000.0
 @export var lifetime: float = 5.0  # Time in seconds before projectile destroys itself
 @export var explosion_charge_time: float = 0.25  # Time to charge explosion
-@export var explosion_force: float = 600.0  # Force applied to rigidbodies
 @export var fade_duration: float = 0.15  # Duration of the fade-out animation
 var viewport_size: Vector2 = Vector2(800, 800)  # Explicitly track viewport size
 
@@ -47,18 +46,11 @@ func _ready() -> void:
 	set_charge_amount(0.0)
 	
 	# Create the positional sound player
-	projectile_sound_player = audio_manager.play_positional(
-		AudioManager.Audio.PROJECTILE_SOUND,
-		outer_projectile.global_position,
-		false,
-		false
-	)
-	
-	projectile_sound_player.play()
+	create_projectile_sound_player()
 
 func _process(delta: float) -> void:
 	# Get the position of the Inner Projectile
-	var projectile_pos = inner_projectile.global_position
+	var projectile_pos: Vector2 = inner_projectile.global_position
 	
 	# Center the TextureRect/SubViewportContainer on the projectile
 	texture_rect.global_position = projectile_pos - viewport_size/2
@@ -81,7 +73,7 @@ func _process(delta: float) -> void:
 		
 		# When fade animation is complete, destroy container
 		if fade_time >= fade_duration:
-			destroy_container()
+			destroy()
 	
 	# Only check for input when not already charging, fading, or destroying AND game is not paused
 	if not charging_explosion and not fading and not game_manager.is_paused():
@@ -93,7 +85,7 @@ func _process(delta: float) -> void:
 			inner_projectile.freeze = true
 			
 			# Play fizzle sound
-			audio_manager.play(audio_manager.Audio.EXPLOSION_FIZZLE)
+			play_fizzle_sound()
 			
 			# Start fading
 			fading = true
@@ -125,7 +117,7 @@ func launch(direction: Vector2, speed_multiplier: float = 1.0) -> void:
 	inner_projectile.linear_velocity = -direction * (BASE_SPEED * speed_multiplier)
 	
 	# Play launch sound
-	audio_manager.play(audio_manager.Audio.PROJECTILE_SHOT)
+	play_launch_sound()
 
 # Start the explosion charging sequence
 func start_charging_explosion() -> void:
@@ -136,31 +128,18 @@ func start_charging_explosion() -> void:
 	charging_started.emit(explosion_charge_time)
 	
 	# Play the charge sound
-	audio_manager.play(audio_manager.Audio.DETONATE_EXPLOSION_CHARGE)
+	play_charge_sound()
 
 # Trigger the actual explosion but start the fade effect before destroying
 func trigger_explosion() -> void:
-	# Signal that explosion is fully charged
 	explosion_charged.emit()
 	
-	# Emit signal that explosion was triggered with fade duration
 	explosion_triggered.emit(fade_duration)
 	
-	# Play explosion sound
-	audio_manager.play(audio_manager.Audio.DETONATE_EXPLOSION)
+	play_detonate_sound()
 	
-	# Stop the projectile's movement
 	inner_projectile.linear_velocity = Vector2.ZERO
-	inner_projectile.freeze = true  # Freeze the RigidBody2D
-	
-	# Apply force to all rigidbodies in the outer projectile area
-	# Only if the game is not paused
-	if not game_manager.is_paused():
-		var bodies = outer_projectile.get_overlapping_bodies()
-		for body in bodies:
-			if body is RigidBody2D and body != inner_projectile:
-				var direction = (body.global_position - inner_projectile.global_position).normalized()
-				body.apply_central_impulse(direction * explosion_force)
+	inner_projectile.freeze = true
 	
 	# Stop charging and start fading
 	charging_explosion = false
@@ -170,19 +149,15 @@ func trigger_explosion() -> void:
 # Handle collision with bodies
 func _on_body_entered(body: Node) -> void:
 	if body is StaticBody2D:
-		# Play the wall collision sound
-		audio_manager.play(audio_manager.Audio.PROJECTILE_WALL)
+		play_wall_collision_sound()
 
-# Destroy the entire container
-func destroy_container() -> void:
-	# Clean up the sound player
+# Destroy the projectile and clean up resources
+func destroy() -> void:
 	if projectile_sound_player and is_instance_valid(projectile_sound_player):
 		projectile_sound_player.queue_free()
 	
-	# Emit signal
 	projectile_destroyed.emit()
 	
-	# Queue free the entire container
 	queue_free()
 
 func _on_tree_exiting() -> void:
@@ -190,3 +165,27 @@ func _on_tree_exiting() -> void:
 	if projectile_sound_player and is_instance_valid(projectile_sound_player):
 		projectile_sound_player.stop()
 		projectile_sound_player.queue_free()
+
+# Virtual method to be overridden by child classes - create projectile sound player
+func create_projectile_sound_player() -> void:
+	assert(false, "Method 'create_projectile_sound_player()' must be overridden in a subclass")
+
+# Virtual method to be overridden by child classes - play launch sound
+func play_launch_sound() -> void:
+	assert(false, "Method 'play_launch_sound()' must be overridden in a subclass")
+
+# Virtual method to be overridden by child classes - play charge sound
+func play_charge_sound() -> void:
+	assert(false, "Method 'play_charge_sound()' must be overridden in a subclass")
+
+# Virtual method to be overridden by child classes - play detonate sound
+func play_detonate_sound() -> void:
+	assert(false, "Method 'play_detonate_sound()' must be overridden in a subclass")
+
+# Virtual method to be overridden by child classes - play fizzle sound
+func play_fizzle_sound() -> void:
+	assert(false, "Method 'play_fizzle_sound()' must be overridden in a subclass")
+
+# Virtual method to be overridden by child classes - play wall collision sound
+func play_wall_collision_sound() -> void:
+	assert(false, "Method 'play_wall_collision_sound()' must be overridden in a subclass") 

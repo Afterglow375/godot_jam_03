@@ -2,6 +2,8 @@ shader_type canvas_item;
 
 // Charge amount from 0.0 to 1.0
 uniform float charge_amount : hint_range(0.0, 1.0) = 0.0;
+// Charge color - default to red
+uniform vec4 charge_color : source_color = vec4(1.0, 0.1, 0.1, 1.0);
 // Overall opacity from 0.0 to 1.0
 uniform float opacity : hint_range(0.0, 1.0) = 1.0;
 // Edge distortion effect parameters
@@ -68,8 +70,8 @@ void fragment() {
 	
 	// Only apply effects to non-transparent parts of the texture
 	if (original_color.a > 0.0) {
-		// Mix original color with red based on charge amount
-		vec3 charging_color = mix(original_color.rgb, vec3(1.0, 0.1, 0.1), charge_amount);
+		// Mix original color with charge color based on charge amount
+		vec3 charging_color = mix(original_color.rgb, charge_color.rgb, charge_amount);
 		
 		// Calculate the opacity boost/reduction based on edge proximity
 		// When edge_opacity < 1.0, edges will be more transparent

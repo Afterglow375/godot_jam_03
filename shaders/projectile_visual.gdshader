@@ -5,6 +5,8 @@ uniform float edge_distortion : hint_range(0.0, 0.1) = 0.03;
 uniform float distortion_speed : hint_range(0.0, 10.0) = 2.0;
 // Edge opacity boost (0.0 = transparent edges, 1.0 = normal, 3.0 = triple opacity at edges)
 uniform float edge_opacity : hint_range(0.0, 3.0) = 1.2;
+// Custom color modulation (can be used instead of or together with modulate property)
+uniform vec4 custom_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 
 void fragment() {
 	// Calculate distance from center of sprite (assuming UV origin is at center)
@@ -42,10 +44,12 @@ void fragment() {
 		float adjusted_alpha = original_color.a * opacity_multiplier;
 		adjusted_alpha = min(adjusted_alpha, 1.0); // Clamp to avoid over-bright edges
 		
-		// Output the color with adjusted alpha
-		COLOR = vec4(original_color.rgb, adjusted_alpha);
+		// Apply both custom color and Godot's modulation
+		// COLOR is pre-multiplied with modulate property from Godot
+		COLOR = original_color * custom_color;
+		COLOR.a = adjusted_alpha * custom_color.a;
 	} else {
 		// Keep fully transparent pixels as is
-		COLOR = original_color;
+		COLOR = original_color * custom_color;
 	}
 } 

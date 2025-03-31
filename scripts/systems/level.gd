@@ -70,7 +70,10 @@ func toggle_pause_menu() -> void:
 
 # Reload the current level
 func reset_level() -> void:
-	get_tree().change_scene_to_file(scene_file_path)
+	# Get the absolute path to the current scene
+	var current_scene_path = scene_file_path
+	# The GameManager will automatically maintain which projectile type we're using
+	get_tree().change_scene_to_file(current_scene_path)
 
 # Add the HUD to this level
 func add_hud() -> void:

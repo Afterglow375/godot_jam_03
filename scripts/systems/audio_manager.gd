@@ -2,13 +2,23 @@ extends Node
 
 # Enum for all available audio clips
 enum Audio {
-	PROJECTILE_SHOT,
-	PROJECTILE_WALL,
-	PROJECTILE_SOUND,
+	# Push projectile sounds
+	PUSH_PROJECTILE_SHOT,
+	PUSH_PROJECTILE_IDLE,
+	PUSH_PROJECTILE_CHARGE,
+	PUSH_PROJECTILE_DETONATE,
+	PUSH_PROJECTILE_FIZZLE,
+	PUSH_PROJECTILE_WALL_HIT,
+	# Pull projectile sounds
+	PULL_PROJECTILE_SHOT,
+	PULL_PROJECTILE_IDLE,
+	PULL_PROJECTILE_CHARGE,
+	PULL_PROJECTILE_DETONATE,
+	PULL_PROJECTILE_FIZZLE,
+	PULL_PROJECTILE_WALL_HIT,
+	# Environment sounds
 	EARTH_WALL,
-	DETONATE_EXPLOSION_CHARGE,
-	DETONATE_EXPLOSION,
-	EXPLOSION_FIZZLE,
+	# Other sounds
 	TADAA,
 	SUN_HIT,
 	EARTH_PUSH
@@ -16,35 +26,64 @@ enum Audio {
 
 # Dictionary mapping Audio to their file paths and default volumes
 var _audio_data = {
-	Audio.PROJECTILE_SHOT: {
-		"path": "res://assets/audio/projectile_shot.wav", 
-		"volume": -14.0
+	# Push projectile sounds
+	Audio.PUSH_PROJECTILE_SHOT: {
+		"path": "res://assets/audio/projectile/push_projectile_shot.wav", 
+		"volume": -17.0
 	},
-	Audio.PROJECTILE_WALL: {
-		"path": "res://assets/audio/projectile_wall.wav", 
-		"volume": -2.0
-	},
-	Audio.PROJECTILE_SOUND: {
-		"path": "res://assets/audio/projectile sound2.wav", 
+	Audio.PUSH_PROJECTILE_IDLE: {
+		"path": "res://assets/audio/projectile/push_projectile_idle.wav", 
 		"volume": -1.0,
 		"max_distance": 3000.0
 	},
-	Audio.EXPLOSION_FIZZLE: {
-		"path": "res://assets/audio/explosion_fizzle.wav", 
+	Audio.PUSH_PROJECTILE_CHARGE: {
+		"path": "res://assets/audio/projectile/push_projectile_charge.wav", 
+		"volume": -6.0
+	},
+	Audio.PUSH_PROJECTILE_DETONATE: {
+		"path": "res://assets/audio/projectile/push_projectile_detonate.wav", 
+		"volume": -5.0
+	},
+	Audio.PUSH_PROJECTILE_FIZZLE: {
+		"path": "res://assets/audio/projectile/push_projectile_fizzle.wav", 
 		"volume": -1.0
 	},
+	Audio.PUSH_PROJECTILE_WALL_HIT: {
+		"path": "res://assets/audio/projectile/push_projectile_wall_hit.wav", 
+		"volume": -2.0
+	},
+	# Pull projectile sounds
+	Audio.PULL_PROJECTILE_SHOT: {
+		"path": "res://assets/audio/projectile/pull_projectile_shot.wav", 
+		"volume": -2.0
+	},
+	Audio.PULL_PROJECTILE_IDLE: {
+		"path": "res://assets/audio/projectile/pull_projectile_idle.wav", 
+		"volume": 3.0,
+		"max_distance": 3000.0
+	},
+	Audio.PULL_PROJECTILE_CHARGE: {
+		"path": "res://assets/audio/projectile/pull_projectile_charge.wav", 
+		"volume": -6.0
+	},
+	Audio.PULL_PROJECTILE_DETONATE: {
+		"path": "res://assets/audio/projectile/pull_projectile_detonate.wav", 
+		"volume": -5.0
+	},
+	Audio.PULL_PROJECTILE_FIZZLE: {
+		"path": "res://assets/audio/projectile/pull_projectile_fizzle.wav", 
+		"volume": -5.0
+	},
+	Audio.PULL_PROJECTILE_WALL_HIT: {
+		"path": "res://assets/audio/projectile/pull_projectile_wall_hit.wav", 
+		"volume": -4.0
+	},
+	# Environment sounds
 	Audio.EARTH_WALL: {
 		"path": "res://assets/audio/earth_wall.wav", 
 		"volume": -3.0
 	},
-	Audio.DETONATE_EXPLOSION_CHARGE: {
-		"path": "res://assets/audio/detonate_explosion_charge.wav", 
-		"volume": -6.0
-	},
-	Audio.DETONATE_EXPLOSION: {
-		"path": "res://assets/audio/detonate_explosion.wav", 
-		"volume": -5.0
-	},
+	# Other sounds
 	Audio.TADAA: {
 		"path": "res://assets/audio/626950__maikkihapsis__tadaa.wav", 
 		"volume": -14.0

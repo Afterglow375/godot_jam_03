@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_63k5r"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_gdxui"]
 [ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_oplmq"]
-[ext_resource type="PackedScene" uid="uid://c0gj3q5vqo5v8" path="res://scenes/levels/tile_map.tscn" id="7_n2qvt"]
+[ext_resource type="PackedScene" path="res://scenes/levels/tile_map.tscn" id="7_n2qvt"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0

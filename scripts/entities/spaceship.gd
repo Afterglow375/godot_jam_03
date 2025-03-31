@@ -4,7 +4,8 @@ signal projectile_created(projectile)
 signal angle_changed(new_angle)
 
 const MAX_LINE_LENGTH: float = 500.0  # Adjust this value to change max length
-const ProjectileScene: PackedScene = preload("res://scenes/entities/projectile.tscn")
+const PushProjectileScene: PackedScene = preload("res://scenes/entities/push_projectile.tscn")
+const PullProjectileScene: PackedScene = preload("res://scenes/entities/pull_projectile.tscn")
 const MAX_BOUNCES: int = 5  # Maximum number of bounces to simulate
 const BASE_SPEED: float = 2000.0  # Match the value from projectile_container.gd
 
@@ -19,6 +20,8 @@ var ray_cast: RayCast2D = null  # RayCast for collision detection
 var can_shoot: bool = true  # True if user can shoot from spaceship, false if can't
 var earth: RigidBody2D = null  # Reference to the Earth node
 var sprite: Sprite2D = null  # Reference to the sprite node
+var push_overlay: Sprite2D = null  # Reference to the push projectile overlay
+var pull_overlay: Sprite2D = null  # Reference to the pull projectile overlay
 var target_rotation: float = 0.0  # Target rotation for smooth rotation
 var target_scale_x: float = 1.0  # Target x scale for smooth flipping
 var target_scale: Vector2 = Vector2(1.0, 1.0)  # Target scale for hover effect
@@ -28,6 +31,8 @@ var rotation_speed: float = 10.0  # Adjust for faster/slower rotation
 var is_hovered: bool = false  # Whether the mouse is hovering over the Area2D
 var speed_multiplier: float = 0.0  # Speed multiplier based on line length
 
+@onready var game_manager = get_node("/root/GameManager")
+
 func _ready():
 	line = $SlingshotLine
 	trajectory_line = $TrajectoryLine
@@ -35,6 +40,16 @@ func _ready():
 	ray_cast = $TrajectoryRaycast
 	sprite = $Sprite2D  # Get reference to the spaceship sprite
 	base_scale = sprite.scale  # Store the original scale
+	
+	# Get references to overlay sprites
+	push_overlay = $PushOverlay
+	pull_overlay = $PullOverlay
+	
+	# Initialize projectile overlays based on GameManager state
+	update_projectile_overlays()
+	
+	# Connect to GameManager's projectile type changed signal
+	game_manager.projectile_type_changed.connect(_on_projectile_type_changed)
 	
 	# Hide trajectory end sprite initially
 	if trajectory_end:
@@ -55,7 +70,7 @@ func _ready():
 	# Connect mouse enter/exit signals
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
-	
+
 func connect_to_win_popup() -> void:
 	# The win popup is added by the level script, ensure it exists now
 	level.win_popup.victory_achieved.connect(_on_victory_achieved)
@@ -81,6 +96,10 @@ func _input(event):
 					trajectory_end.visible = false
 					
 			is_mouse_held = false
+	
+	# Toggle between push and pull projectiles with spacebar
+	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE and can_shoot:
+		game_manager.toggle_projectile_type()
 
 func _process(delta):
 	if is_mouse_held:
@@ -251,49 +270,34 @@ func update_trajectory_line(direction: Vector2) -> void:
 
 func launch_projectile() -> void:
 	if current_line_end.length() > 0:
-		var projectile_container = ProjectileScene.instantiate()
+		# Select the appropriate projectile scene based on GameManager state
+		var projectile_scene = PullProjectileScene if game_manager.is_using_pull_projectile() else PushProjectileScene
+		var projectile_container = projectile_scene.instantiate()
+		
 		get_parent().add_child(projectile_container)
 		projectile_container.position = position
 		
 		# Wait one frame for the viewport to initialize properly
 		await get_tree().process_frame
 		
-		# Connect to the projectile container's destruction signal
 		projectile_container.projectile_destroyed.connect(_on_projectile_destroyed)
-		
-		# Calculate speed multiplier based on line length (0.0 to 1.0)
 		var speed_multiplier: float = current_line_end.length() / MAX_LINE_LENGTH
-		
-		# Launch in the direction of the line with speed based on length
 		projectile_container.launch(current_line_end.normalized(), speed_multiplier)
-		
-		# Emit signal that projectile was created
 		projectile_created.emit(projectile_container)
-		
-		# Increment the shots count
 		increment_score()
-		
-		# Disable shooting until reset externally
 		can_shoot = false
 		
 		level.update_charge_bar(0)
 
-# Handle projectile destroyed signal
 func _on_projectile_destroyed() -> void:
-	# Check if Earth is moving below threshold
 	if earth and earth.linear_velocity.length() <= earth.movement_threshold:
 		# Earth is not moving significantly, enable shooting immediately
 		can_shoot = true
-	# Otherwise wait for earth_stopped_moving signal
 
-# Handle earth stopped moving signal
 func _on_earth_stopped_moving() -> void:
-	# Enable shooting when Earth stops moving
 	can_shoot = true
 
-# Handle victory achieved signal
 func _on_victory_achieved() -> void:
-	# Disable shooting when level is won
 	can_shoot = false
 	
 	# Clear any active shooting UI
@@ -306,15 +310,19 @@ func _on_victory_achieved() -> void:
 		if trajectory_end:
 			trajectory_end.visible = false
 
-# Add 1 to the shots count
 func increment_score() -> void:
-	# Use the stored level reference
 	level.add_shots(1)
 
-# Handle mouse entered signal
 func _on_mouse_entered() -> void:
 	is_hovered = true
 
-# Handle mouse exited signal
 func _on_mouse_exited() -> void:
 	is_hovered = false
+
+# Updates the visibility of push and pull overlays based on current projectile type
+func update_projectile_overlays() -> void:
+	push_overlay.visible = !game_manager.is_using_pull_projectile()
+	pull_overlay.visible = game_manager.is_using_pull_projectile()
+
+func _on_projectile_type_changed(_using_pull: bool) -> void:
+	update_projectile_overlays()

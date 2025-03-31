@@ -1,0 +1,69 @@
+[gd_scene load_steps=9 format=3 uid="uid://di8fe6lymflb7"]
+
+[ext_resource type="Script" path="res://scripts/entities/pull_projectile.gd" id="1_leuue"]
+[ext_resource type="PackedScene" uid="uid://blwm6rg4d2q03" path="res://scenes/entities/pull_projectile_visuals.tscn" id="2_rauri"]
+[ext_resource type="Shader" path="res://shaders/projectile.gdshader" id="3_xdgrm"]
+[ext_resource type="Script" path="res://scripts/entities/pull_outer_projectile.gd" id="4_cs2w6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_h07pw"]
+shader = ExtResource("3_xdgrm")
+shader_parameter/charge_amount = 0.0
+shader_parameter/charge_color = Color(0, 0, 1, 1)
+shader_parameter/opacity = 1.0
+shader_parameter/edge_distortion = 0.0
+shader_parameter/distortion_speed = 0.0
+shader_parameter/edge_opacity = 0.0
+shader_parameter/unpremultiply_alpha = true
+shader_parameter/black_threshold = 0.0
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_snqth"]
+viewport_path = NodePath("SubViewportContainer/SubViewport")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kllct"]
+radius = 36.1248
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_c8q60"]
+radius = 318.705
+
+[node name="Projectile2" type="Node2D"]
+script = ExtResource("1_leuue")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 800.0
+offset_bottom = 800.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(800, 800)
+render_target_update_mode = 4
+
+[node name="ProjectileVisuals" parent="SubViewportContainer/SubViewport" instance=ExtResource("2_rauri")]
+position = Vector2(400, 400)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+material = SubResource("ShaderMaterial_h07pw")
+offset_right = 800.0
+offset_bottom = 800.0
+texture = SubResource("ViewportTexture_snqth")
+
+[node name="Inner Projectile" type="RigidBody2D" parent="."]
+collision_layer = 2
+collision_mask = 2
+gravity_scale = 0.0
+lock_rotation = true
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Inner Projectile"]
+visible = false
+shape = SubResource("CircleShape2D_kllct")
+
+[node name="Outer Projectile" type="Area2D" parent="Inner Projectile"]
+script = ExtResource("4_cs2w6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Inner Projectile/Outer Projectile"]
+visible = false
+shape = SubResource("CircleShape2D_c8q60")
+
+[connection signal="body_entered" from="Inner Projectile" to="Inner Projectile" method="_on_body_entered"]
+[connection signal="body_entered" from="Inner Projectile/Outer Projectile" to="Inner Projectile/Outer Projectile" method="_on_body_entered"]
+[connection signal="body_exited" from="Inner Projectile/Outer Projectile" to="Inner Projectile/Outer Projectile" method="_on_body_exited"]
