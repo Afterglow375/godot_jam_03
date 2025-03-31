@@ -8,6 +8,9 @@ var affected_bodies: Array = []
 var force_radius: float = 100.0  # Default value, will be updated in _ready()
 var sound_player: AudioStreamPlayer2D = null  # Persistent audio player
 var explosion_triggered: bool = false  # Track if explosion has been triggered
+var charging: bool = false  # Track if charging has started
+# Store array of [body, offset] for rigidbodies when charging
+var body_offsets: Array = []
 
 # Parent projectile reference
 var projectile: Node2D = null
@@ -34,10 +37,23 @@ func _ready() -> void:
 	# Connect to the explosion_triggered signal
 	if projectile.has_signal("explosion_triggered"):
 		projectile.explosion_triggered.connect(_on_explosion_triggered)
+	
+	# Connect to the charging_started signal
+	if projectile.has_signal("charging_started"):
+		projectile.charging_started.connect(_on_charging_started)
 
 func _physics_process(delta: float) -> void:
-	# Skip force application when game is paused or explosion has been triggered
-	if game_manager.is_paused() or explosion_triggered:
+	# Skip force application when game is paused, explosion has been triggered, or charging
+	if game_manager.is_paused() or explosion_triggered or charging:
+		# If charging, lock all affected bodies to move with the projectile
+		if charging:
+			for body_offset in body_offsets:
+				var body: RigidBody2D = body_offset[0]
+				var offset: Vector2 = body_offset[1]
+				
+				if is_instance_valid(body):
+					body.linear_velocity = projectile.inner_projectile.linear_velocity
+					body.global_position = global_position + offset
 		return
 		
 	# Process affected bodies
@@ -104,6 +120,12 @@ func _on_body_exited(body: Node2D) -> void:
 				affected_bodies.remove_at(i)
 				break
 		
+		# If body is in body_offsets, remove it
+		for i in range(body_offsets.size() - 1, -1, -1):
+			if body_offsets[i][0] == body:
+				body_offsets.remove_at(i)
+				break
+		
 		# If no more bodies are affected, fade out and stop the sound
 		if affected_bodies.size() == 0 and sound_player and sound_player.playing:
 			# Create a tween for fading out
@@ -119,8 +141,21 @@ func _on_tree_exiting() -> void:
 		sound_player.stop()
 		sound_player.queue_free()
 
+# Handle charging started signal from projectile
+func _on_charging_started(_charge_time: float) -> void:
+	charging = true
+	body_offsets.clear()
+	
+	# Store all affected bodies and their offsets
+	for body_data in affected_bodies:
+		var body: RigidBody2D = body_data[0]
+		if is_instance_valid(body):
+			var offset: Vector2 = body.global_position - global_position
+			body_offsets.append([body, offset])
+
 # Handle explosion triggered signal from projectile
 func _on_explosion_triggered(_fade_time: float) -> void:
+	charging = false
 	explosion_triggered = true
 	apply_explosion_force()
 
