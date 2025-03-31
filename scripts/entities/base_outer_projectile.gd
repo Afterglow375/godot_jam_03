@@ -2,8 +2,11 @@ extends Area2D
 # Base class for outer projectiles with shared functionality
 
 const FADE_DURATION: float = 0.1  # Fade in/out duration in seconds
+const FORCE_FADE_TIME: float = 1.0  # Time in seconds for force to weaken
+const FORCE_DELAY_TIME: float = 0.5  # Delay before force starts weakening
+const MIN_FORCE_MULTIPLIER: float = 0.0  # Minimum force multiplier (0.0 means force can fade completely)
 
-# Using arrays of length 2 [body, radius] instead of dictionaries
+# Using arrays of length 3 [body, radius, time_in_area] 
 var affected_bodies: Array = []
 var force_radius: float = 100.0  # Default value, will be updated in _ready()
 var sound_player: AudioStreamPlayer2D = null  # Persistent audio player
@@ -41,9 +44,25 @@ func _physics_process(delta: float) -> void:
 		return
 		
 	# Process affected bodies
-	for body_data in affected_bodies:
+	for i in range(affected_bodies.size() - 1, -1, -1):
+		var body_data = affected_bodies[i]
 		var body: RigidBody2D = body_data[0]  # First element is the body
 		var body_radius: float = body_data[1]  # Second element is the radius
+		var time_in_area: float = body_data[2]  # Third element is time in area
+		
+		# Update time in area
+		time_in_area += delta
+		affected_bodies[i][2] = time_in_area
+		
+		# Calculate time-based weakening factor
+		var time_factor: float = 1.0
+		
+		# Only start weakening after the delay time
+		if time_in_area > FORCE_DELAY_TIME:
+			# Calculate how long we've been in the fading phase
+			var fade_time: float = time_in_area - FORCE_DELAY_TIME
+			# Scale from 1.0 down to MIN_FORCE_MULTIPLIER over FORCE_FADE_TIME
+			time_factor = max(1.0 - ((1.0 - MIN_FORCE_MULTIPLIER) * (fade_time / FORCE_FADE_TIME)), MIN_FORCE_MULTIPLIER)
 		
 		# Calculate direction and distance from projectile to body
 		var to_body: Vector2 = body.global_position - global_position
@@ -53,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		var force_multiplier: float = 1.0 - (distance / (force_radius + body_radius))
 		
 		# Call the method to get the force direction and apply it
-		var force: Vector2 = get_force_direction(to_body, force_multiplier)
+		var force: Vector2 = get_force_direction(to_body, force_multiplier, time_factor)
 		
 		body.apply_central_force(force)
 
@@ -76,8 +95,8 @@ func _on_body_entered(body: Node2D) -> void:
 					body_radius = child.shape.radius
 					break
 		
-		# Store body and radius as a simple array of length 2
-		affected_bodies.append([body, body_radius])
+		# Store body, radius, and initial time (0) as a simple array
+		affected_bodies.append([body, body_radius, 0.0])
 		
 		sound_player = audio_manager.play_positional(
 			AudioManager.Audio.EARTH_PUSH,
@@ -125,7 +144,7 @@ func _on_explosion_triggered(_fade_time: float) -> void:
 	apply_explosion_force()
 
 # This method should be overridden by child classes to determine force direction
-func get_force_direction(to_body: Vector2, force_multiplier: float) -> Vector2:
+func get_force_direction(to_body: Vector2, force_multiplier: float, time_factor: float) -> Vector2:
 	assert(false, "Method 'get_force_direction()' must be overridden in a subclass")
 	return Vector2.ZERO
 

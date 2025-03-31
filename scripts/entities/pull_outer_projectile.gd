@@ -9,11 +9,14 @@ const PULL_FORCE: float = 3000.0
 @export var distance_multiplier: float = 1  # Force multiplier based on distance
 
 # Override to implement pull behavior - force towards the projectile
-# Inverts the force_multiplier so objects farther away get pulled harder
-func get_force_direction(to_body: Vector2, force_multiplier: float) -> Vector2:
-	# Invert the multiplier (1.0 becomes 0.0, 0.0 becomes 1.0)
+# Force is stronger for objects farther from center
+func get_force_direction(to_body: Vector2, force_multiplier: float, time_factor: float) -> Vector2:
+	# Invert the distance component to make force stronger for distant objects
+	# But preserve the time-based weakening from the base class
 	var inverted_multiplier: float = 1.0 - force_multiplier
-	return -to_body.normalized() * PULL_FORCE * inverted_multiplier
+
+	# Apply force with stronger pull for farther objects
+	return -to_body.normalized() * PULL_FORCE * inverted_multiplier * time_factor
 
 # Override to implement explosion pull behavior
 func apply_explosion_force() -> void:

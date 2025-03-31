@@ -9,8 +9,8 @@ const PUSH_FORCE: float = 3000.0
 
 # Override to implement push behavior - force away from the projectile
 # Uses original force_multiplier where objects closer to center get more force
-func get_force_direction(to_body: Vector2, force_multiplier: float) -> Vector2:
-	return to_body.normalized() * PUSH_FORCE * force_multiplier
+func get_force_direction(to_body: Vector2, force_multiplier: float, time_factor: float) -> Vector2:
+	return to_body.normalized() * PUSH_FORCE * force_multiplier * time_factor
 
 # Override to implement explosion push behavior
 func apply_explosion_force() -> void:
