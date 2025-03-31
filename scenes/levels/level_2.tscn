@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://6sgn2tbvxsie"]
+[gd_scene load_steps=12 format=3 uid="uid://6sgn2tbvxsie"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_pjvny"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_hylch"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_63k5r"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_gdxui"]
 [ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_oplmq"]
+[ext_resource type="PackedScene" uid="uid://c0gj3q5vqo5v8" path="res://scenes/levels/tile_map.tscn" id="7_n2qvt"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -16,6 +17,9 @@ size = Vector2(3813.63, 79)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
 size = Vector2(71.5058, 2200)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_r2ehn"]
+size = Vector2(119.176, 1200)
 
 [node name="Main" type="Node"]
 script = ExtResource("1_pjvny")
@@ -76,23 +80,6 @@ physics_material_override = SubResource("PhysicsMaterial_cpj0v")
 position = Vector2(39.2288, 1081)
 shape = SubResource("RectangleShape2D_ab1l3")
 
-[node name="ColorRect5" type="ColorRect" parent="."]
-offset_left = 2600.0
-offset_top = -984.0
-offset_right = 2672.0
-offset_bottom = 1217.0
-scale = Vector2(1.00691, 1)
-pivot_offset = Vector2(71.574, 2201)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect5"]
-collision_layer = 3
-collision_mask = 2
-physics_material_override = SubResource("PhysicsMaterial_cpj0v")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect5/StaticBody2D"]
-position = Vector2(35.7529, 1101)
-shape = SubResource("RectangleShape2D_ab1l3")
-
 [node name="ColorRect4" type="ColorRect" parent="."]
 offset_left = 3840.0
 offset_top = -1.0
@@ -116,3 +103,17 @@ scale = Vector2(1.05926, 1.05926)
 texture = ExtResource("5_gdxui")
 
 [node name="WorldEnvironment" parent="." instance=ExtResource("6_oplmq")]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(2599.51, -984)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(20.354, 1584)
+shape = SubResource("RectangleShape2D_r2ehn")
+
+[node name="TileMap" parent="." instance=ExtResource("7_n2qvt")]
+layer_0/tile_data = PackedInt32Array(1835072, 0, 1, 1900608, 0, 2, 1835073, 65536, 1, 1900609, 65536, 2, 1835074, 131072, 1, 1900610, 131072, 2, 1769536, 0, 1, 1769537, 65536, 1, 1769538, 131072, 1, 1704000, 0, 1, 1704001, 65536, 1, 1704002, 131072, 1, 1638464, 0, 1, 1638465, 65536, 1, 1638466, 131072, 1, 1572928, 0, 1, 1572929, 65536, 1, 1572930, 131072, 1, 1507392, 0, 1, 1507393, 65536, 1, 1507394, 131072, 1, 1441856, 0, 1, 1441857, 65536, 1, 1441858, 131072, 1, 1376320, 0, 1, 1376321, 65536, 1, 1376322, 131072, 1, 1310784, 0, 1, 1310785, 65536, 1, 1310786, 131072, 1, 1245248, 0, 1, 1245249, 65536, 1, 1245250, 131072, 1, 1179712, 0, 1, 1179713, 65536, 1, 1179714, 131072, 1, 1114176, 0, 1, 1114177, 65536, 1, 1114178, 131072, 1, 1048640, 0, 1, 1048641, 65536, 1, 1048642, 131072, 1, 983104, 0, 1, 983105, 65536, 1, 983106, 131072, 1, 917568, 0, 1, 917569, 65536, 1, 917570, 131072, 1, 852032, 0, 1, 852033, 65536, 1, 852034, 131072, 1, 786496, 0, 1, 786497, 65536, 1, 786498, 131072, 1, 720960, 0, 1, 720961, 65536, 1, 720962, 131072, 1, 655424, 0, 1, 655425, 65536, 1, 655426, 131072, 1, 589888, 0, 1, 589889, 65536, 1, 589890, 131072, 1, 524352, 0, 1, 524353, 65536, 1, 524354, 131072, 1, 458816, 0, 1, 458817, 65536, 1, 458818, 131072, 1, 393280, 0, 1, 393281, 65536, 1, 393282, 131072, 1, 327744, 0, 1, 327745, 65536, 1, 327746, 131072, 1, 262208, 0, 1, 262209, 65536, 1, 262210, 131072, 1, 196672, 0, 1, 196673, 65536, 1, 196674, 131072, 1, 131136, 0, 1, 131137, 65536, 1, 131138, 131072, 1, 65600, 0, 1, 65601, 65536, 1, 65602, 131072, 1, 64, 0, 1, 65, 65536, 1, 66, 131072, 1, -65472, 0, 1, -65471, 65536, 1, -65470, 131072, 1, -131008, 0, 1, -131007, 65536, 1, -131006, 131072, 1)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://jpi84rgc0kie"]
+[gd_scene load_steps=14 format=3 uid="uid://jpi84rgc0kie"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_ir042"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_6hpmu"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_3m205"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_10g67"]
 [ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_pc665"]
+[ext_resource type="PackedScene" uid="uid://c0gj3q5vqo5v8" path="res://scenes/levels/tile_map.tscn" id="7_f2w8d"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -15,13 +16,17 @@ bounce = 1.0
 size = Vector2(3813.63, 79)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
-size = Vector2(54.1257, 2200)
+size = Vector2(78.457, 2221)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_6c0hm"]
-size = Vector2(1019.95, 77)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8hwop"]
+size = Vector2(116.197, 1036)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_svd45"]
-size = Vector2(74.4852, 819)
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2l2oi"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4jurf"]
+size = Vector2(1067.62, 116)
 
 [node name="Main" type="Node"]
 script = ExtResource("1_ir042")
@@ -95,56 +100,8 @@ collision_mask = 2
 physics_material_override = SubResource("PhysicsMaterial_cpj0v")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
-position = Vector2(39.2288, 1081)
+position = Vector2(39.2288, 1091.5)
 shape = SubResource("RectangleShape2D_ab1l3")
-
-[node name="ColorRect5" type="ColorRect" parent="."]
-offset_left = 2295.0
-offset_top = 831.0
-offset_right = 3315.0
-offset_bottom = 908.0
-scale = Vector2(1.00691, 1)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect5"]
-collision_layer = 3
-collision_mask = 2
-physics_material_override = SubResource("PhysicsMaterial_cpj0v")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect5/StaticBody2D"]
-position = Vector2(509.976, 38.5)
-shape = SubResource("RectangleShape2D_6c0hm")
-
-[node name="ColorRect6" type="ColorRect" parent="."]
-offset_left = 2295.0
-offset_top = 1726.0
-offset_right = 3315.0
-offset_bottom = 1803.0
-scale = Vector2(1.00691, 1)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect6"]
-collision_layer = 3
-collision_mask = 2
-physics_material_override = SubResource("PhysicsMaterial_cpj0v")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect6/StaticBody2D"]
-position = Vector2(509.976, 38.5)
-shape = SubResource("RectangleShape2D_6c0hm")
-
-[node name="ColorRect7" type="ColorRect" parent="."]
-offset_left = 3246.0
-offset_top = 908.0
-offset_right = 3321.0
-offset_bottom = 1727.0
-scale = Vector2(1.00691, 1)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect7"]
-collision_layer = 3
-collision_mask = 2
-physics_material_override = SubResource("PhysicsMaterial_cpj0v")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect7/StaticBody2D"]
-position = Vector2(37.2422, 409.5)
-shape = SubResource("RectangleShape2D_svd45")
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -1
@@ -153,3 +110,39 @@ scale = Vector2(1.05926, 1.05926)
 texture = ExtResource("5_10g67")
 
 [node name="WorldEnvironment" parent="." instance=ExtResource("6_pc665")]
+
+[node name="TileMap" parent="." instance=ExtResource("7_f2w8d")]
+layer_0/tile_data = PackedInt32Array(1310777, 0, 0, 1376313, 0, 1, 1441849, 0, 2, 1310778, 65536, 0, 1376314, 65536, 1, 1441850, 65536, 2, 1310779, 65536, 0, 1376315, 65536, 1, 1441851, 65536, 2, 1310780, 65536, 0, 1376316, 65536, 1, 1441852, 65536, 2, 1310781, 65536, 0, 1376317, 65536, 1, 1441853, 65536, 2, 1310782, 65536, 0, 1376318, 65536, 1, 1441854, 65536, 2, 1310783, 65536, 0, 1376319, 65536, 1, 1441855, 65536, 2, 1310784, 65536, 0, 1376320, 65536, 1, 1441856, 65536, 2, 1310785, 65536, 0, 1376321, 65536, 1, 1441857, 65536, 2, 1310786, 65536, 0, 1376322, 65536, 1, 1441858, 65536, 2, 1310787, 65536, 0, 1376323, 65536, 1, 1441859, 65536, 2, 1310788, 65536, 0, 1376324, 65536, 1, 1441860, 65536, 2, 1310789, 65536, 0, 1376325, 65536, 1, 1441861, 65536, 2, 1310790, 65536, 0, 1376326, 65536, 1, 1441862, 65536, 2, 1310791, 65536, 0, 1376327, 65536, 1, 1441863, 65536, 2, 1310792, 65536, 0, 1376328, 65536, 1, 1441864, 65536, 2, 1310793, 65536, 0, 1376329, 65536, 1, 1441865, 65536, 2, 1310794, 65536, 0, 1376330, 65536, 1, 1441866, 65536, 2, 1310795, 65536, 0, 1376331, 65536, 1, 1441867, 65536, 2, 1310796, 65536, 0, 1376332, 65536, 1, 1441868, 65536, 2, 1310797, 65536, 0, 1376333, 65536, 1, 1441869, 65536, 2, 1310798, 65536, 0, 1376334, 65536, 1, 1441870, 65536, 2, 1310799, 65536, 0, 1376335, 65536, 1, 1441871, 65536, 2, 1310800, 65536, 0, 1376336, 65536, 1, 1441872, 65536, 2, 1310801, 65536, 0, 1376337, 65536, 1, 1441873, 65536, 1, 1507409, 0, 1, 1507410, 65536, 1, 1507411, 131072, 1, 1572945, 0, 1, 1572946, 65536, 1, 1572947, 131072, 1, 1638481, 0, 1, 1638482, 65536, 1, 1638483, 131072, 1, 1704017, 0, 1, 1704018, 65536, 1, 1704019, 131072, 1, 1769553, 0, 1, 1769554, 65536, 1, 1769555, 131072, 1, 1835089, 0, 1, 1835090, 65536, 1, 1835091, 131072, 1, 1900625, 0, 1, 1900626, 65536, 1, 1900627, 131072, 1, 1966161, 0, 1, 1966162, 65536, 1, 1966163, 131072, 1, 2031697, 0, 1, 2031698, 65536, 1, 2031699, 131072, 1, 2097233, 0, 1, 2097234, 65536, 1, 2097235, 131072, 1, 2162769, 0, 1, 2162770, 65536, 1, 2162771, 131072, 1, 2228305, 0, 1, 2228306, 65536, 1, 2228307, 131072, 1, 2293841, 0, 1, 2293842, 65536, 1, 2293843, 131072, 1, 2359377, 0, 1, 2359378, 65536, 1, 2359379, 131072, 1, 2424913, 0, 1, 2424914, 65536, 1, 2424915, 131072, 1, 2490449, 0, 1, 2490450, 65536, 1, 2490451, 131072, 1, 2555985, 0, 1, 2555986, 65536, 1, 2555987, 131072, 1, 2621521, 0, 1, 2621522, 65536, 1, 2621523, 131072, 1, 2687057, 0, 1, 2687058, 65536, 1, 2687059, 131072, 1, 2752593, 0, 1, 2752594, 65536, 1, 2752595, 131072, 1, 2818105, 0, 0, 2883641, 0, 1, 2949177, 0, 2, 2818106, 65536, 0, 2883642, 65536, 1, 2949178, 65536, 2, 2818107, 65536, 0, 2883643, 65536, 1, 2949179, 65536, 2, 2818108, 65536, 0, 2883644, 65536, 1, 2949180, 65536, 2, 2818109, 65536, 0, 2883645, 65536, 1, 2949181, 65536, 2, 2818110, 65536, 0, 2883646, 65536, 1, 2949182, 65536, 2, 2818111, 65536, 0, 2883647, 65536, 1, 2949183, 65536, 2, 2818112, 65536, 0, 2883648, 65536, 1, 2949184, 65536, 2, 2818113, 65536, 0, 2883649, 65536, 1, 2949185, 65536, 2, 2818114, 65536, 0, 2883650, 65536, 1, 2949186, 65536, 2, 2818115, 65536, 0, 2883651, 65536, 1, 2949187, 65536, 2, 2818116, 65536, 0, 2883652, 65536, 1, 2949188, 65536, 2, 2818117, 65536, 0, 2883653, 65536, 1, 2949189, 65536, 2, 2818118, 65536, 0, 2883654, 65536, 1, 2949190, 65536, 2, 2818119, 65536, 0, 2883655, 65536, 1, 2949191, 65536, 2, 2818120, 65536, 0, 2883656, 65536, 1, 2949192, 65536, 2, 2818121, 65536, 0, 2883657, 65536, 1, 2949193, 65536, 2, 2818122, 65536, 0, 2883658, 65536, 1, 2949194, 65536, 2, 2818123, 65536, 0, 2883659, 65536, 1, 2949195, 65536, 2, 2818124, 65536, 0, 2883660, 65536, 1, 2949196, 65536, 2, 2818125, 65536, 0, 2883661, 65536, 1, 2949197, 65536, 2, 2818126, 65536, 0, 2883662, 65536, 1, 2949198, 65536, 2, 2818127, 65536, 0, 2883663, 65536, 1, 2949199, 65536, 2, 2818128, 65536, 0, 2883664, 65536, 1, 2949200, 65536, 2, 2818129, 65536, 1, 2883665, 65536, 1, 2949201, 65536, 2, 2818130, 65536, 1, 2883666, 65536, 1, 2949202, 65536, 2, 2818131, 131072, 1, 2883667, 131072, 1, 2949203, 131072, 2, 1310803, 131072, 0, 1376339, 131072, 1, 1441875, 131072, 1, 1310802, 65536, 0, 1376338, 65536, 1, 1441874, 65536, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(3246, 908)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(53.1328, 412)
+shape = SubResource("RectangleShape2D_8hwop")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(2884, 895)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_2l2oi")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(-64.0576, 886)
+shape = SubResource("RectangleShape2D_4jurf")
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(2884, -27)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_2l2oi")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D3"]
+position = Vector2(-64.0576, 886)
+shape = SubResource("RectangleShape2D_4jurf")
