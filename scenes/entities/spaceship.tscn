@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://ctfq16ucdtgys"]
+[gd_scene load_steps=16 format=3 uid="uid://ctfq16ucdtgys"]
 
 [ext_resource type="Script" path="res://scripts/entities/spaceship.gd" id="1_sllql"]
 [ext_resource type="Script" path="res://addons/antialiased_line2d/antialiased_line2d.gd" id="2_mmcyt"]
@@ -6,7 +6,9 @@
 [ext_resource type="Texture2D" uid="uid://cvdhxwe3ul1b0" path="res://assets/sprites/circle_particle.png" id="3_ix18r"]
 [ext_resource type="Texture2D" uid="uid://doryyeihwfn62" path="res://assets/sprites/dashed-line.png" id="3_vriby"]
 [ext_resource type="Shader" path="res://shaders/projectile_trajectory.gdshader" id="3_ysops"]
+[ext_resource type="Shader" path="res://shaders/ring_glow.gdshader" id="5_hlafo"]
 [ext_resource type="Texture2D" uid="uid://b3br76e4xqrdu" path="res://addons/kenney_particle_pack/circle_01.png" id="7_2qai1"]
+[ext_resource type="Texture2D" uid="uid://de7eithyh7eo1" path="res://addons/kenney_particle_pack/circle_05.png" id="8_72b0g"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c2t8e"]
 radius = 93.0054
@@ -25,6 +27,11 @@ image = SubResource("Image_g0elf")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_rcv4m"]
 shader = ExtResource("3_ysops")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m6wov"]
+shader = ExtResource("5_hlafo")
+shader_parameter/ring_color = Color(1, 1, 1, 1)
+shader_parameter/visibility = 0.247
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_py63k"]
 blend_mode = 1
@@ -56,6 +63,11 @@ antialiased = true
 
 [node name="TrajectoryRaycast" type="RayCast2D" parent="."]
 collision_mask = 2
+
+[node name="Circle05" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_m6wov")
+scale = Vector2(2, 2)
+texture = ExtResource("8_72b0g")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_u6ml1")

@@ -1,10 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://bk1ng8ft4k13r"]
+[gd_scene load_steps=13 format=3 uid="uid://bk1ng8ft4k13r"]
 
 [ext_resource type="Script" path="res://scripts/entities/sun.gd" id="1_jkyhw"]
 [ext_resource type="Texture2D" uid="uid://grtclsyvb8ap" path="res://assets/sprites/sun.png" id="2_qms23"]
 [ext_resource type="Script" path="res://scripts/entities/sun_gravity.gd" id="3_dgyxk"]
 [ext_resource type="Shader" path="res://shaders/godrays.gdshader" id="4_s4lem"]
 [ext_resource type="Script" path="res://scripts/entities/bonus_area.gd" id="4_vh0lo"]
+[ext_resource type="Shader" path="res://shaders/ring_glow.gdshader" id="6_w6enx"]
+[ext_resource type="Texture2D" uid="uid://bi2snlrylwagu" path="res://addons/kenney_particle_pack/circle_02.png" id="7_n5vn7"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4isk3"]
 radius = 364.0
@@ -31,6 +33,11 @@ shader_parameter/seed = 5.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_0nr1j"]
 radius = 125.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dmr8r"]
+shader = ExtResource("6_w6enx")
+shader_parameter/ring_color = Color(1, 1, 1, 1)
+shader_parameter/visibility = 0.355
+
 [node name="Sun" type="Area2D"]
 script = ExtResource("1_jkyhw")
 
@@ -44,6 +51,7 @@ shape = SubResource("CircleShape2D_4isk3")
 script = ExtResource("3_dgyxk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="GravityArea"]
+visible = false
 shape = SubResource("CircleShape2D_02rcq")
 
 [node name="ColorRect" type="ColorRect" parent="."]
@@ -65,7 +73,13 @@ mouse_filter = 2
 script = ExtResource("4_vh0lo")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="BonusArea"]
+visible = false
 shape = SubResource("CircleShape2D_0nr1j")
+
+[node name="OutlineGlow" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_dmr8r")
+scale = Vector2(2.56, 2.56)
+texture = ExtResource("7_n5vn7")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

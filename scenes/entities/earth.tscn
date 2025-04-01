@@ -1,9 +1,11 @@
-[gd_scene load_steps=13 format=3 uid="uid://861gfsuj7lom"]
+[gd_scene load_steps=16 format=3 uid="uid://861gfsuj7lom"]
 
 [ext_resource type="Script" path="res://scripts/entities/earth.gd" id="1_in325"]
 [ext_resource type="Texture2D" uid="uid://b0dcofcpw16o" path="res://assets/sprites/earth.png" id="2_k7k3a"]
 [ext_resource type="Texture2D" uid="uid://de7eithyh7eo1" path="res://addons/kenney_particle_pack/circle_05.png" id="3_d5tlu"]
 [ext_resource type="PackedScene" uid="uid://bgs863c2jpump" path="res://scenes/ui/damage_numbers.tscn" id="3_j1wuq"]
+[ext_resource type="Texture2D" uid="uid://bi2snlrylwagu" path="res://addons/kenney_particle_pack/circle_02.png" id="5_qhvko"]
+[ext_resource type="Shader" path="res://shaders/ring_glow.gdshader" id="5_rkun1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7ujfu"]
 radius = 111.0
@@ -44,6 +46,11 @@ color_ramp = SubResource("GradientTexture1D_55igj")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7ad1r"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_alqgr"]
+shader = ExtResource("5_rkun1")
+shader_parameter/ring_color = Color(1, 1, 1, 1)
+shader_parameter/visibility = 0.4
+
 [node name="Earth" type="RigidBody2D"]
 mass = 0.6
 gravity_scale = 0.0
@@ -58,6 +65,7 @@ texture = ExtResource("2_k7k3a")
 
 [node name="FireParticles" type="GPUParticles2D" parent="."]
 material = SubResource("CanvasItemMaterial_q1ngn")
+emitting = false
 amount = 50
 process_material = SubResource("ParticleProcessMaterial_6amd6")
 texture = ExtResource("3_d5tlu")
@@ -68,5 +76,10 @@ trail_lifetime = 0.01
 [node name="DamageNumbers" parent="." instance=ExtResource("3_j1wuq")]
 material = SubResource("ShaderMaterial_7ad1r")
 position = Vector2(0, -158)
+
+[node name="OutlineGlow" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_alqgr")
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("5_qhvko")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
