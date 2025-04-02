@@ -1,0 +1,97 @@
+[gd_scene load_steps=2 format=3 uid="uid://do4v846bf7snb"]
+
+[ext_resource type="Script" path="res://scripts/ui/tutorial_menu.gd" id="1_xmp0q"]
+
+[node name="TutorialMenu" type="CanvasLayer"]
+script = ExtResource("1_xmp0q")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="Panel" type="Panel" parent="Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1096.0
+offset_top = -752.0
+offset_right = 1096.0
+offset_bottom = 752.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -360.0
+offset_top = 104.0
+offset_right = 360.0
+offset_bottom = 240.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 99
+bbcode_enabled = true
+text = "How To Play"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(1600, 805)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 70
+theme_override_font_sizes/bold_font_size = 70
+bbcode_enabled = true
+text = "- [u]Click & Drag[/u] the spaceship to aim and
+   shoot.
+
+- [u]Click Again[/u] to detonate in mid-air.
+
+- [u]Press Spacebar[/u] to swap between 
+   [color=crimson]Push[/color] and [color=skyblue]Pull[/color] projectiles.
+
+- [u]Goal:[/u] Push Earth into the Sun!"
+scroll_active = false
+
+[node name="CloseButton" type="Button" parent="Control/Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -152.0
+offset_top = -256.0
+offset_right = 148.0
+offset_bottom = -115.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Got it!"
+
+[connection signal="pressed" from="Control/Panel/CloseButton" to="." method="_on_close_button_pressed"]
