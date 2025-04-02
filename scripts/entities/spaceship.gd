@@ -171,6 +171,9 @@ func calculate_trajectory_points(direction: Vector2) -> void:
 			break  # End the trajectory
 
 func _process(delta):
+	if GameManager.is_paused():
+		return
+	
 	if is_mouse_held:
 		var mouse_pos: Vector2 = get_local_mouse_position()
 		var length: float = mouse_pos.length()

@@ -18,6 +18,7 @@ func _on_continue_pressed() -> void:
 	level.toggle_pause_menu()
 
 func _on_retry_pressed() -> void:
+	level.toggle_pause_menu()
 	level.reset_level()
 
 func _on_exit_pressed() -> void:
