@@ -15,7 +15,7 @@ func _ready():
 
 # Function to load the selected level
 func _on_level_selected(level_index: int) -> void:
-	get_tree().change_scene_to_file(levels[level_index])
+	SceneManager.change_scene(levels[level_index])
 
 func _on_back_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	SceneManager.change_scene("res://scenes/ui/main_menu.tscn")

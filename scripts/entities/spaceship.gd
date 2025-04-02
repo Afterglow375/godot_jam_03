@@ -2,6 +2,8 @@ extends Area2D
 
 signal projectile_created(projectile)
 signal angle_changed(new_angle)
+signal update_charge_bar_requested(value)
+signal add_shot_requested(value)
 
 const MAX_LINE_LENGTH: float = 500.0  # Adjust this value to change max length
 const PushProjectileScene: PackedScene = preload("res://scenes/entities/push_projectile.tscn")
@@ -15,7 +17,6 @@ var trajectory_line: Line2D = null  # Line for trajectory
 var trajectory_end: Sprite2D = null  # Reference to the end sprite
 var current_line_end: Vector2 = Vector2.ZERO
 var drag_started_in_area: bool = false
-var level: Node = null  # Reference to the level
 var ray_cast: RayCast2D = null  # RayCast for collision detection
 var can_shoot: bool = true  # True if user can shoot from spaceship, false if can't
 var earth: RigidBody2D = null  # Reference to the Earth node
@@ -30,8 +31,6 @@ var hover_scale: Vector2 = Vector2(1.2, 1.2)  # Scale when hovered
 var rotation_speed: float = 10.0  # Adjust for faster/slower rotation
 var is_hovered: bool = false  # Whether the mouse is hovering over the Area2D
 var speed_multiplier: float = 0.0  # Speed multiplier based on line length
-
-@onready var game_manager = get_node("/root/GameManager")
 
 func _ready():
 	line = $SlingshotLine
@@ -49,14 +48,11 @@ func _ready():
 	update_projectile_overlays()
 	
 	# Connect to GameManager's projectile type changed signal
-	game_manager.projectile_type_changed.connect(_on_projectile_type_changed)
+	GameManager.projectile_type_changed.connect(_on_projectile_type_changed)
 	
 	# Hide trajectory end sprite initially
 	if trajectory_end:
 		trajectory_end.visible = false
-	
-	# Store reference to the level
-	level = get_tree().current_scene
 	
 	# Get reference to the Earth node
 	earth = get_node("../Earth")
@@ -72,8 +68,8 @@ func _ready():
 	mouse_exited.connect(_on_mouse_exited)
 
 func connect_to_win_popup() -> void:
-	# The win popup is added by the level script, ensure it exists now
-	level.win_popup.victory_achieved.connect(_on_victory_achieved)
+	var win_popup = get_node("../UI/WinPopup")
+	win_popup.victory_achieved.connect(_on_victory_achieved)
 	
 func _input_event(viewport, event, shape_idx):
 	if event is InputEventMouseButton:
@@ -99,7 +95,7 @@ func _input(event):
 	
 	# Toggle between push and pull projectiles with spacebar
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE and can_shoot:
-		game_manager.toggle_projectile_type()
+		GameManager.toggle_projectile_type()
 
 func _process(delta):
 	if is_mouse_held:
@@ -111,7 +107,7 @@ func _process(delta):
 		if length > MAX_LINE_LENGTH:
 			current_line_end = mouse_pos.normalized() * MAX_LINE_LENGTH
 		
-		level.update_charge_bar(length)
+		update_charge_bar_requested.emit(length)
 		
 		# Draw the input line
 		line.clear_points()
@@ -271,7 +267,7 @@ func update_trajectory_line(direction: Vector2) -> void:
 func launch_projectile() -> void:
 	if current_line_end.length() > 0:
 		# Select the appropriate projectile scene based on GameManager state
-		var projectile_scene = PullProjectileScene if game_manager.is_using_pull_projectile() else PushProjectileScene
+		var projectile_scene = PullProjectileScene if GameManager.is_using_pull_projectile() else PushProjectileScene
 		var projectile_container = projectile_scene.instantiate()
 		
 		get_parent().add_child(projectile_container)
@@ -287,7 +283,7 @@ func launch_projectile() -> void:
 		increment_score()
 		can_shoot = false
 		
-		level.update_charge_bar(0)
+		update_charge_bar_requested.emit(0)
 
 func _on_projectile_destroyed() -> void:
 	if earth and earth.linear_velocity.length() <= earth.movement_threshold:
@@ -311,7 +307,7 @@ func _on_victory_achieved() -> void:
 			trajectory_end.visible = false
 
 func increment_score() -> void:
-	level.add_shots(1)
+	add_shot_requested.emit(1)
 
 func _on_mouse_entered() -> void:
 	is_hovered = true
@@ -321,8 +317,8 @@ func _on_mouse_exited() -> void:
 
 # Updates the visibility of push and pull overlays based on current projectile type
 func update_projectile_overlays() -> void:
-	push_overlay.visible = !game_manager.is_using_pull_projectile()
-	pull_overlay.visible = game_manager.is_using_pull_projectile()
+	push_overlay.visible = !GameManager.is_using_pull_projectile()
+	pull_overlay.visible = GameManager.is_using_pull_projectile()
 
 func _on_projectile_type_changed(_using_pull: bool) -> void:
 	update_projectile_overlays()

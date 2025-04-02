@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://6sgn2tbvxsie"]
+[gd_scene load_steps=15 format=3 uid="uid://6sgn2tbvxsie"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_pjvny"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_hylch"]
@@ -6,7 +6,10 @@
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_63k5r"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_gdxui"]
 [ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_oplmq"]
-[ext_resource type="PackedScene" path="res://scenes/levels/tile_map.tscn" id="7_n2qvt"]
+[ext_resource type="PackedScene" uid="uid://bgkxutxm3c7mm" path="res://scenes/levels/tile_map.tscn" id="7_n2qvt"]
+[ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="7_q1du5"]
+[ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="8_lx2pu"]
+[ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_kyxo4"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -103,6 +106,16 @@ scale = Vector2(1.05926, 1.05926)
 texture = ExtResource("5_gdxui")
 
 [node name="WorldEnvironment" parent="." instance=ExtResource("6_oplmq")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UI" instance=ExtResource("7_q1du5")]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("8_lx2pu")]
+visible = false
+
+[node name="WinPopup" parent="UI" instance=ExtResource("9_kyxo4")]
+visible = false
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(2599.51, -984)

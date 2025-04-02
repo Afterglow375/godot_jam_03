@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bv7v1282myvla"]
+[gd_scene load_steps=14 format=3 uid="uid://bv7v1282myvla"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_sxrjf"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_rb7ic"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_3tws1"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_xxeux"]
 [ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_aa1rh"]
+[ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="7_qtagy"]
+[ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="8_sxjsc"]
+[ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="9_em208"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -102,3 +105,13 @@ scale = Vector2(1.05741, 1.05741)
 texture = ExtResource("5_xxeux")
 
 [node name="WorldEnvironment" parent="." instance=ExtResource("6_aa1rh")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UI" instance=ExtResource("9_em208")]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("7_qtagy")]
+visible = false
+
+[node name="WinPopup" parent="UI" instance=ExtResource("8_sxjsc")]
+visible = false

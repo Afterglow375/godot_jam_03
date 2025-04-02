@@ -1,31 +1,20 @@
 extends CanvasLayer
 
-var shots: int = 0
-var angle: float = 0.0
 
 func _ready() -> void:
-	update_shots_display()
-	update_angle_display()
-
-# Update the shots count and display
-func update_shots(new_shots: int) -> void:
-	shots = new_shots
-	update_shots_display()
-
-# Add shots to the current count
-func add_shots(points: int) -> void:
-	shots += points
-	update_shots_display()
+	update_shots_display(0)
+	update_angle_display(0.0)
+	var spaceship = get_node("../../Spaceship")
+	spaceship.angle_changed.connect(_on_spaceship_angle_changed)
+	
+# Handle angle changed signal from spaceship
+func _on_spaceship_angle_changed(new_angle: float) -> void:
+	update_angle_display(new_angle)
 
 # Update the shots label
-func update_shots_display() -> void:
-	$MarginContainer/VBoxContainer/ScoreLabel.text = "Shots: " + str(shots)
-
-# Update the angle display
-func update_angle(new_angle: float) -> void:
-	angle = new_angle
-	update_angle_display()
+func update_shots_display(num_shots: int = 0) -> void:
+	$MarginContainer/VBoxContainer/ScoreLabel.text = "Shots: " + str(num_shots)
 
 # Update the angle label
-func update_angle_display() -> void:
+func update_angle_display(angle: float) -> void:
 	$MarginContainer/VBoxContainer/AngleLabel.text = "Angle: " + ("%.2f" % angle) 

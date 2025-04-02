@@ -21,7 +21,9 @@ enum Audio {
 	# Other sounds
 	TADAA,
 	SUN_HIT,
-	EARTH_PUSH
+	EARTH_PUSH,
+	# Menu sounds
+	THEME_SONG
 }
 
 # Dictionary mapping Audio to their file paths and default volumes
@@ -96,11 +98,18 @@ var _audio_data = {
 		"path": "res://assets/audio/earth push sound.wav", 
 		"volume": 0.0,
 		"max_distance": 3000.0
+	},
+	# Menu sounds
+	Audio.THEME_SONG: {
+		"path": "res://assets/audio/theme_song.wav",
+		"volume": -12.0
 	}
 }
 
 # Preload audio resources for efficiency
 var _preloaded_audio = {}
+var _theme_song_player: AudioStreamPlayer
+var _theme_song_scenes: Array[String] = ["res://scenes/ui/main_menu.tscn", "res://scenes/ui/level_select.tscn"]
 
 func _ready() -> void:
 	# Preload all audio resources
@@ -109,6 +118,22 @@ func _ready() -> void:
 		_preloaded_audio[clip_id] = load(path)
 		
 	print("AudioManager initialized with ", _preloaded_audio.size(), " audio clips")
+		
+	# Connect to SceneManager signals
+	SceneManager.scene_change_completed.connect(_on_scene_change_completed)
+	
+	_theme_song_player = play(Audio.THEME_SONG, -100, true, false)
+
+func _on_scene_change_completed(scene_path: String) -> void:
+	if _theme_song_scenes.has(scene_path):
+		if _theme_song_player == null or !is_instance_valid(_theme_song_player):
+			_theme_song_player = play(Audio.THEME_SONG, -100, true, false)
+	else:
+		# Stop the theme song when not in menu scenes
+		if _theme_song_player != null and is_instance_valid(_theme_song_player):
+			_theme_song_player.stop()
+			_theme_song_player.queue_free()
+			_theme_song_player = null
 
 # Play an audio clip at the specified volume (can override default volume)
 # Returns the created AudioStreamPlayer so you can connect to its signals if needed

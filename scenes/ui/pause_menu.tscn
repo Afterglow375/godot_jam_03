@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_0pi5o"]
 
-[node name="CanvasLayer" type="CanvasLayer"]
+[node name="PauseMenu" type="CanvasLayer"]
 script = ExtResource("1_0pi5o")
 
 [node name="Control" type="Control" parent="."]

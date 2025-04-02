@@ -56,7 +56,7 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	)
 
 func _on_level_select_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/ui/level_select.tscn")
+	SceneManager.change_scene("res://scenes/ui/level_select.tscn")
 	
 func _on_retry_button_pressed() -> void:
 	emit_signal("retry_level")
