@@ -17,11 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SceneManager="*res://scripts/systems/scene_manager.gd"
 GameManager="*res://scripts/systems/game_manager.gd"
 AudioManager="*res://scripts/systems/audio_manager.gd"
 Signal_Debugger="*res://addons/SignalVisualizer/Debugger/SignalDebugger.gd"
 AntialiasedLine2DTexture="*res://addons/antialiased_line2d/texture.gd"
+SceneManager="*res://scenes/ui/scene_transition.tscn"
 
 [display]
 
