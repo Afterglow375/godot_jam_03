@@ -55,6 +55,31 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 128
 text = "Level 5"
 
+[node name="LevelButton6" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 6"
+
+[node name="LevelButton7" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 7"
+
+[node name="LevelButton8" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 8"
+
+[node name="LevelButton9" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 9"
+
+[node name="LevelButton10" type="Button" parent="GridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 128
+text = "Level 10"
+
 [node name="BackButton" type="Button" parent="."]
 layout_mode = 1
 anchors_preset = 3

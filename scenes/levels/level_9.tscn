@@ -1,0 +1,138 @@
+[gd_scene load_steps=14 format=3 uid="uid://ceovcyo4blwpp"]
+
+[ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_t463p"]
+[ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="2_ios0c"]
+[ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="3_06krt"]
+[ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="4_uopqm"]
+[ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_lf3fp"]
+[ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_rgy7f"]
+[ext_resource type="PackedScene" uid="uid://c0gj3q5vqo5v8" path="res://scenes/levels/tile_map.tscn" id="7_72lvc"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mp8fg"]
+size = Vector2(3813.63, 79)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
+size = Vector2(78.457, 2221)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_456qc"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ddiqy"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0cgec"]
+size = Vector2(119.177, 480)
+
+[node name="Main" type="Node"]
+script = ExtResource("1_t463p")
+
+[node name="Sun" parent="." instance=ExtResource("2_ios0c")]
+position = Vector2(3128, 1088)
+
+[node name="Earth" parent="." instance=ExtResource("3_06krt")]
+position = Vector2(2304, 1088)
+
+[node name="Spaceship" parent="." instance=ExtResource("4_uopqm")]
+position = Vector2(720, 1088)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_top = -79.0
+offset_right = 3814.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(1906.82, 39.5)
+shape = SubResource("RectangleShape2D_mp8fg")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_top = 2160.0
+offset_right = 3814.0
+offset_bottom = 2239.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect2"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect2/StaticBody2D"]
+position = Vector2(1906.82, 39.5)
+shape = SubResource("RectangleShape2D_mp8fg")
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+offset_left = -80.0
+offset_top = -1.0
+offset_right = -1.0
+offset_bottom = 2200.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect3"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect3/StaticBody2D"]
+position = Vector2(39.2288, 1081)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="ColorRect4" type="ColorRect" parent="."]
+offset_left = 3840.0
+offset_top = -1.0
+offset_right = 3919.0
+offset_bottom = 2200.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect4"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
+position = Vector2(39.2288, 1091.5)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(1880, 1096)
+scale = Vector2(1.05926, 1.05926)
+texture = ExtResource("5_lf3fp")
+
+[node name="WorldEnvironment" parent="." instance=ExtResource("6_rgy7f")]
+
+[node name="TileMap" parent="." instance=ExtResource("7_72lvc")]
+layer_0/tile_data = PackedInt32Array(3342349, 524288, 1, 3407885, 65536, 1, 3473421, 65536, 1, 3407886, 524288, 1, 3473422, 65536, 1, 3473423, 524288, 1, 3145738, 524288, 1, 3211274, 65536, 1, 3276810, 65536, 1, 3211275, 524288, 1, 3276811, 65536, 1, 3276812, 524288, 1, 2949127, 524288, 1, 3014663, 65536, 1, 3080199, 65536, 1, 3014664, 524288, 1, 3080200, 65536, 1, 3080201, 524288, 1, 2752516, 524288, 1, 2818052, 65536, 1, 2883588, 65536, 1, 2818053, 524288, 1, 2883589, 65536, 1, 2883590, 524288, 1, 2555905, 524288, 1, 2621441, 65536, 1, 2686977, 65536, 1, 2621442, 524288, 1, 2686978, 65536, 1, 2686979, 524288, 1, 2424830, 524288, 1, 2490366, 65536, 1, 2555902, 65536, 1, 2490367, 524288, 1, 2555903, 65536, 1, 2490368, 524288, 1, 3276805, 65536, 1, 3211269, 65536, 1, 3145733, 65536, 1, 3080197, 65536, 1, 3014661, 65536, 1, 2949125, 65536, 1, 2949124, 65536, 1, 2949123, 65536, 1, 2883587, 65536, 1, 2818051, 65536, 1, 2752515, 65536, 1, 2752514, 65536, 1, 2752513, 65536, 1, 2752512, 65536, 1, 2686976, 65536, 1, 2621440, 65536, 1, 2555904, 65536, 1, 2621439, 65536, 1, 2621438, 65536, 1, 2686974, 65536, 1, 2752510, 65536, 1, 2818046, 65536, 1, 2883582, 65536, 1, 2949118, 65536, 1, 3014654, 65536, 1, 3080190, 65536, 1, 3145726, 65536, 1, 3211262, 65536, 1, 3276798, 65536, 1, 3342334, 65536, 1, 3407870, 65536, 1, 3473406, 65536, 1, 3538942, 65536, 1, 3538943, 65536, 1, 3473407, 65536, 1, 3407871, 65536, 1, 3342335, 65536, 1, 3276799, 65536, 1, 3211263, 65536, 1, 3145727, 65536, 1, 3080191, 65536, 1, 3014655, 65536, 1, 2949119, 65536, 1, 2883583, 65536, 1, 2818047, 65536, 1, 2752511, 65536, 1, 2686975, 65536, 1, 2818048, 65536, 1, 2883584, 65536, 1, 2949120, 65536, 1, 3014656, 65536, 1, 3080192, 65536, 1, 3145728, 65536, 1, 3211264, 65536, 1, 3276800, 65536, 1, 3342336, 65536, 1, 3407872, 65536, 1, 3473408, 65536, 1, 3473409, 65536, 1, 3407873, 65536, 1, 3342337, 65536, 1, 3276801, 65536, 1, 3211265, 65536, 1, 3145729, 65536, 1, 3080193, 65536, 1, 3014657, 65536, 1, 2949121, 65536, 1, 2883585, 65536, 1, 2818049, 65536, 1, 2818050, 65536, 1, 2883586, 65536, 1, 2949122, 65536, 1, 3014658, 65536, 1, 3080194, 65536, 1, 3145730, 65536, 1, 3211266, 65536, 1, 3276802, 65536, 1, 3342338, 65536, 1, 3407874, 65536, 1, 3473410, 65536, 1, 3473411, 65536, 1, 3407875, 65536, 1, 3342339, 65536, 1, 3276803, 65536, 1, 3211267, 65536, 1, 3145731, 65536, 1, 3080195, 65536, 1, 3014659, 65536, 1, 3014660, 65536, 1, 3080196, 65536, 1, 3145732, 65536, 1, 3211268, 65536, 1, 3276804, 65536, 1, 3342340, 65536, 1, 3407876, 65536, 1, 3473412, 65536, 1, 3473413, 65536, 1, 3407877, 65536, 1, 3342341, 65536, 1, 3342342, 65536, 1, 3276806, 65536, 1, 3211270, 65536, 1, 3145734, 65536, 1, 3080198, 65536, 1, 3014662, 65536, 1, 2949126, 65536, 1, 3145735, 65536, 1, 3211271, 65536, 1, 3276807, 65536, 1, 3342343, 65536, 1, 3407879, 65536, 1, 3407878, 65536, 1, 3473414, 65536, 1, 3473415, 65536, 1, 3473416, 65536, 1, 3407880, 65536, 1, 3342344, 65536, 1, 3276808, 65536, 1, 3211272, 65536, 1, 3145736, 65536, 1, 3145737, 65536, 1, 3211273, 65536, 1, 3276809, 65536, 1, 3342345, 65536, 1, 3407881, 65536, 1, 3473417, 65536, 1, 3473418, 65536, 1, 3407882, 65536, 1, 3342346, 65536, 1, 3342347, 65536, 1, 3407883, 65536, 1, 3473419, 65536, 1, 3473420, 65536, 1, 3407884, 65536, 1, 3342348, 65536, 1, 1376287, 0, 0, 1441823, 0, 1, 1507359, 0, 1, 1572895, 0, 1, 1638431, 0, 1, 1703967, 0, 1, 1769503, 0, 1, 1835039, 0, 1, 1900575, 0, 1, 1966111, 0, 1, 2031647, 0, 1, 2097183, 0, 2, 1376288, 65536, 0, 1441824, 65536, 1, 1507360, 65536, 1, 1572896, 65536, 1, 1638432, 65536, 1, 1703968, 65536, 1, 1769504, 65536, 1, 1835040, 65536, 1, 1900576, 65536, 1, 1966112, 65536, 1, 2031648, 65536, 1, 2097184, 65536, 2, 1376289, 131072, 0, 1441825, 131072, 1, 1507361, 131072, 1, 1572897, 131072, 1, 1638433, 131072, 1, 1703969, 131072, 1, 1769505, 131072, 1, 1835041, 131072, 1, 1900577, 131072, 1, 1966113, 131072, 1, 2031649, 131072, 1, 2097185, 131072, 2)
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+position = Vector2(1480, 1080)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_456qc")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D4"]
+position = Vector2(-1072.59, 1080)
+polygon = PackedVector2Array(-476.706, -720, 238.353, 0, -476.706, 0)
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2(3840, -1)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ddiqy")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D2"]
+position = Vector2(-2522.57, 1081)
+shape = SubResource("RectangleShape2D_0cgec")
