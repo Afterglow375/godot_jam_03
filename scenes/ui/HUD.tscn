@@ -76,3 +76,19 @@ theme_override_font_sizes/font_size = 64
 theme_override_styles/background = SubResource("StyleBoxFlat_va55n")
 theme_override_styles/fill = SubResource("StyleBoxFlat_6npkm")
 max_value = 500.0
+
+[node name="LevelContainer" type="MarginContainer" parent="."]
+offset_right = 1000.0
+offset_bottom = 100.0
+mouse_filter = 2
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 0
+
+[node name="LevelLabel" type="Label" parent="LevelContainer"]
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 64
+text = "Level 1"
+vertical_alignment = 1

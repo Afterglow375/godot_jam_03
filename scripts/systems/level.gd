@@ -21,6 +21,9 @@ func _ready() -> void:
 	# Deferred to ensure nodes are ready
 	call_deferred("connect_signals")
 
+	var level_number: int = get_current_level_number()
+	update_level_labels(level_number)
+
 # Connect signals once the level is fully set up
 func connect_signals() -> void:
 	# Find and connect to bonus area signals
@@ -121,3 +124,24 @@ func show_win_popup() -> void:
 
 func _on_bonus_points_changed(points: int) -> void:
 	bonus_points = points
+
+func update_level_labels(level_number: int) -> void:
+	var level_label: Label = $UI/HUD/LevelContainer/LevelLabel
+	
+	level_label.text = "Level " + str(level_number)
+		
+	# Also update the win popup label
+	var win_label: Label = $UI/WinPopup/Panel/VBoxContainer/Label
+	win_label.text = "Level " + str(level_number) + " Cleared!"
+
+# Helper function to get the current level number from scene path
+func get_current_level_number() -> int:
+	var current_scene_path: String = get_tree().current_scene.scene_file_path
+	var level_number: int = 0
+	
+	if "level_" in current_scene_path:
+		var parts: Array = current_scene_path.get_file().replace(".tscn", "").split("_")
+		if parts.size() > 1:
+			level_number = parts[1].to_int()
+	
+	return level_number

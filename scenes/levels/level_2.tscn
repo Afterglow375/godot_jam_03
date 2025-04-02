@@ -16,18 +16,18 @@
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lfmv0"]
 blend_mode = 1
 
-[sub_resource type="Curve" id="Curve_saavb"]
+[sub_resource type="Curve" id="Curve_hh8je"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CurveTexture" id="CurveTexture_fnnc0"]
-curve = SubResource("Curve_saavb")
+curve = SubResource("Curve_hh8je")
 
-[sub_resource type="Gradient" id="Gradient_rrl0v"]
+[sub_resource type="Gradient" id="Gradient_66k75"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_peuld"]
-gradient = SubResource("Gradient_rrl0v")
+gradient = SubResource("Gradient_66k75")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_o2o1n"]
 lifetime_randomness = 0.3
