@@ -20,7 +20,7 @@ shader_parameter/black_threshold = 0.0
 viewport_path = NodePath("SubViewportContainer/SubViewport")
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kllct"]
-radius = 36.1248
+radius = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_c8q60"]
 radius = 318.705

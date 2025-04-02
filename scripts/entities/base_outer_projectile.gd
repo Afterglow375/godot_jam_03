@@ -124,7 +124,7 @@ func _on_body_exited(body: Node2D) -> void:
 				break
 		
 		# If no more bodies are affected, fade out and stop the sound
-		if affected_bodies.size() == 0 and sound_player and sound_player.playing:
+		if affected_bodies.size() == 0 and sound_player and is_instance_valid(sound_player) and sound_player.playing:
 			# Create a tween for fading out
 			var tween = create_tween()
 			tween.tween_property(sound_player, "volume_db", -40.0, FADE_DURATION)
