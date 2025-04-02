@@ -30,6 +30,9 @@ var charging_explosion: bool = false
 var charge_time: float = 0.0
 var fading: bool = false
 var fade_time: float = 0.0
+var initial_position: Vector2 = Vector2.ZERO  # Store initial position for distance calculation
+var total_distance_traveled: float = 0.0  # Track total distance traveled
+var last_position: Vector2 = Vector2.ZERO  # Track last position for distance calculation
 
 func _ready() -> void:
 	# Setup the inner projectile (RigidBody2D)
@@ -47,10 +50,18 @@ func _ready() -> void:
 	
 	# Create the positional sound player
 	create_projectile_sound_player()
+	
+	# Store initial position
+	initial_position = global_position
+	last_position = global_position
 
 func _process(delta: float) -> void:
 	# Get the position of the Inner Projectile
 	var projectile_pos: Vector2 = inner_projectile.global_position
+	
+	# Update distance tracking
+	total_distance_traveled += last_position.distance_to(projectile_pos)
+	last_position = projectile_pos
 	
 	# Center the TextureRect/SubViewportContainer on the projectile
 	texture_rect.global_position = projectile_pos - viewport_size/2
@@ -113,6 +124,10 @@ func set_charge_amount(amount: float) -> void:
 
 # Launch the projectile in the specified direction
 func launch(direction: Vector2, speed_multiplier: float = 1.0) -> void:
+	# Reset distance tracking
+	total_distance_traveled = 0.0
+	last_position = global_position
+	
 	# Set the linear_velocity directly for RigidBody2D
 	inner_projectile.linear_velocity = -direction * (BASE_SPEED * speed_multiplier)
 	

@@ -31,6 +31,8 @@ var hover_scale: Vector2 = Vector2(1.2, 1.2)  # Scale when hovered
 var rotation_speed: float = 10.0  # Adjust for faster/slower rotation
 var is_hovered: bool = false  # Whether the mouse is hovering over the Area2D
 var speed_multiplier: float = 0.0  # Speed multiplier based on line length
+var trajectory_points: Array[Vector2] = []  # List to store trajectory points
+var is_calculating_trajectory: bool = false  # Flag to indicate if trajectory needs updating
 
 func _ready():
 	line = $SlingshotLine
@@ -76,6 +78,7 @@ func _input_event(viewport, event, shape_idx):
 		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed and can_shoot:
 			drag_started_in_area = true
 			is_mouse_held = true
+			is_calculating_trajectory = true
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -96,6 +99,76 @@ func _input(event):
 	# Toggle between push and pull projectiles with spacebar
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE and can_shoot:
 		GameManager.toggle_projectile_type()
+
+func _physics_process(delta):
+	if is_calculating_trajectory and is_mouse_held:
+		var mouse_pos: Vector2 = get_local_mouse_position()
+		var length: float = mouse_pos.length()
+		
+		# Only calculate trajectory if the mouse is far enough from the center
+		if length > 5.0:
+			var direction: Vector2 = -mouse_pos.normalized()
+			calculate_trajectory_points(direction)
+		else:
+			trajectory_points.clear()
+
+func calculate_trajectory_points(direction: Vector2) -> void:
+	# Clear existing points
+	trajectory_points.clear()
+	
+	# Add the starting point (spaceship position)
+	trajectory_points.append(Vector2.ZERO)
+	
+	var current_position: Vector2 = Vector2.ZERO
+	var current_direction: Vector2 = direction
+	
+	# Loop through each potential bounce
+	for bounce in range(MAX_BOUNCES + 1):
+		# Add a small offset to avoid self-collision
+		var raycast_start = current_position + current_direction * 2.0
+		
+		# Set raycast position and direction
+		ray_cast.global_position = to_global(raycast_start)
+		ray_cast.target_position = current_direction * 5000
+		ray_cast.force_raycast_update()
+		
+		if ray_cast.is_colliding():
+			# Get collision information
+			var collision_point = to_local(ray_cast.get_collision_point())
+			var collision_normal = ray_cast.get_collision_normal()
+			
+			# Make sure normal is valid
+			if collision_normal.length_squared() < 0.01:
+				# Invalid normal, use a perpendicular vector
+				collision_normal = Vector2(-current_direction.y, current_direction.x).normalized()
+			
+			# Add a point slightly before the collision for better visualization
+			var pre_collision = collision_point - current_direction * 2.0
+			trajectory_points.append(pre_collision)
+			
+			# Add the collision point
+			trajectory_points.append(collision_point)
+						
+			# Calculate the reflected direction
+			var reflection = current_direction.bounce(collision_normal)
+			reflection = reflection.normalized()
+			
+			# Add a point slightly after collision in the new direction
+			var post_collision = collision_point + reflection * 2.0
+			trajectory_points.append(post_collision)
+			
+			# Setup for next bounce
+			current_position = collision_point
+			current_direction = reflection
+			
+			# If we've reached the max bounces, exit
+			if bounce == MAX_BOUNCES:
+				break
+		else:
+			# No collision, add a point far in the direction
+			var far_point = current_position + current_direction * 5000
+			trajectory_points.append(far_point)
+			break  # End the trajectory
 
 func _process(delta):
 	if is_mouse_held:
@@ -120,8 +193,8 @@ func _process(delta):
 		# Calculate speed multiplier based on line length (0.0 to 1.0)
 		speed_multiplier = current_line_end.length() / MAX_LINE_LENGTH
 		
-		# Update trajectory line using raycast with bounces
-		update_trajectory_line(direction)
+		# Update trajectory line using stored points
+		update_trajectory_line()
 		
 		# Rotate only the spaceship sprite to point away from the mouse cursor
 		if mouse_pos != Vector2.ZERO:  # Avoid division by zero
@@ -157,6 +230,8 @@ func _process(delta):
 		# Hide trajectory end sprite when not drawing
 		if trajectory_end and trajectory_end.visible:
 			trajectory_end.visible = false
+		
+		is_calculating_trajectory = false
 	
 	# Set target scale based on hover state
 	if is_hovered or is_mouse_held:
@@ -169,100 +244,61 @@ func _process(delta):
 	sprite.scale.x = lerp(sprite.scale.x, target_scale_x * target_scale.x, delta * rotation_speed)
 	sprite.scale.y = lerp(sprite.scale.y, target_scale.y, delta * rotation_speed)
 
-# Updates the trajectory line with multiple bounces
-func update_trajectory_line(direction: Vector2) -> void:
+func update_trajectory_line() -> void:
 	trajectory_line.clear_points()
 	
-	# Make sure trajectory starts at the same position as the slingshot line
-	trajectory_line.add_point(Vector2.ZERO)  # Center of the Area2D/spaceship
-	
-	var current_position: Vector2 = Vector2.ZERO  # Start at the center of the spaceship
-	var current_direction: Vector2 = direction
-	var velocity: Vector2 = direction * (BASE_SPEED * speed_multiplier)
-	
-	# Further reduce effective lifetime to match actual visual behavior
-	var effective_lifetime: float = 4  # Experimentally adjusted for visual accuracy
-	
-	# Store the final trajectory point for the end sprite
-	var final_trajectory_point: Vector2 = Vector2.ZERO
-	
-	# Keep track of the last valid collision normal for fallback
-	var last_valid_normal: Vector2 = Vector2.ZERO
-	
-	for bounce in range(MAX_BOUNCES + 1):
-		if effective_lifetime <= 0:
-			break
-			
-		var raycast_start_position = current_position + current_direction * 0.1
+	if trajectory_points.size() > 0:
+		# Calculate the maximum distance the projectile will travel in 5 seconds
+		# Based on debugging data, the actual distance is about 78% of the theoretical maximum
+		var correction_factor = 0.78  # Empirically determined from debug logs
+		var max_travel_distance = BASE_SPEED * speed_multiplier * 5.0 * correction_factor
 		
-		ray_cast.global_position = to_global(raycast_start_position)
-		ray_cast.target_position = current_direction * 5000
-		ray_cast.force_raycast_update()
+		# Process trajectory points to find the endpoint based on distance
+		var processed_points = calculate_trajectory_with_endpoint(trajectory_points, max_travel_distance)
 		
-		if ray_cast.is_colliding():
-			var collision_point: Vector2 = to_local(ray_cast.get_collision_point())
-			var collision_normal: Vector2 = ray_cast.get_collision_normal()
-			
-			if collision_normal.length_squared() < 0.01:
-				if last_valid_normal != Vector2.ZERO:
-					collision_normal = last_valid_normal
-				else:
-					collision_normal = Vector2(-current_direction.y, current_direction.x).normalized()
-			else:
-				last_valid_normal = collision_normal
-			
-			collision_normal = collision_normal.normalized()
-			
-			var distance_to_collision: float = (collision_point - current_position).length()
-			var time_to_collision: float = distance_to_collision / velocity.length()
-			
-			if time_to_collision > effective_lifetime:
-				var max_distance: float = velocity.length() * effective_lifetime
-				var fizzle_point: Vector2 = current_position + current_direction * max_distance
-				trajectory_line.add_point(fizzle_point)
-				final_trajectory_point = fizzle_point
-				break
-			
-			var pre_collision_point: Vector2 = collision_point - current_direction * 0.5
-			trajectory_line.add_point(pre_collision_point)
-			
-			trajectory_line.add_point(collision_point)
-			
-			var bounced_direction: Vector2
-			if current_direction.y < -0.7 and collision_normal.y > 0.7:
-				bounced_direction = Vector2(current_direction.x, -current_direction.y)
-			else:
-				bounced_direction = current_direction.bounce(collision_normal)
-			
-			bounced_direction = bounced_direction.normalized()
-			
-			if bounced_direction.length_squared() < 0.01:
-				bounced_direction = Vector2(-current_direction.x, -current_direction.y).normalized()
-			
-			# Add a point slightly after the collision with the new direction to fix visual glitches
-			var post_collision_point: Vector2 = collision_point + bounced_direction * 0.5
-			trajectory_line.add_point(post_collision_point)
-			
-			effective_lifetime -= time_to_collision
-			
-			if bounce == MAX_BOUNCES:
-				final_trajectory_point = collision_point
-				break
-				
-			current_direction = bounced_direction
-			current_position = collision_point
-		else:
-			var max_distance: float = velocity.length() * effective_lifetime
-			var fizzle_point: Vector2 = current_position + current_direction * max_distance
-			trajectory_line.add_point(fizzle_point)
-			final_trajectory_point = fizzle_point
-			break
+		# Add all the calculated trajectory points to the Line2D
+		for point in processed_points:
+			trajectory_line.add_point(point)
+		
+		# Update trajectory end sprite position and visibility
+		if trajectory_end:
+			trajectory_end.visible = true
+			# Use the last point as the end marker
+			trajectory_end.position = processed_points[processed_points.size() - 1]
+
+# Calculate the final trajectory with proper endpoint based on maximum travel distance
+func calculate_trajectory_with_endpoint(points: Array[Vector2], max_distance: float) -> Array[Vector2]:
+	var result: Array[Vector2] = []
+	var distance_traveled: float = 0.0
 	
-	# Update trajectory end sprite position and visibility
-	if trajectory_end and trajectory_line.get_point_count() > 0:
-		# Show and position the end sprite at the final trajectory point
-		trajectory_end.visible = true
-		trajectory_end.position = final_trajectory_point
+	result.append(points[0])
+	
+	# Process each segment to calculate distance
+	for i in range(1, points.size()):
+		var prev_point = points[i-1]
+		var current_point = points[i]
+		var segment_distance = prev_point.distance_to(current_point)
+		
+		# Check if adding this segment would exceed the max distance
+		if distance_traveled + segment_distance > max_distance:
+			# Calculate the partial segment that fits within the max distance
+			var remaining_distance = max_distance - distance_traveled
+			var direction = (current_point - prev_point).normalized()
+			var endpoint = prev_point + direction * remaining_distance
+			
+			# Add the endpoint and stop processing
+			result.append(endpoint)
+			break
+		
+		# Add the current point and update distance traveled
+		result.append(current_point)
+		distance_traveled += segment_distance
+		
+	# If we processed all points without exceeding max distance, use the last point
+	if result.size() < 2:
+		result.append(points[1]) # At least add the second point for a valid line
+	
+	return result
 
 func launch_projectile() -> void:
 	if current_line_end.length() > 0:
