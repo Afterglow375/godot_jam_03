@@ -1,7 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://3uvcf8uyyg8l"]
+[gd_scene load_steps=26 format=3 uid="uid://3uvcf8uyyg8l"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_3bxsk"]
+[ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="2_0uo1k"]
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="2_v0wnj"]
+[ext_resource type="Texture2D" uid="uid://c2bb1rt2qwtu2" path="res://addons/kenney_particle_pack/star_05.png" id="3_gqhd2"]
 [ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="3_ms578"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="4_o27sp"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_pdyoy"]
@@ -10,6 +12,51 @@
 [ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="7_ucfph"]
 [ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="8_ekl3b"]
 [ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_j0ws8"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hs1he"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_do4n0"]
+_data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_e00dy"]
+curve = SubResource("Curve_do4n0")
+
+[sub_resource type="Gradient" id="Gradient_7yddt"]
+colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8jtcg"]
+gradient = SubResource("Gradient_7yddt")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yfc3m"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1920, 1080, 1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.15
+color_ramp = SubResource("GradientTexture1D_8jtcg")
+alpha_curve = SubResource("CurveTexture_e00dy")
+hue_variation_min = -0.2
+hue_variation_max = 0.34
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_su0in"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1xxb2"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1920, 1080, 1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.08
+color_ramp = SubResource("GradientTexture1D_8jtcg")
+alpha_curve = SubResource("CurveTexture_e00dy")
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -31,6 +78,32 @@ bounce = 1.0
 
 [node name="Main" type="Node"]
 script = ExtResource("1_3bxsk")
+
+[node name="StaticStarsCross" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_hs1he")
+position = Vector2(1920, 1080)
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_yfc3m")
+texture = ExtResource("2_0uo1k")
+lifetime = 60.0
+preprocess = 60.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_lifetime = 1.0
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="StaticStarsCircle" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_su0in")
+position = Vector2(1920, 1080)
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_1xxb2")
+texture = ExtResource("3_gqhd2")
+lifetime = 60.0
+preprocess = 60.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_lifetime = 1.0
+trail_sections = 2
+trail_section_subdivisions = 1
 
 [node name="Sun" parent="." instance=ExtResource("2_v0wnj")]
 position = Vector2(3128, 1088)
