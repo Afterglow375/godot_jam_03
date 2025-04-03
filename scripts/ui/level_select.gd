@@ -1,6 +1,6 @@
 extends Control
 
-const LEVEL_COUNT: int = 10
+const LEVEL_COUNT: int = 11
 var levels: Array[String] = []
 
 func _ready():
