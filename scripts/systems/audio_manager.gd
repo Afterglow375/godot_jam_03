@@ -106,10 +106,20 @@ var _audio_data = {
 	}
 }
 
+# Audio buses - using names is more reliable than indices
+const MASTER_BUS_NAME: String = "Master"
+const MUSIC_BUS_NAME: String = "Music"
+const FX_BUS_NAME: String = "FX"
+
+# Default volume values (0.0 to 1.0)
+var master_volume: float = 1.0
+var music_volume: float = 1.0
+var fx_volume: float = 1.0
+
 # Preload audio resources for efficiency
 var _preloaded_audio = {}
 var _theme_song_player: AudioStreamPlayer
-var _theme_song_scenes: Array[String] = ["res://scenes/ui/main_menu.tscn", "res://scenes/ui/level_select.tscn"]
+var _theme_song_scenes: Array[String] = ["res://scenes/ui/main_menu.tscn", "res://scenes/ui/level_select.tscn", "res://scenes/ui/settings.tscn"]
 
 func _ready() -> void:
 	# Preload all audio resources
@@ -135,6 +145,47 @@ func _on_scene_change_completed(scene_path: String) -> void:
 			_theme_song_player.queue_free()
 			_theme_song_player = null
 
+# Apply volume settings to audio buses
+func apply_volume_settings() -> void:
+	# Convert from 0-1 range to decibels (-80 to 0)
+	var master_db = linear_to_db(master_volume)
+	var music_db = linear_to_db(music_volume)
+	var fx_db = linear_to_db(fx_volume)
+	
+	# Get indices for the buses
+	var master_idx = AudioServer.get_bus_index(MASTER_BUS_NAME)
+	var music_idx = AudioServer.get_bus_index(MUSIC_BUS_NAME)
+	var fx_idx = AudioServer.get_bus_index(FX_BUS_NAME)
+	
+	# Apply to audio buses
+	if master_idx >= 0:
+		AudioServer.set_bus_volume_db(master_idx, master_db)
+	if music_idx >= 0:
+		AudioServer.set_bus_volume_db(music_idx, music_db)
+	if fx_idx >= 0:
+		AudioServer.set_bus_volume_db(fx_idx, fx_db)
+
+# Set master volume (0.0 to 1.0)
+func set_master_volume(volume: float) -> void:
+	master_volume = clamp(volume, 0.0, 1.0)
+	var master_idx = AudioServer.get_bus_index(MASTER_BUS_NAME)
+	if master_idx >= 0:
+		AudioServer.set_bus_volume_db(master_idx, linear_to_db(master_volume))
+
+# Set music volume (0.0 to 1.0)
+func set_music_volume(volume: float) -> void:
+	music_volume = clamp(volume, 0.0, 1.0)
+	var music_idx = AudioServer.get_bus_index(MUSIC_BUS_NAME)
+	if music_idx >= 0:
+		AudioServer.set_bus_volume_db(music_idx, linear_to_db(music_volume))
+
+# Set fx volume (0.0 to 1.0)
+func set_fx_volume(volume: float) -> void:
+	fx_volume = clamp(volume, 0.0, 1.0)
+	var fx_idx = AudioServer.get_bus_index(FX_BUS_NAME)
+	if fx_idx >= 0:
+		AudioServer.set_bus_volume_db(fx_idx, linear_to_db(fx_volume))
+
 # Play an audio clip at the specified volume (can override default volume)
 # Returns the created AudioStreamPlayer so you can connect to its signals if needed
 func play(clip_id: int, override_volume: float = -100, autoplay: bool = true, autocleanup: bool = true) -> AudioStreamPlayer:
@@ -154,6 +205,12 @@ func play(clip_id: int, override_volume: float = -100, autoplay: bool = true, au
 	player.stream = _preloaded_audio[clip_id]
 	var volume = override_volume if override_volume != -100 else _audio_data[clip_id]["volume"]
 	player.volume_db = volume
+	
+	# Set appropriate bus
+	if clip_id == Audio.THEME_SONG:
+		player.bus = MUSIC_BUS_NAME
+	else:
+		player.bus = FX_BUS_NAME
 	
 	# Connect the finished signal to auto-cleanup if enabled
 	if autocleanup:
@@ -187,6 +244,9 @@ func play_positional(clip_id: int, position: Vector2, override_volume: float = -
 	
 	# Set the position
 	player.position = position
+	
+	# Set appropriate bus (all positional sounds are FX)
+	player.bus = FX_BUS_NAME
 	
 	# Set max_distance if specified in _audio_data
 	if _audio_data[clip_id].has("max_distance"):

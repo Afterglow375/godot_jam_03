@@ -1,0 +1,145 @@
+[gd_scene load_steps=3 format=3 uid="uid://bg7ae6tu6myde"]
+
+[ext_resource type="Script" path="res://scripts/ui/settings.gd" id="1_ck764"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ie76v"]
+bg_color = Color(0.282353, 0.294118, 0.341176, 1)
+border_width_left = 10
+border_width_top = 10
+border_width_right = 10
+border_width_bottom = 10
+border_color = Color(0.27451, 0.282353, 0.305882, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="SettingsCanvas" type="CanvasLayer"]
+script = ExtResource("1_ck764")
+
+[node name="Settings" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="Panel" parent="Settings"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -849.0
+offset_top = -607.0
+offset_right = 849.0
+offset_bottom = 607.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ie76v")
+
+[node name="Label" type="Label" parent="Settings/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = -557.0
+offset_right = 500.0
+offset_bottom = -431.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Settings/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -500.0
+offset_top = -235.5
+offset_right = 500.0
+offset_bottom = 235.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Spacer2" type="Control" parent="Settings/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="MasterVolume" type="VBoxContainer" parent="Settings/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Settings/Panel/VBoxContainer/MasterVolume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Master Volume"
+horizontal_alignment = 1
+
+[node name="MasterSlider" type="HSlider" parent="Settings/Panel/VBoxContainer/MasterVolume"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="MusicVolume" type="VBoxContainer" parent="Settings/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Settings/Panel/VBoxContainer/MusicVolume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "Music Volume"
+horizontal_alignment = 1
+
+[node name="MusicSlider" type="HSlider" parent="Settings/Panel/VBoxContainer/MusicVolume"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="FXVolume" type="VBoxContainer" parent="Settings/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Label" type="Label" parent="Settings/Panel/VBoxContainer/FXVolume"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "FX Volume"
+horizontal_alignment = 1
+
+[node name="FXSlider" type="HSlider" parent="Settings/Panel/VBoxContainer/FXVolume"]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="Spacer" type="Control" parent="Settings/Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 100)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Settings/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 200
+
+[node name="AcceptButton" type="Button" parent="Settings/Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "ACCEPT"
+
+[node name="BackButton" type="Button" parent="Settings/Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "BACK"

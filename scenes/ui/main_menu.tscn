@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://boq48eug3yug0"]
+[gd_scene load_steps=24 format=3 uid="uid://boq48eug3yug0"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_x2me4"]
 [ext_resource type="Theme" uid="uid://cevaq6y06kp6a" path="res://assets/themes/theme.tres" id="2_xw1io"]
@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://de7eithyh7eo1" path="res://addons/kenney_particle_pack/circle_05.png" id="4_08xf2"]
 [ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="5_k8dmk"]
 [ext_resource type="Texture2D" uid="uid://c2bb1rt2qwtu2" path="res://addons/kenney_particle_pack/star_05.png" id="6_mo5kp"]
+[ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="7_hkhlq"]
 
 [sub_resource type="Curve" id="Curve_saavb"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
@@ -170,6 +171,9 @@ text = "Planet Pusher"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="SettingsCanvas" parent="." instance=ExtResource("7_hkhlq")]
+visible = false
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -195,10 +199,15 @@ text = "Start"
 layout_mode = 2
 text = " Level Select "
 
+[node name="Settings" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "Settings"
+
 [node name="QuitButton" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/LevelSelectButton" to="." method="_on_level_select_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/Settings" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

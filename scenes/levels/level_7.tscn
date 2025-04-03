@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://dkgd1nmvotx3h"]
+[gd_scene load_steps=29 format=3 uid="uid://dkgd1nmvotx3h"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_3bxsk"]
 [ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="2_0t2g1"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="7_n8r6u"]
 [ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="8_by5qi"]
 [ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_0ipfp"]
+[ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="12_h68fy"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_trglq"]
 blend_mode = 1
@@ -199,6 +200,9 @@ texture = ExtResource("5_pdyoy")
 visible = false
 
 [node name="WinPopup" parent="UI" instance=ExtResource("9_0ipfp")]
+visible = false
+
+[node name="SettingsCanvas" parent="UI" instance=ExtResource("12_h68fy")]
 visible = false
 
 [node name="TileMap" parent="." instance=ExtResource("7_522e3")]

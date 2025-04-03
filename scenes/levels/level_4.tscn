@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bx8qv1ooubncg"]
+[gd_scene load_steps=24 format=3 uid="uid://bx8qv1ooubncg"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_7tt28"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_23vaq"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="7_7nvge"]
 [ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="8_l6mww"]
 [ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_acqsv"]
+[ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="12_c6rxf"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_p01rn"]
 blend_mode = 1
@@ -184,4 +185,7 @@ texture = ExtResource("5_xo12p")
 visible = false
 
 [node name="WinPopup" parent="UI" instance=ExtResource("9_acqsv")]
+visible = false
+
+[node name="SettingsCanvas" parent="UI" instance=ExtResource("12_c6rxf")]
 visible = false

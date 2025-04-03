@@ -11,9 +11,15 @@ var using_pull_projectile: bool = false  # Track which projectile type is curren
 signal game_paused(is_paused)
 signal projectile_type_changed(using_pull: bool)  # Signal for projectile type changes
 
+# Settings file path
+const SETTINGS_FILE: String = "user://settings.cfg"
+
+# Called when the node enters the scene tree for the first time
 func _ready() -> void:
 	# Set process mode to always so the manager works even when paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	print("GameManager initialized")
+	load_settings()
 
 # Set the pause state of the game
 func set_pause_state(paused: bool) -> void:
@@ -52,3 +58,22 @@ func toggle_projectile_type() -> void:
 # - Save/load system
 # - Global audio management
 # - Achievement tracking 
+
+# Load settings from file and apply them
+func load_settings() -> void:
+	var config = ConfigFile.new()
+	var err = config.load(SETTINGS_FILE)
+	
+	if err == OK:
+		AudioManager.master_volume = config.get_value("audio", "master_volume", 1.0)
+		AudioManager.music_volume = config.get_value("audio", "music_volume", 1.0)
+		AudioManager.fx_volume = config.get_value("audio", "fx_volume", 1.0)
+		print("Settings loaded from file")
+	else:
+		print("No settings file found, using defaults")
+		AudioManager.master_volume = 1.0
+		AudioManager.music_volume = 1.0
+		AudioManager.fx_volume = 1.0
+	
+	# Apply loaded settings
+	AudioManager.apply_volume_settings() 
