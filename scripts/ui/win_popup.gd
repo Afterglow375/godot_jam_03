@@ -10,12 +10,12 @@ var tween_duration: float = 0.6
 func _ready():
 	hide()
 	
-func show_victory_screen(shot_count: int, accuracy_score: int, bonus_score: int) -> void:
+func show_victory_screen(shot_count: int, accuracy_score: int, bonus_score: int, total_score: int, par_penalty: int) -> void:
 	emit_signal("victory_achieved")
 	show()
-	animate_scores(shot_count, accuracy_score, bonus_score)
+	animate_scores(shot_count, accuracy_score, bonus_score, total_score, par_penalty)
 	
-func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> void:
+func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int, total_score: int, par_penalty: int) -> void:
 	# Kill any existing tween
 	if tween != null:
 		tween.kill()
@@ -28,6 +28,14 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	tween.tween_method(
 		func(value): shots_label.text = "Shots Taken: " + str(round(value)),
 		0.0, shot_count, tween_duration
+	)
+	
+	var penalty_label = $Panel/VBoxContainer/ParPenaltyLabel
+	penalty_label.text = "Par Penalty: 0"
+	tween.tween_method(
+		func(value):
+			var color = "[color=crimson]" if par_penalty > 0 else "[color=white]"
+			penalty_label.text = "Par Penalty: " + color + str(round(value)) + "[/color]", 0.0, par_penalty, tween_duration
 	)
 	
 	# Animate accuracy score
@@ -47,7 +55,6 @@ func animate_scores(shot_count: int, accuracy_score: int, bonus_score: int) -> v
 	)
 	
 	# Animate total score after all other scores are done
-	var total_score = 0 if shot_count == 0 else round(accuracy_score / shot_count) + bonus_score
 	var total_label = $Panel/VBoxContainer/TotalScoreLabel
 	total_label.text = "Total Score: 0"
 	tween.tween_method(

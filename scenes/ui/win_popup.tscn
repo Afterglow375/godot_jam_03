@@ -44,6 +44,13 @@ horizontal_alignment = 1
 layout_mode = 2
 text = "Shots: 0"
 
+[node name="ParPenaltyLabel" type="RichTextLabel" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 99
+bbcode_enabled = true
+text = "Par Penalty: 0"
+
 [node name="AccuracyLabel" type="Label" parent="Panel/VBoxContainer"]
 layout_mode = 2
 text = "Accuracy: 0"

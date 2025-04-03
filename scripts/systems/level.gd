@@ -4,6 +4,8 @@ var num_shots: int = 0
 var accuracy_score: int = 0
 var level_finished: bool = false
 var bonus_points: int = 0
+var total_score: int = 0
+var par_penalty: int = 0
 
 @onready var hud = $UI/HUD
 @onready var charge_bar = $UI/HUD/MarginContainer/VBoxContainer/MarginContainer/ChargeBar
@@ -78,8 +80,13 @@ func update_charge_bar(new_value: float) -> void:
 # Calculate the final score based on number of shots and accuracy
 func calculate_final_score(accuracy_score: int) -> int:
 	self.accuracy_score = accuracy_score
-	var final_score = round(accuracy_score / num_shots)
-	return final_score
+	var base_score = accuracy_score + bonus_points
+	var par = get_current_level_par()
+	var shots_over_par = max(0, num_shots - par)
+	par_penalty = shots_over_par * 25
+	total_score = max(0, base_score - par_penalty)
+
+	return total_score
 	
 func level_won() -> void:
 	if level_finished:
@@ -95,7 +102,7 @@ func level_won() -> void:
 		
 	# Wait a short moment to ensure bonus points are calculated
 	await get_tree().create_timer(0.1).timeout
-	win_popup.show_victory_screen(num_shots, accuracy_score, bonus_points)
+	win_popup.show_victory_screen(num_shots, accuracy_score, bonus_points, total_score, par_penalty)
 
 func _on_next_level():
 	var next_level_path = get_next_level_path()
@@ -126,9 +133,11 @@ func _on_bonus_points_changed(points: int) -> void:
 	bonus_points = points
 
 func update_level_labels(level_number: int) -> void:
-	var level_label: Label = $UI/HUD/LevelContainer/LevelLabel
-	
+	var level_label: Label = $UI/HUD/LevelContainer/VBoxContainer/LevelLabel
+	var par_label: Label = $UI/HUD/LevelContainer/VBoxContainer/ParLabel
+		
 	level_label.text = "Level " + str(level_number)
+	par_label.text = "Par " + str(get_current_level_par())
 		
 	# Also update the win popup label
 	var win_label: Label = $UI/WinPopup/Panel/VBoxContainer/Label
@@ -145,3 +154,8 @@ func get_current_level_number() -> int:
 			level_number = parts[1].to_int()
 	
 	return level_number
+
+# Get the par for the current level
+func get_current_level_par() -> int:
+	var level_number = get_current_level_number()
+	return GameManager.LEVEL_PARS.get(level_number, 0)  # Return 0 if level number not found

@@ -14,6 +14,21 @@ signal projectile_type_changed(using_pull: bool)  # Signal for projectile type c
 # Settings file path
 const SETTINGS_FILE: String = "user://settings.cfg"
 
+# Level number : par for that level
+const LEVEL_PARS = {
+	1: 1,
+	2: 2,
+	3: 1,
+	4: 2,
+	5: 2,
+	6: 3,
+	7: 2,
+	8: 2,
+	9: 1,
+	10: 1,
+	11: 3,
+}
+
 # Called when the node enters the scene tree for the first time
 func _ready() -> void:
 	# Set process mode to always so the manager works even when paused
