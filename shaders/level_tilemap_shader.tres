@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dt6yo80x4vfsr"]
+
+[ext_resource type="Shader" path="res://shaders/tilemap_shader.gdshader" id="1_37qgj"]
+
+[resource]
+shader = ExtResource("1_37qgj")
+shader_parameter/dissolve_amount = 0.97
+shader_parameter/edge_thickness = 0.109
+shader_parameter/edge_color = Color(1, 1, 1, 1)
+shader_parameter/speed = 0.1
+shader_parameter/brightness = 0.9
+shader_parameter/tint_color = Color(0.8, 0.85098, 1, 0)
