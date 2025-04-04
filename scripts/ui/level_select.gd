@@ -27,6 +27,31 @@ func _ready() -> void:
 			# Disable and gray out locked levels
 			buttons[i].disabled = true
 			buttons[i].modulate = Color("#505050")
+	
+	# Calculate and display the total score
+	update_total_score_display()
+	
+	# Connect to scene change completed signal
+	SceneManager.scene_change_completed.connect(_on_scene_change_completed)
+
+# Handle returning to this scene after playing a level
+func _on_scene_change_completed(scene_path: String) -> void:
+	# Check if we're returning to the level select scene
+	if scene_path.ends_with("level_select.tscn"):
+		# Recalculate the total score when returning to level select
+		call_deferred("update_total_score_display")
+
+# Calculate the sum of all high scores and update the display
+func update_total_score_display() -> void:
+	var total_score: int = 0
+	
+	# Sum up all high scores
+	for level_number in range(1, LEVEL_COUNT + 1):
+		total_score += GameManager.get_high_score(level_number)
+	
+	# Update the total score label
+	var total_score_label: Label = $CanvasLayer/TotalScoreLabel
+	total_score_label.text = "Total Score: %d" % total_score
 
 func is_level_unlocked(level_number: int) -> bool:
 	# Level 1 is always unlocked

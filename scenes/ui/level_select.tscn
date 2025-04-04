@@ -227,4 +227,22 @@ position = Vector2(1916, 1077)
 scale = Vector2(1.0224, 1.04861)
 texture = ExtResource("2_ug2qf")
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TotalScoreLabel" type="Label" parent="CanvasLayer"]
+custom_minimum_size = Vector2(300, 0)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 30.0
+offset_top = -97.0
+offset_right = 330.0
+offset_bottom = -16.0
+grow_vertical = 0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 64
+text = "Total Score: X"
+vertical_alignment = 1
+
 [connection signal="pressed" from="BackButton" to="." method="_on_back_button_pressed"]
