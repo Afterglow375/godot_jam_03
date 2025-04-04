@@ -22,6 +22,12 @@ enum Audio {
 	TADAA,
 	SUN_HIT,
 	EARTH_PUSH,
+	STAR_SOUND,
+	NEW_HISCORE,
+	WIN_POPUP_SCORE_SOUND,
+	# UI sounds
+	BUTTON_HOVER,
+	BUTTON_CLICK,
 	# Menu sounds
 	THEME_SONG,
 	LEVEL_SONG
@@ -99,6 +105,27 @@ var _audio_data = {
 		"path": "res://assets/audio/earth push sound.wav", 
 		"volume": 0.0,
 		"max_distance": 3000.0
+	},
+	Audio.STAR_SOUND: {
+		"path": "res://assets/audio/star_sound.wav", 
+		"volume": -8.0
+	},
+	Audio.NEW_HISCORE: {
+		"path": "res://assets/audio/new_hiscore.wav", 
+		"volume": -6.0
+	},
+	Audio.WIN_POPUP_SCORE_SOUND: {
+		"path": "res://assets/audio/win_popup_score_sound.wav", 
+		"volume": -14.0
+	},
+	# UI sounds
+	Audio.BUTTON_HOVER: {
+		"path": "res://assets/audio/button_hover.wav", 
+		"volume": 2.0
+	},
+	Audio.BUTTON_CLICK: {
+		"path": "res://assets/audio/button_click.wav", 
+		"volume": -10.0
 	},
 	# Menu sounds
 	Audio.THEME_SONG: {

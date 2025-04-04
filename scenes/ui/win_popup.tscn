@@ -64,20 +64,27 @@ theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 64
 text = "Bonus Points: 0"
 
+[node name="TotalScoreLabel" type="Label" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 64
+text = "Total Score: 0"
+
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 theme_override_constants/separation = 0
 
-[node name="TotalScoreLabel" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
-custom_minimum_size = Vector2(650, 0)
+[node name="HiscoreLabel" type="Label" parent="Panel/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(520, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
 theme_override_constants/outline_size = 10
 theme_override_font_sizes/font_size = 64
-text = "Total Score: 000"
+text = "Hiscore: 000"
 
-[node name="HighScoreLabel" type="RichTextLabel" parent="Panel/VBoxContainer/HBoxContainer"]
+[node name="NewHiscore" type="RichTextLabel" parent="Panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(1000, 0)
 layout_mode = 2
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
@@ -86,13 +93,6 @@ theme_override_font_sizes/normal_font_size = 64
 bbcode_enabled = true
 text = "NEW HISCORE!!!"
 scroll_active = false
-
-[node name="HiscoreLabel" type="Label" parent="Panel/VBoxContainer"]
-layout_mode = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 64
-text = "Hiscore: 0"
 
 [node name="StarsHboxContainer" type="HBoxContainer" parent="Panel"]
 custom_minimum_size = Vector2(1500, 400)

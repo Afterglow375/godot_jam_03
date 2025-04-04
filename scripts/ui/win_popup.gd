@@ -9,8 +9,7 @@ var tween_duration: float = 0.2
 
 func _ready() -> void:
 	hide()
-	# Hide high score label by default
-	$Panel/VBoxContainer/HBoxContainer/HighScoreLabel.visible = false
+	$Panel/VBoxContainer/HBoxContainer/NewHiscore.visible = false
 
 func show_victory_screen(accuracy_score: int, bonus_score: int, par_penalty: int, current_hiscore: int) -> void:
 	emit_signal("victory_achieved")
@@ -18,21 +17,23 @@ func show_victory_screen(accuracy_score: int, bonus_score: int, par_penalty: int
 	
 	var total_score = accuracy_score + bonus_score - par_penalty
 	
-	var high_score_label = $Panel/VBoxContainer/HBoxContainer/HighScoreLabel
+	var high_score_label = $Panel/VBoxContainer/HBoxContainer/NewHiscore
 	high_score_label.visible = false
 	
 	var is_new_hiscore = total_score > current_hiscore
 	current_hiscore = total_score if is_new_hiscore else current_hiscore
 	
+	animate_scores(accuracy_score, bonus_score, par_penalty, current_hiscore)
+
+	var timer = get_tree().create_timer(1)
+	await timer.timeout
+	
 	# Display stars based on the score
 	display_stars(total_score)
 	
-	animate_scores(accuracy_score, bonus_score, par_penalty, current_hiscore)
-	
 	# If new high score, show it after delay
 	if is_new_hiscore:
-		var timer = get_tree().create_timer(1)
-		await timer.timeout
+		AudioManager.play(AudioManager.Audio.NEW_HISCORE)
 		
 		high_score_label.visible = true
 		
@@ -50,8 +51,10 @@ func display_stars(score: int) -> void:
 		var gold_star = control_node.get_node("GoldStar")
 		
 		# Create a short delay before showing each star
-		var timer = get_tree().create_timer(0.1 * i)
+		var timer = get_tree().create_timer(0.2)
 		await timer.timeout
+		
+		AudioManager.play(AudioManager.Audio.STAR_SOUND)
 		
 		# Show the star with a scale animation
 		gold_star.scale = Vector2(0.3, 0.3)
@@ -78,6 +81,14 @@ func animate_scores(accuracy_score: int, bonus_score: int, par_penalty: int, his
 	# Kill any existing tween
 	if tween != null:
 		tween.kill()
+	
+	# Play the score sound - don't auto-cleanup so we can stop it manually
+	var score_sound = AudioManager.play(AudioManager.Audio.WIN_POPUP_SCORE_SOUND, -14.0, true, false)
+	score_sound.pitch_scale = 1.0  # Start at normal pitch
+	
+	# Create pitch tween
+	var pitch_tween = create_tween()
+	pitch_tween.tween_property(score_sound, "pitch_scale", 2.0, tween_duration * 5)  # Shift up one octave (pitch_scale = 2.0)
 	
 	tween = create_tween()
 	
@@ -108,7 +119,7 @@ func animate_scores(accuracy_score: int, bonus_score: int, par_penalty: int, his
 	
 	# Animate total score after all other scores are done
 	var total_score = accuracy_score + bonus_score - par_penalty
-	var total_label = $Panel/VBoxContainer/HBoxContainer/TotalScoreLabel
+	var total_label = $Panel/VBoxContainer/TotalScoreLabel
 	total_label.text = "Total Score: 0"
 	tween.tween_method(
 		func(value): total_label.text = "Total Score: " + str(round(value)),
@@ -116,13 +127,19 @@ func animate_scores(accuracy_score: int, bonus_score: int, par_penalty: int, his
 	)
 	
 	# Animate hiscore
-	var hiscore_label = $Panel/VBoxContainer/HiscoreLabel
+	var hiscore_label = $Panel/VBoxContainer/HBoxContainer/HiscoreLabel
 	hiscore_label.text = "Hiscore: 0"
 	tween.tween_method(
 		func(value): hiscore_label.text = "Hiscore: " + str(round(value)),
 		0.0, hiscore, tween_duration
 	)
 	
+	# Stop the sound after all animations complete
+	tween.tween_callback(func(): 
+		score_sound.stop()
+		score_sound.queue_free()
+	)
+
 func _on_level_select_button_pressed() -> void:
 	SceneManager.change_scene("res://scenes/ui/level_select.tscn")
 	

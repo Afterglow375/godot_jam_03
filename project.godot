@@ -21,6 +21,7 @@ GameManager="*res://scripts/systems/game_manager.gd"
 AudioManager="*res://scripts/systems/audio_manager.gd"
 AntialiasedLine2DTexture="*res://addons/antialiased_line2d/texture.gd"
 SceneManager="*res://scenes/ui/scene_transition.tscn"
+UiSoundManager="*res://scripts/systems/ui_sound_manager.gd"
 
 [display]
 
