@@ -33,6 +33,13 @@ var is_hovered: bool = false  # Whether the mouse is hovering over the Area2D
 var speed_multiplier: float = 0.0  # Speed multiplier based on line length
 var trajectory_points: Array[Vector2] = []  # List to store trajectory points
 var is_calculating_trajectory: bool = false  # Flag to indicate if trajectory needs updating
+var is_precision_aiming: bool = false  # Flag for precision aiming mode
+var precision_factor: float = 0.05  # Reduces mouse sensitivity by 95% when precision aiming
+var processed_mouse_pos: Vector2 = Vector2.ZERO  # Processed mouse position with precision/snapping applied
+var last_mouse_pos: Vector2 = Vector2.ZERO  # Store the last mouse position for delta calculation
+var accumulated_mouse_pos: Vector2 = Vector2.ZERO  # Accumulated mouse position for precision mode
+var raw_mouse_pos: Vector2 = Vector2.ZERO  # Original mouse position without any processing
+var aim_position: Vector2 = Vector2.ZERO  # Position used for aiming that accounts for precision
 
 func _ready():
 	line = $SlingshotLine
@@ -41,6 +48,9 @@ func _ready():
 	ray_cast = $TrajectoryRaycast
 	sprite = $Sprite2D  # Get reference to the spaceship sprite
 	base_scale = sprite.scale  # Store the original scale
+	
+	# Initialize accumulated mouse position
+	accumulated_mouse_pos = Vector2.ZERO
 	
 	# Get references to overlay sprites
 	push_overlay = $PushOverlay
@@ -79,6 +89,10 @@ func _input_event(viewport, event, shape_idx):
 			drag_started_in_area = true
 			is_mouse_held = true
 			is_calculating_trajectory = true
+			
+			# Reset accumulated mouse position when starting a new drag
+			accumulated_mouse_pos = Vector2.ZERO
+			last_mouse_pos = get_local_mouse_position()
 
 func _input(event):
 	if event is InputEventMouseButton:
@@ -95,6 +109,8 @@ func _input(event):
 					trajectory_end.visible = false
 					
 			is_mouse_held = false
+			# Reset accumulated mouse position when releasing
+			accumulated_mouse_pos = Vector2.ZERO
 	
 	# Toggle between push and pull projectiles with spacebar
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE and can_shoot:
@@ -102,12 +118,10 @@ func _input(event):
 
 func _physics_process(delta):
 	if is_calculating_trajectory and is_mouse_held:
-		var mouse_pos: Vector2 = get_local_mouse_position()
-		var length: float = mouse_pos.length()
+		# Use the processed mouse position that's calculated in _process
+		var direction: Vector2 = -processed_mouse_pos.normalized()
 		
-		# Only calculate trajectory if the mouse is far enough from the center
-		if length > 5.0:
-			var direction: Vector2 = -mouse_pos.normalized()
+		if processed_mouse_pos.length() > 5.0:
 			calculate_trajectory_points(direction)
 		else:
 			trajectory_points.clear()
@@ -174,16 +188,46 @@ func _process(delta):
 	if GameManager.is_paused():
 		return
 	
+	# Check shift key state every frame
+	is_precision_aiming = Input.is_key_pressed(KEY_SHIFT)
+	
 	if is_mouse_held:
-		var mouse_pos: Vector2 = get_local_mouse_position()
-		var length: float = mouse_pos.length()
+		var current_mouse_pos: Vector2 = get_local_mouse_position()
+		var mouse_delta: Vector2 = Vector2.ZERO
+		
+		if last_mouse_pos != Vector2.ZERO:
+			mouse_delta = current_mouse_pos - last_mouse_pos
+		
+		last_mouse_pos = current_mouse_pos
+		
+		if is_precision_aiming:
+			accumulated_mouse_pos += mouse_delta * precision_factor
+		else:
+			accumulated_mouse_pos = current_mouse_pos
+		
+		var mouse_pos: Vector2 = accumulated_mouse_pos
+		var original_length: float = mouse_pos.length()
+		
+		# Apply angle snapping based on precision mode
+		if is_precision_aiming:
+			var angle: float = mouse_pos.angle()
+			var snap_angle: float = snappedf(rad_to_deg(angle), 0.01)  # Snap to 0.01 degree increments
+			angle = deg_to_rad(snap_angle)
+			mouse_pos = Vector2(cos(angle), sin(angle)) * original_length
+		else:
+			var angle: float = mouse_pos.angle()
+			var snap_angle: float = snappedf(rad_to_deg(angle), 1.0)  # Snap to whole degrees
+			angle = deg_to_rad(snap_angle)
+			mouse_pos = Vector2(cos(angle), sin(angle)) * original_length
+		
+		processed_mouse_pos = mouse_pos
 		
 		# Draw the line with clamped length if needed
 		current_line_end = mouse_pos
-		if length > MAX_LINE_LENGTH:
+		if original_length > MAX_LINE_LENGTH:
 			current_line_end = mouse_pos.normalized() * MAX_LINE_LENGTH
 		
-		update_charge_bar_requested.emit(length)
+		update_charge_bar_requested.emit(original_length)
 		
 		# Draw the input line
 		line.clear_points()
@@ -208,10 +252,10 @@ func _process(delta):
 			target_scale_x = -1 if is_right_side else 1
 			
 			# Calculate angle away from mouse position
-			var angle: float = mouse_pos.angle()
+			# We've already calculated the angle above, reuse it
 			
 			# Convert angle to degrees for display
-			var angle_deg: float = rad_to_deg(angle)
+			var angle_deg: float = rad_to_deg(mouse_pos.angle())
 			# Normalize to 0-360 range
 			if angle_deg < 0:
 				angle_deg += 360.0
@@ -221,10 +265,10 @@ func _process(delta):
 			# Set target rotation based on which side the mouse is on
 			if is_right_side:
 				# Base rotation that makes sprite point away from the mouse
-				target_rotation = angle
+				target_rotation = mouse_pos.angle()
 			else:
 				# Normal rotation when on the left side
-				target_rotation = angle + PI
+				target_rotation = mouse_pos.angle() + PI
 	else:
 		# When mouse is not held, set targets to return to original position
 		target_rotation = 0.0
