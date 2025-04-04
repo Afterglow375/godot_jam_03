@@ -6,10 +6,32 @@ signal victory_achieved
 
 var tween: Tween = null
 var tween_duration: float = 0.2
+var score_sound: AudioStreamPlayer = null # Store reference to the score sound
 
 func _ready() -> void:
 	hide()
 	$Panel/VBoxContainer/HBoxContainer/NewHiscore.visible = false
+	
+	# Connect to scene change started signal to ensure sound is cleaned up
+	SceneManager.scene_change_started.connect(_on_scene_change_started)
+	
+	# Also connect tree_exiting to ensure cleanup
+	tree_exiting.connect(_on_tree_exiting)
+
+# Clean up sound when scene changes
+func _on_scene_change_started(_path: String) -> void:
+	cleanup_sound()
+
+# Clean up sound when tree is exiting
+func _on_tree_exiting() -> void:
+	cleanup_sound()
+
+# Clean up any playing sounds
+func cleanup_sound() -> void:
+	if score_sound and is_instance_valid(score_sound):
+		score_sound.stop()
+		score_sound.queue_free()
+		score_sound = null
 
 func show_victory_screen(accuracy_score: int, bonus_score: int, par_penalty: int, current_hiscore: int) -> void:
 	emit_signal("victory_achieved")
@@ -82,8 +104,11 @@ func animate_scores(accuracy_score: int, bonus_score: int, par_penalty: int, his
 	if tween != null:
 		tween.kill()
 	
+	# Clean up any existing score sound first
+	cleanup_sound()
+	
 	# Play the score sound - don't auto-cleanup so we can stop it manually
-	var score_sound = AudioManager.play(AudioManager.Audio.WIN_POPUP_SCORE_SOUND, -14.0, true, false)
+	score_sound = AudioManager.play(AudioManager.Audio.WIN_POPUP_SCORE_SOUND, -14.0, true, false)
 	score_sound.pitch_scale = 1.0  # Start at normal pitch
 	
 	# Create pitch tween
@@ -135,18 +160,23 @@ func animate_scores(accuracy_score: int, bonus_score: int, par_penalty: int, his
 	)
 	
 	# Stop the sound after all animations complete
-	tween.tween_callback(func(): 
-		score_sound.stop()
-		score_sound.queue_free()
+	tween.tween_callback(func():
+		if score_sound and is_instance_valid(score_sound):
+			score_sound.stop()
+			score_sound.queue_free()
+			score_sound = null
 	)
 
 func _on_level_select_button_pressed() -> void:
+	cleanup_sound()
 	SceneManager.change_scene("res://scenes/ui/level_select.tscn")
 	
 func _on_retry_button_pressed() -> void:
+	cleanup_sound()
 	emit_signal("retry_level")
 	hide()
 
 func _on_next_level_button_pressed() -> void:
+	cleanup_sound()
 	emit_signal("next_level")
 	hide()

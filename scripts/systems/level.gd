@@ -51,6 +51,10 @@ func toggle_pause_menu() -> void:
 
 # Reload the current level
 func reset_level() -> void:
+	# Ensure win popup sounds are cleaned up
+	if win_popup and win_popup.has_method("cleanup_sound"):
+		win_popup.cleanup_sound()
+	
 	reset_num_shots()
 	SceneManager.reload_scene()
 
