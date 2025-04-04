@@ -128,6 +128,11 @@ func get_next_level_path() -> String:
 		var parts = current_scene_path.get_file().replace(".tscn", "").split("_")
 		if parts.size() > 1:
 			var level_number = parts[1].to_int()  # Extract number
+			
+			# If this is level 20, return the game complete scene
+			if level_number == 20:
+				return "res://scenes/ui/game_complete.tscn"
+				
 			var next_level_number = level_number + 1
 			var next_level_path = "res://scenes/levels/level_" + str(next_level_number) + ".tscn"
 

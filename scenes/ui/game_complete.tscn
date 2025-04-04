@@ -1,0 +1,200 @@
+[gd_scene load_steps=19 format=3 uid="uid://bqrk4e1g4g6s2"]
+
+[ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="1_4j3p3"]
+[ext_resource type="Script" path="res://scripts/ui/game_complete.gd" id="1_kwsm2"]
+[ext_resource type="Texture2D" uid="uid://de7eithyh7eo1" path="res://addons/kenney_particle_pack/circle_05.png" id="2_vqoue"]
+[ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="3_nmj1r"]
+[ext_resource type="Texture2D" uid="uid://c2bb1rt2qwtu2" path="res://addons/kenney_particle_pack/star_05.png" id="4_2jyjp"]
+
+[sub_resource type="Curve" id="Curve_p4e3s"]
+_data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_4qsus"]
+curve = SubResource("Curve_p4e3s")
+
+[sub_resource type="Gradient" id="Gradient_51qne"]
+colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yb6id"]
+gradient = SubResource("Gradient_51qne")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1cjkl"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+direction = Vector3(0, 0, 1)
+flatness = 0.36
+initial_velocity_min = 1000.0
+initial_velocity_max = 1000.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.02
+color_ramp = SubResource("GradientTexture1D_yb6id")
+alpha_curve = SubResource("CurveTexture_4qsus")
+hue_variation_min = -0.2
+hue_variation_max = 0.2
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0rkbc"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_6ux22"]
+_data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_tvmj3"]
+curve = SubResource("Curve_6ux22")
+
+[sub_resource type="Gradient" id="Gradient_2u8yl"]
+colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vnpde"]
+gradient = SubResource("Gradient_2u8yl")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tdmwo"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1920, 1080, 1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.15
+color_ramp = SubResource("GradientTexture1D_vnpde")
+alpha_curve = SubResource("CurveTexture_tvmj3")
+hue_variation_min = -0.2
+hue_variation_max = 0.34
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_wbkq5"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_guytm"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1920, 1080, 1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.08
+color_ramp = SubResource("GradientTexture1D_vnpde")
+alpha_curve = SubResource("CurveTexture_tvmj3")
+
+[node name="GameComplete" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_kwsm2")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(1200, 560)
+texture = ExtResource("1_4j3p3")
+offset = Vector2(720, 520)
+
+[node name="FlyingStars" type="GPUParticles2D" parent="."]
+position = Vector2(1923, 670)
+amount = 200
+process_material = SubResource("ParticleProcessMaterial_1cjkl")
+texture = ExtResource("2_vqoue")
+lifetime = 6.0
+preprocess = 10.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_enabled = true
+trail_lifetime = 2.0
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="StaticStarsCross" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_0rkbc")
+position = Vector2(1920, 1080)
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_tdmwo")
+texture = ExtResource("3_nmj1r")
+lifetime = 60.0
+preprocess = 60.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_lifetime = 1.0
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="StaticStarsCircle" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_wbkq5")
+position = Vector2(1920, 1080)
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_guytm")
+texture = ExtResource("4_2jyjp")
+lifetime = 60.0
+preprocess = 60.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_lifetime = 1.0
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -1238.0
+offset_top = -740.0
+offset_right = 1238.0
+offset_bottom = 740.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -449.5
+offset_top = 116.0
+offset_right = 449.5
+offset_bottom = 242.0
+grow_horizontal = 2
+text = "Congratulations!"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -688.0
+offset_top = -296.0
+offset_right = 688.0
+offset_bottom = 296.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/normal_font_size = 50
+bbcode_enabled = true
+text = "[center]You've completed the game!
+Thank you for playing!
+
+
+
+[center]Made by [wave]Afterglow -tt & Gebobus -tt[/wave][/center]
+
+for the Beluga Games Godot Game Jam 3[/center]"
+
+[node name="Button" type="Button" parent="Panel"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -53.0
+offset_top = -256.0
+offset_right = 53.0
+offset_bottom = -160.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "GG"
+
+[connection signal="pressed" from="Panel/Button" to="." method="_on_button_pressed"]

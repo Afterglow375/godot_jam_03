@@ -13,13 +13,13 @@
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_4qsus"]
+[sub_resource type="CurveTexture" id="CurveTexture_pu76w"]
 curve = SubResource("Curve_saavb")
 
 [sub_resource type="Gradient" id="Gradient_rrl0v"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_yb6id"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_dodpa"]
 gradient = SubResource("Gradient_rrl0v")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1a1bg"]
@@ -32,8 +32,8 @@ initial_velocity_max = 1000.0
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.02
-color_ramp = SubResource("GradientTexture1D_yb6id")
-alpha_curve = SubResource("CurveTexture_4qsus")
+color_ramp = SubResource("GradientTexture1D_dodpa")
+alpha_curve = SubResource("CurveTexture_pu76w")
 hue_variation_min = -0.2
 hue_variation_max = 0.2
 
@@ -44,13 +44,13 @@ blend_mode = 1
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_tvmj3"]
+[sub_resource type="CurveTexture" id="CurveTexture_xr8ta"]
 curve = SubResource("Curve_dxud4")
 
 [sub_resource type="Gradient" id="Gradient_m3gk8"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_vnpde"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_qe0xw"]
 gradient = SubResource("Gradient_m3gk8")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_voy21"]
@@ -62,8 +62,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.15
-color_ramp = SubResource("GradientTexture1D_vnpde")
-alpha_curve = SubResource("CurveTexture_tvmj3")
+color_ramp = SubResource("GradientTexture1D_qe0xw")
+alpha_curve = SubResource("CurveTexture_xr8ta")
 hue_variation_min = -0.2
 hue_variation_max = 0.34
 
@@ -79,8 +79,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.08
-color_ramp = SubResource("GradientTexture1D_vnpde")
-alpha_curve = SubResource("CurveTexture_tvmj3")
+color_ramp = SubResource("GradientTexture1D_qe0xw")
+alpha_curve = SubResource("CurveTexture_xr8ta")
 
 [sub_resource type="Gradient" id="Gradient_3heqq"]
 colors = PackedColorArray(0.639216, 0.654902, 1, 0.490196, 0, 0, 0, 0)
