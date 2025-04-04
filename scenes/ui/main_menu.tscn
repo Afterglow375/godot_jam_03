@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://boq48eug3yug0"]
+[gd_scene load_steps=25 format=3 uid="uid://boq48eug3yug0"]
 
 [ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1_x2me4"]
 [ext_resource type="Theme" uid="uid://cevaq6y06kp6a" path="res://assets/themes/theme.tres" id="2_xw1io"]
@@ -7,18 +7,19 @@
 [ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="5_k8dmk"]
 [ext_resource type="Texture2D" uid="uid://c2bb1rt2qwtu2" path="res://addons/kenney_particle_pack/star_05.png" id="6_mo5kp"]
 [ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="7_hkhlq"]
+[ext_resource type="PackedScene" uid="uid://do4v846bf7snb" path="res://scenes/ui/tutorial_menu.tscn" id="8_qvsry"]
 
 [sub_resource type="Curve" id="Curve_saavb"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_i7qsc"]
+[sub_resource type="CurveTexture" id="CurveTexture_4qsus"]
 curve = SubResource("Curve_saavb")
 
 [sub_resource type="Gradient" id="Gradient_rrl0v"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_c7tl5"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yb6id"]
 gradient = SubResource("Gradient_rrl0v")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1a1bg"]
@@ -31,8 +32,8 @@ initial_velocity_max = 1000.0
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.02
-color_ramp = SubResource("GradientTexture1D_c7tl5")
-alpha_curve = SubResource("CurveTexture_i7qsc")
+color_ramp = SubResource("GradientTexture1D_yb6id")
+alpha_curve = SubResource("CurveTexture_4qsus")
 hue_variation_min = -0.2
 hue_variation_max = 0.2
 
@@ -43,13 +44,13 @@ blend_mode = 1
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_jsv8r"]
+[sub_resource type="CurveTexture" id="CurveTexture_tvmj3"]
 curve = SubResource("Curve_dxud4")
 
 [sub_resource type="Gradient" id="Gradient_m3gk8"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_e15dv"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vnpde"]
 gradient = SubResource("Gradient_m3gk8")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_voy21"]
@@ -61,8 +62,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.15
-color_ramp = SubResource("GradientTexture1D_e15dv")
-alpha_curve = SubResource("CurveTexture_jsv8r")
+color_ramp = SubResource("GradientTexture1D_vnpde")
+alpha_curve = SubResource("CurveTexture_tvmj3")
 hue_variation_min = -0.2
 hue_variation_max = 0.34
 
@@ -78,8 +79,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.08
-color_ramp = SubResource("GradientTexture1D_e15dv")
-alpha_curve = SubResource("CurveTexture_jsv8r")
+color_ramp = SubResource("GradientTexture1D_vnpde")
+alpha_curve = SubResource("CurveTexture_tvmj3")
 
 [sub_resource type="Gradient" id="Gradient_3heqq"]
 colors = PackedColorArray(0.639216, 0.654902, 1, 0.490196, 0, 0, 0, 0)
@@ -174,6 +175,9 @@ vertical_alignment = 1
 [node name="SettingsCanvas" parent="." instance=ExtResource("7_hkhlq")]
 visible = false
 
+[node name="TutorialMenu" parent="." instance=ExtResource("8_qvsry")]
+visible = false
+
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
@@ -200,6 +204,11 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 64
 text = " Level Select "
 
+[node name="TutorialButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "How To Play"
+
 [node name="Settings" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 text = "Settings"
@@ -210,5 +219,6 @@ text = "Quit"
 
 [connection signal="pressed" from="VBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/LevelSelectButton" to="." method="_on_level_select_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/TutorialButton" to="." method="_on_tutorial_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/Settings" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

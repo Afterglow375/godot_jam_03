@@ -1,6 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://do4v846bf7snb"]
+[gd_scene load_steps=3 format=3 uid="uid://do4v846bf7snb"]
 
 [ext_resource type="Script" path="res://scripts/ui/tutorial_menu.gd" id="1_xmp0q"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ntc6h"]
+bg_color = Color(0.0705882, 0.0823529, 0.133333, 0.890196)
+corner_radius_top_left = 45
+corner_radius_top_right = 45
+corner_radius_bottom_right = 45
+corner_radius_bottom_left = 45
 
 [node name="TutorialMenu" type="CanvasLayer"]
 script = ExtResource("1_xmp0q")
@@ -33,6 +40,7 @@ offset_right = 1096.0
 offset_bottom = 752.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_ntc6h")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Control/Panel"]
 layout_mode = 1
