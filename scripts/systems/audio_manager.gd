@@ -23,7 +23,8 @@ enum Audio {
 	SUN_HIT,
 	EARTH_PUSH,
 	# Menu sounds
-	THEME_SONG
+	THEME_SONG,
+	LEVEL_SONG
 }
 
 # Dictionary mapping Audio to their file paths and default volumes
@@ -102,7 +103,11 @@ var _audio_data = {
 	# Menu sounds
 	Audio.THEME_SONG: {
 		"path": "res://assets/audio/theme_song.wav",
-		"volume": -12.0
+		"volume": -10.0
+	},
+	Audio.LEVEL_SONG: {
+		"path": "res://assets/audio/level_song.wav",
+		"volume": -8.0
 	}
 }
 
@@ -116,12 +121,19 @@ var master_volume: float = 1.0
 var music_volume: float = 1.0
 var fx_volume: float = 1.0
 
+# Music player references and settings
+var _theme_song_player: AudioStreamPlayer
+var _level_song_player: AudioStreamPlayer
+var _theme_song_scenes: Array[String] = ["res://scenes/ui/main_menu.tscn", "res://scenes/ui/level_select.tscn", "res://scenes/ui/settings.tscn"]
+const MUSIC_FADE_DURATION: float = 0.5
+
 # Preload audio resources for efficiency
 var _preloaded_audio = {}
-var _theme_song_player: AudioStreamPlayer
-var _theme_song_scenes: Array[String] = ["res://scenes/ui/main_menu.tscn", "res://scenes/ui/level_select.tscn", "res://scenes/ui/settings.tscn"]
 
 func _ready() -> void:
+	# Set process mode to make sure audio manager always runs even when paused
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	# Preload all audio resources
 	for clip_id in _audio_data.keys():
 		var path = _audio_data[clip_id]["path"]
@@ -132,18 +144,68 @@ func _ready() -> void:
 	# Connect to SceneManager signals
 	SceneManager.scene_change_completed.connect(_on_scene_change_completed)
 	
-	_theme_song_player = play(Audio.THEME_SONG, -100, true, false)
+	# Create both music players with silent volume
+	_theme_song_player = play(Audio.THEME_SONG, -20, false, false)
+	_theme_song_player.volume_db = -20.0  # Start silent
+	_theme_song_player.process_mode = Node.PROCESS_MODE_ALWAYS  # Keep playing when paused
+	
+	_level_song_player = play(Audio.LEVEL_SONG, -20, false, false)
+	_level_song_player.volume_db = -20.0  # Start silent
+	_level_song_player.process_mode = Node.PROCESS_MODE_ALWAYS  # Keep playing when paused
+	
+	# Determine which song to play based on current scene
+	var current_scene = get_tree().current_scene
+	if current_scene:
+		var scene_path = current_scene.scene_file_path
+		if _theme_song_scenes.has(scene_path):
+			# Start with theme song
+			_theme_song_player.play()
+			fade_to_song(_theme_song_player, _level_song_player)
+		else:
+			# Start with level song
+			_level_song_player.play()
+			fade_to_song(_level_song_player, _theme_song_player)
+	else:
+		# Default to theme song if we can't determine the scene
+		_theme_song_player.play()
+		fade_to_song(_theme_song_player, _level_song_player)
 
 func _on_scene_change_completed(scene_path: String) -> void:
 	if _theme_song_scenes.has(scene_path):
-		if _theme_song_player == null or !is_instance_valid(_theme_song_player):
-			_theme_song_player = play(Audio.THEME_SONG, -100, true, false)
+		# We're in a menu scene - fade in theme song, fade out level song
+		fade_to_song(_theme_song_player, _level_song_player)
 	else:
-		# Stop the theme song when not in menu scenes
-		if _theme_song_player != null and is_instance_valid(_theme_song_player):
-			_theme_song_player.stop()
-			_theme_song_player.queue_free()
-			_theme_song_player = null
+		# We're in a gameplay scene - fade in level song, fade out theme song
+		fade_to_song(_level_song_player, _theme_song_player)
+
+# Smoothly transition from one song to another
+func fade_to_song(fade_in_player: AudioStreamPlayer, fade_out_player: AudioStreamPlayer) -> void:
+	if not is_instance_valid(fade_in_player) or not is_instance_valid(fade_out_player):
+		return
+		
+	# Make sure the fade in player is playing
+	if not fade_in_player.playing:
+		fade_in_player.play()
+		
+	# Get target volume for the song we're fading in
+	var target_db = _get_music_volume_db(fade_in_player)
+	
+	# Create tweens for fading
+	var fade_in_tween = create_tween()
+	fade_in_tween.tween_property(fade_in_player, "volume_db", target_db, MUSIC_FADE_DURATION)
+	
+	var fade_out_tween = create_tween()
+	fade_out_tween.tween_property(fade_out_player, "volume_db", -80.0, MUSIC_FADE_DURATION)
+	fade_out_tween.tween_callback(func(): 
+		if is_instance_valid(fade_out_player):
+			fade_out_player.stop()
+	)
+
+# Get the appropriate volume in dB for a music player
+func _get_music_volume_db(player: AudioStreamPlayer) -> float:
+	var clip_id = Audio.THEME_SONG if player == _theme_song_player else Audio.LEVEL_SONG
+	var base_volume = _audio_data[clip_id]["volume"]
+	return base_volume
 
 # Apply volume settings to audio buses
 func apply_volume_settings() -> void:
@@ -178,6 +240,15 @@ func set_music_volume(volume: float) -> void:
 	var music_idx = AudioServer.get_bus_index(MUSIC_BUS_NAME)
 	if music_idx >= 0:
 		AudioServer.set_bus_volume_db(music_idx, linear_to_db(music_volume))
+		
+	# If music is currently playing, update its volume directly
+	if _theme_song_player and is_instance_valid(_theme_song_player) and _theme_song_player.playing:
+		var theme_target_db = _get_music_volume_db(_theme_song_player)
+		_theme_song_player.volume_db = theme_target_db
+		
+	if _level_song_player and is_instance_valid(_level_song_player) and _level_song_player.playing:
+		var level_target_db = _get_music_volume_db(_level_song_player)
+		_level_song_player.volume_db = level_target_db
 
 # Set fx volume (0.0 to 1.0)
 func set_fx_volume(volume: float) -> void:
@@ -207,8 +278,10 @@ func play(clip_id: int, override_volume: float = -100, autoplay: bool = true, au
 	player.volume_db = volume
 	
 	# Set appropriate bus
-	if clip_id == Audio.THEME_SONG:
+	if clip_id == Audio.THEME_SONG or clip_id == Audio.LEVEL_SONG:
 		player.bus = MUSIC_BUS_NAME
+		# Make music continue playing during pause
+		player.process_mode = Node.PROCESS_MODE_ALWAYS
 	else:
 		player.bus = FX_BUS_NAME
 	
@@ -261,3 +334,14 @@ func play_positional(clip_id: int, position: Vector2, override_volume: float = -
 		player.play()
 	
 	return player
+
+# Called when the node is about to be removed from the SceneTree
+func _exit_tree() -> void:
+	# Clean up the music players if they exist
+	if _theme_song_player and is_instance_valid(_theme_song_player):
+		_theme_song_player.stop()
+		_theme_song_player.queue_free()
+		
+	if _level_song_player and is_instance_valid(_level_song_player):
+		_level_song_player.stop()
+		_level_song_player.queue_free()
