@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="2_ug2qf"]
 [ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="3_j3fe7"]
 [ext_resource type="Texture2D" uid="uid://c2bb1rt2qwtu2" path="res://addons/kenney_particle_pack/star_05.png" id="4_jq5eh"]
-[ext_resource type="PackedScene" uid="uid://d256mn5p6ig4e" path="res://scenes/ui/level_select_button.tscn" id="5_7lqy6"]
+[ext_resource type="PackedScene" uid="uid://dp3qlymwbnstp" path="res://scenes/ui/level_select_button.tscn" id="5_7lqy6"]
 
 [sub_resource type="Curve" id="Curve_hh8je"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
