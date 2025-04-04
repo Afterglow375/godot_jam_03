@@ -7,8 +7,6 @@ const MIN_GRAVITY_FORCE: float = 100.0   # Minimum gravity force near center
 const GRAVITY_DURATION: float = 1.0     # How long to apply gravity in seconds
 var gravity_timer: float = 0.0          # Track how long gravity has been applied
 
-@onready var game_manager = get_node("/root/GameManager")
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	earth = get_node("/root/Main/Earth")  # Get Earth reference from root
@@ -24,7 +22,7 @@ func _on_earth_stopped_moving():
 
 # Called every physics frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
-	if game_manager.is_paused():
+	if GameManager.is_paused():
 		return
 		
 	if earth.is_moving() and gravity_timer < GRAVITY_DURATION:

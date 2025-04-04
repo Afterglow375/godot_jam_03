@@ -14,9 +14,6 @@ signal explosion_triggered(fade_time: float)
 @onready var outer_projectile: Area2D = $"Inner Projectile/Outer Projectile"
 var projectile_sound_player: AudioStreamPlayer2D = null  # Persistent audio player
 
-@onready var audio_manager = get_node("/root/AudioManager")
-@onready var game_manager = get_node("/root/GameManager")
-
 # Constants and export variables
 const BASE_SPEED: float = 2000.0
 @export var lifetime: float = 5.0  # Time in seconds before projectile destroys itself
@@ -45,8 +42,13 @@ func _ready() -> void:
 	# Connect to tree_exiting to clean up sound when scene changes
 	tree_exiting.connect(_on_tree_exiting)
 	
-	# Set initial charge amount
+	# Connect to the outer projectile's signals
+	outer_projectile.force_weakening.connect(_on_force_weakening)
+	outer_projectile.force_fade_out.connect(_on_force_fade_out)
+	
+	# Set initial charge/white fade amount
 	set_charge_amount(0.0)
+	set_white_fade_amount(0.0)
 	
 	# Create the positional sound player
 	create_projectile_sound_player()
@@ -87,7 +89,7 @@ func _process(delta: float) -> void:
 			destroy()
 	
 	# Only check for input when not already charging, fading, or destroying AND game is not paused
-	if not charging_explosion and not fading and not game_manager.is_paused():
+	if not charging_explosion and not fading and not GameManager.is_paused():
 		# Check lifetime and destroy if expired
 		time_alive += delta
 		if time_alive >= lifetime:
@@ -106,7 +108,7 @@ func _process(delta: float) -> void:
 			start_charging_explosion()
 	
 	# Handle explosion charging - only continue if game is not paused
-	if charging_explosion and not fading and not game_manager.is_paused():
+	if charging_explosion and not fading and not GameManager.is_paused():
 		charge_time += delta
 		
 		# Calculate normalized charge progress (clamped between 0 and 1)
@@ -115,37 +117,49 @@ func _process(delta: float) -> void:
 		# Update shader charge amount
 		set_charge_amount(charge_progress)
 		
+		# If white_fade_amount is active, reduce it to 0
+		var current_white_fade = texture_rect.material.get_shader_parameter("white_fade_amount")
+		if current_white_fade > 0.0:
+			var white_fade_reduction = (delta / (explosion_charge_time)) * current_white_fade
+			var new_white_fade = max(current_white_fade - white_fade_reduction, 0.0)
+			set_white_fade_amount(new_white_fade)
+		
 		if charge_time >= explosion_charge_time:
 			trigger_explosion()
 
-# Function to update the charge amount on the shader
 func set_charge_amount(amount: float) -> void:
 	texture_rect.material.set_shader_parameter("charge_amount", amount)
 
+func set_white_fade_amount(amount: float) -> void:
+	texture_rect.material.set_shader_parameter("white_fade_amount", amount)
+
+func _on_force_weakening(time_factor: float) -> void:
+	if not charging_explosion and not fading:
+		set_white_fade_amount(time_factor)
+
+func _on_force_fade_out() -> void:
+	if not charging_explosion and not fading:
+		var current_white_fade = texture_rect.material.get_shader_parameter("white_fade_amount")
+		if current_white_fade > 0.0:
+			var tween = create_tween()
+			tween.tween_method(set_white_fade_amount, current_white_fade, 0.0, 0.25)
+
 # Launch the projectile in the specified direction
 func launch(direction: Vector2, speed_multiplier: float = 1.0) -> void:
-	# Reset distance tracking
 	total_distance_traveled = 0.0
 	last_position = global_position
 	
 	# Set the linear_velocity directly for RigidBody2D
 	inner_projectile.linear_velocity = -direction * (BASE_SPEED * speed_multiplier)
 	
-	# Play launch sound
 	play_launch_sound()
 
-# Start the explosion charging sequence
 func start_charging_explosion() -> void:
 	charging_explosion = true
 	charge_time = 0.0
-	
-	# Emit signal that charging has started with charge time duration
 	charging_started.emit(explosion_charge_time)
-	
-	# Play the charge sound
 	play_charge_sound()
 
-# Trigger the actual explosion but start the fade effect before destroying
 func trigger_explosion() -> void:
 	explosion_charged.emit()
 	
@@ -170,9 +184,7 @@ func _on_body_entered(body: Node) -> void:
 func destroy() -> void:
 	if projectile_sound_player and is_instance_valid(projectile_sound_player):
 		projectile_sound_player.queue_free()
-	
 	projectile_destroyed.emit()
-	
 	queue_free()
 
 func _on_tree_exiting() -> void:
@@ -203,4 +215,4 @@ func play_fizzle_sound() -> void:
 
 # Virtual method to be overridden by child classes - play wall collision sound
 func play_wall_collision_sound() -> void:
-	assert(false, "Method 'play_wall_collision_sound()' must be overridden in a subclass") 
+	assert(false, "Method 'play_wall_collision_sound()' must be overridden in a subclass")

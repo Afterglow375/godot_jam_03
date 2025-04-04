@@ -8,9 +8,6 @@ var affected_bodies: Array = []
 var force_radius: float = 100.0  # Default value, will be updated in _ready()
 var push_sound_player: AudioStreamPlayer2D = null  # Persistent audio player
 
-@onready var audio_manager = get_node("/root/AudioManager")
-@onready var game_manager = get_node("/root/GameManager")
-
 func _ready():
 	# Enable detection of bodies entering/exiting for the body_entered/exited signals
 	monitoring = true
@@ -26,7 +23,7 @@ func _ready():
 
 func _physics_process(delta):
 	# Skip force application when game is paused
-	if game_manager.is_paused():
+	if GameManager.is_paused():
 		return
 		
 	# Process affected bodies
@@ -67,7 +64,7 @@ func _on_body_entered(body: Node2D) -> void:
 		# Store body and radius as a simple array of length 2
 		affected_bodies.append([body, body_radius])
 		
-		push_sound_player = audio_manager.play_positional(
+		push_sound_player = AudioManager.play_positional(
 			AudioManager.Audio.EARTH_PUSH,
 			global_position,
 			false,

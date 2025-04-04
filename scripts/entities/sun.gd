@@ -16,9 +16,6 @@ var last_earth_position: Vector2 = Vector2.ZERO  # Last position for distance tr
 var distance_traveled: float = 0.0  # Accumulated distance traveled
 const SOUND_DISTANCE_THRESHOLD: float = 25.0  # Play sound every X pixels traveled
 
-# Get reference to the AudioManager singleton
-@onready var audio_manager = get_node("/root/AudioManager")
-
 func _ready():
 	# Store reference to the level
 	level = get_tree().current_scene

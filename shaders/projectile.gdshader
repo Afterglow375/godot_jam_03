@@ -2,6 +2,8 @@ shader_type canvas_item;
 
 // Charge amount from 0.0 to 1.0
 uniform float charge_amount : hint_range(0.0, 1.0) = 0.0;
+// White fade amount from 0.0 to 1.0
+uniform float white_fade_amount : hint_range(0.0, 1.0) = 0.0;
 // Charge color - default to red
 uniform vec4 charge_color : source_color = vec4(1.0, 0.1, 0.1, 1.0);
 // Overall opacity from 0.0 to 1.0
@@ -82,6 +84,7 @@ void fragment() {
 		// Thresholds for effects
 		float white_threshold = 0.95;
 		
+		// CHARGE AMOUNT TAKES PRECEDENCE - handle charge_amount first
 		if (charge_amount >= white_threshold) {
 			// Calculate how far we are into the fade effect (0.0 to 1.0)
 			float fade_progress = (charge_amount - white_threshold) / (1.0 - white_threshold);
@@ -92,6 +95,17 @@ void fragment() {
 			
 			// Use pure white color (1,1,1) with fading alpha
 			COLOR = vec4(1.0, 1.0, 1.0, alpha_fade);
+		}
+		// Then apply white_fade_amount only if not in charge white threshold mode
+		else if (white_fade_amount > 0.0) {
+			// Mix between the charging color and white based on white_fade_amount
+			vec3 final_color = mix(charging_color, vec3(1.0, 1.0, 1.0), white_fade_amount);
+			
+			// Maintain alpha (no fading)
+			float adjusted_alpha = original_color.a * opacity * opacity_multiplier;
+			adjusted_alpha = min(adjusted_alpha, 1.0); // Clamp to avoid over-bright edges
+			
+			COLOR = vec4(final_color, adjusted_alpha);
 		} else {
 			// Normal charging effect with opacity applied and edge adjustment
 			float adjusted_alpha = original_color.a * opacity * opacity_multiplier;

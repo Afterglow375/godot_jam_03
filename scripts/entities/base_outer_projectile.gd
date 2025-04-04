@@ -1,6 +1,11 @@
 extends Area2D
 # Base class for outer projectiles with shared functionality
 
+# Signal for time-based force weakening
+signal force_weakening(time_factor: float)
+# Signal for rapid fade out of white effect when all bodies exit
+signal force_fade_out
+
 const FADE_DURATION: float = 0.1  # Fade in/out duration in seconds
 const FORCE_FADE_TIME: float = 1.0  # Time in seconds for force to weaken
 const FORCE_DELAY_TIME: float = 0.5  # Delay before force starts weakening
@@ -14,9 +19,6 @@ var explosion_triggered: bool = false  # Track if explosion has been triggered
 
 # Parent projectile reference
 var projectile: Node2D = null
-
-@onready var audio_manager = get_node("/root/AudioManager")
-@onready var game_manager = get_node("/root/GameManager")
 
 func _ready() -> void:
 	# Enable detection of bodies entering/exiting for the body_entered/exited signals
@@ -40,8 +42,11 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	# Skip force application when game is paused or explosion has been triggered
-	if game_manager.is_paused() or explosion_triggered:
+	if GameManager.is_paused() or explosion_triggered:
 		return
+		
+	# Track the minimum time factor for any affected body
+	var min_time_factor: float = 1.0
 		
 	# Process affected bodies
 	for i in range(affected_bodies.size() - 1, -1, -1):
@@ -64,6 +69,9 @@ func _physics_process(delta: float) -> void:
 			# Scale from 1.0 down to MIN_FORCE_MULTIPLIER over FORCE_FADE_TIME
 			time_factor = max(1.0 - ((1.0 - MIN_FORCE_MULTIPLIER) * (fade_time / FORCE_FADE_TIME)), MIN_FORCE_MULTIPLIER)
 		
+		# Update minimum time factor (to emit the weakest force value being applied)
+		min_time_factor = min(min_time_factor, time_factor)
+		
 		# Calculate direction and distance from projectile to body
 		var to_body: Vector2 = body.global_position - global_position
 		var distance: float = to_body.length()
@@ -75,6 +83,13 @@ func _physics_process(delta: float) -> void:
 		var force: Vector2 = get_force_direction(to_body, force_multiplier, time_factor)
 		
 		body.apply_central_force(force)
+	
+	# Only emit the signal if there are affected bodies
+	if affected_bodies.size() > 0:
+		# Invert the time factor to map to white fade (1.0 - min_time_factor)
+		# This makes the white fade increase as the force weakens
+		var white_fade_value: float = 1.0 - min_time_factor
+		force_weakening.emit(white_fade_value)
 
 func _process(_delta: float) -> void:
 	# Update the sound position to match the projectile's position
@@ -98,7 +113,7 @@ func _on_body_entered(body: Node2D) -> void:
 		# Store body, radius, and initial time (0) as a simple array
 		affected_bodies.append([body, body_radius, 0.0])
 		
-		sound_player = audio_manager.play_positional(
+		sound_player = AudioManager.play_positional(
 			AudioManager.Audio.EARTH_PUSH,
 			global_position,
 			false,
@@ -106,13 +121,9 @@ func _on_body_entered(body: Node2D) -> void:
 		)
 		
 		# Fade in the sound
-		sound_player.volume_db = -40.0  # Start very quiet
-		
-		# Create a tween for fading in
+		sound_player.volume_db = -40.0
 		var tween = create_tween()
 		tween.tween_property(sound_player, "volume_db", -5.0, FADE_DURATION)
-		
-		# Start playing
 		sound_player.play()
 
 func _on_body_exited(body: Node2D) -> void:
@@ -123,14 +134,14 @@ func _on_body_exited(body: Node2D) -> void:
 				affected_bodies.remove_at(i)
 				break
 		
-		# If no more bodies are affected, fade out and stop the sound
-		if affected_bodies.size() == 0 and sound_player and is_instance_valid(sound_player) and sound_player.playing:
-			# Create a tween for fading out
-			var tween = create_tween()
-			tween.tween_property(sound_player, "volume_db", -40.0, FADE_DURATION)
+		if affected_bodies.size() == 0:
+			force_fade_out.emit()
 			
-			# Stop the player after fade completes
-			tween.tween_callback(func(): sound_player.queue_free())
+			# Handle sound fadeout
+			if sound_player and is_instance_valid(sound_player) and sound_player.playing:
+				var tween = create_tween()
+				tween.tween_property(sound_player, "volume_db", -40.0, FADE_DURATION)
+				tween.tween_callback(func(): sound_player.queue_free())
 
 func _on_tree_exiting() -> void:
 	# Clean up the sound player if it exists

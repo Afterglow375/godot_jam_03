@@ -20,7 +20,7 @@ func get_force_direction(to_body: Vector2, force_multiplier: float, time_factor:
 
 # Override to implement explosion pull behavior
 func apply_explosion_force() -> void:
-	if not game_manager.is_paused():
+	if not GameManager.is_paused():
 		var inner_projectile_body = get_parent()
 		
 		for body_data in affected_bodies:

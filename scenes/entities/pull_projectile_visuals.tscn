@@ -18,6 +18,7 @@ shader_parameter/custom_color = Color(0.494118, 0.768627, 0.854902, 1)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_csqb1"]
 shader = ExtResource("3_up51p")
 shader_parameter/charge_amount = 0.0
+shader_parameter/white_fade_amount = 0.0
 shader_parameter/charge_color = Color(1, 0.1, 0.1, 1)
 shader_parameter/opacity = 1.0
 shader_parameter/edge_distortion = 0.03
