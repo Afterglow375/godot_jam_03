@@ -1,0 +1,310 @@
+[gd_scene load_steps=26 format=3 uid="uid://b443n5vxus7sp"]
+
+[ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_iqsi7"]
+[ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="2_jktli"]
+[ext_resource type="Texture2D" uid="uid://c2bb1rt2qwtu2" path="res://addons/kenney_particle_pack/star_05.png" id="3_mnwjm"]
+[ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_pb2d5"]
+[ext_resource type="PackedScene" uid="uid://861gfsuj7lom" path="res://scenes/entities/earth.tscn" id="5_regso"]
+[ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="6_4o56b"]
+[ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="7_mhse1"]
+[ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="8_2gdab"]
+[ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="9_kk5af"]
+[ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="10_5kn24"]
+[ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="11_aook7"]
+[ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="12_xl62w"]
+[ext_resource type="PackedScene" uid="uid://bgkxutxm3c7mm" path="res://scenes/levels/tile_map.tscn" id="13_k8ctx"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6chnj"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_ttxpg"]
+_data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_nnlhw"]
+curve = SubResource("Curve_ttxpg")
+
+[sub_resource type="Gradient" id="Gradient_ji1hx"]
+colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ouqiq"]
+gradient = SubResource("Gradient_ji1hx")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yul11"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1920, 1080, 1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.15
+color_ramp = SubResource("GradientTexture1D_ouqiq")
+alpha_curve = SubResource("CurveTexture_nnlhw")
+hue_variation_min = -0.2
+hue_variation_max = 0.34
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_a2n2v"]
+blend_mode = 1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_x1wae"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(1920, 1080, 1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+scale_min = 0.02
+scale_max = 0.08
+color_ramp = SubResource("GradientTexture1D_ouqiq")
+alpha_curve = SubResource("CurveTexture_nnlhw")
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mp8fg"]
+size = Vector2(3813.63, 79)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
+size = Vector2(78.457, 2221)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ssur4"]
+friction = 0.0
+bounce = 1.0
+
+[node name="Main" type="Node"]
+script = ExtResource("1_iqsi7")
+
+[node name="StaticStarsCross" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_6chnj")
+position = Vector2(1920, 1080)
+amount = 40
+process_material = SubResource("ParticleProcessMaterial_yul11")
+texture = ExtResource("2_jktli")
+lifetime = 60.0
+preprocess = 60.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_lifetime = 1.0
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="StaticStarsCircle" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_a2n2v")
+position = Vector2(1920, 1080)
+amount = 80
+process_material = SubResource("ParticleProcessMaterial_x1wae")
+texture = ExtResource("3_mnwjm")
+lifetime = 60.0
+preprocess = 60.0
+visibility_rect = Rect2(-1920, -1080, 3840, 2160)
+trail_lifetime = 1.0
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="Sun" parent="." instance=ExtResource("4_pb2d5")]
+position = Vector2(3264, 1088)
+
+[node name="Earth" parent="." instance=ExtResource("5_regso")]
+position = Vector2(896, 1088)
+
+[node name="Spaceship" parent="." instance=ExtResource("6_4o56b")]
+position = Vector2(256, 1088)
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_top = -79.0
+offset_right = 3814.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect/StaticBody2D"]
+position = Vector2(1906.82, 39.5)
+shape = SubResource("RectangleShape2D_mp8fg")
+
+[node name="ColorRect2" type="ColorRect" parent="."]
+offset_top = 2160.0
+offset_right = 3814.0
+offset_bottom = 2239.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect2"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColorRect2/StaticBody2D"]
+position = Vector2(1906.82, 39.5)
+shape = SubResource("RectangleShape2D_mp8fg")
+
+[node name="ColorRect3" type="ColorRect" parent="."]
+offset_left = -80.0
+offset_top = -1.0
+offset_right = -1.0
+offset_bottom = 2200.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect3"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect3/StaticBody2D"]
+position = Vector2(39.2288, 1081)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="ColorRect4" type="ColorRect" parent="."]
+offset_left = 3840.0
+offset_top = -1.0
+offset_right = 3919.0
+offset_bottom = 2200.0
+scale = Vector2(1.00691, 1)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="ColorRect4"]
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_cpj0v")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
+position = Vector2(39.2288, 1091.5)
+shape = SubResource("RectangleShape2D_ab1l3")
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(1880, 1096)
+scale = Vector2(1.05926, 1.05926)
+texture = ExtResource("7_mhse1")
+
+[node name="WorldEnvironment" parent="." instance=ExtResource("8_2gdab")]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HUD" parent="UI" instance=ExtResource("9_kk5af")]
+
+[node name="PauseMenu" parent="UI" instance=ExtResource("10_5kn24")]
+visible = false
+
+[node name="WinPopup" parent="UI" instance=ExtResource("11_aook7")]
+visible = false
+
+[node name="SettingsCanvas" parent="UI" instance=ExtResource("12_xl62w")]
+visible = false
+
+[node name="TileMap" parent="." instance=ExtResource("13_k8ctx")]
+position = Vector2(-0.00012207, 0)
+layer_0/tile_data = PackedInt32Array(1703972, 262144, 2, 1769508, 262144, 3, 1638437, 327680, 1, 1703973, 327680, 2, 1769509, 327680, 3, 1835045, 327680, 4, 1572902, 393216, 0, 1638438, 393216, 1, 1703974, 393216, 2, 1769510, 393216, 3, 1835046, 393216, 4, 1900582, 393216, 5, 1572903, 458752, 0, 1638439, 458752, 1, 1703975, 458752, 2, 1769511, 458752, 3, 1835047, 458752, 4, 1900583, 458752, 5, 1638440, 524288, 1, 1703976, 524288, 2, 1769512, 524288, 3, 1835048, 524288, 4, 1703977, 589824, 2, 1769513, 589824, 3, 852004, 262144, 3, 786469, 327680, 2, 852005, 327680, 3, 917541, 327680, 4, 720934, 393216, 1, 786470, 393216, 2, 852006, 393216, 3, 917542, 393216, 4, 983078, 393216, 5, 720935, 458752, 1, 786471, 458752, 2, 852007, 458752, 3, 917543, 458752, 4, 983079, 458752, 5, 786472, 524288, 2, 852008, 524288, 3, 917544, 524288, 4, 852009, 589824, 3, 2621477, 327680, 2, 2687013, 327680, 3, 2490406, 393216, 0, 2555942, 393216, 1, 2621478, 393216, 2, 2687014, 393216, 3, 2752550, 393216, 4, 2490407, 458752, 0, 2555943, 458752, 1, 2621479, 458752, 2, 2687015, 458752, 3, 2752551, 458752, 4, 2621480, 524288, 2, 2687016, 524288, 3, 2621481, 589824, 2, 2687012, 262144, 3, 2752549, 327680, 4, 2818086, 393216, 5, 2818087, 458752, 5, 2752552, 524288, 4, 2687017, 589824, 3, 786468, 262144, 2, 720933, 327680, 1, 655398, 393216, 0, 655399, 458752, 0, 720936, 524288, 1, 786473, 589824, 2, 2621476, 262144, 2, 2555941, 327680, 1, 2555944, 524288, 1, 1245228, 262144, 2, 1310764, 262144, 3, 1179693, 327680, 1, 1245229, 327680, 2, 1310765, 327680, 3, 1376301, 327680, 4, 1114158, 393216, 0, 1179694, 393216, 1, 1245230, 393216, 2, 1310766, 393216, 3, 1376302, 393216, 4, 1441838, 393216, 5, 1114159, 458752, 0, 1179695, 458752, 1, 1245231, 458752, 2, 1310767, 458752, 3, 1376303, 458752, 4, 1441839, 458752, 5, 1179696, 524288, 1, 1245232, 524288, 2, 1310768, 524288, 3, 1376304, 524288, 4, 1245233, 589824, 2, 1310769, 589824, 3, 2162732, 262144, 2, 2228268, 262144, 3, 2097197, 327680, 1, 2162733, 327680, 2, 2228269, 327680, 3, 2293805, 327680, 4, 2031662, 393216, 0, 2097198, 393216, 1, 2162734, 393216, 2, 2228270, 393216, 3, 2293806, 393216, 4, 2359342, 393216, 5, 2031663, 458752, 0, 2097199, 458752, 1, 2162735, 458752, 2, 2228271, 458752, 3, 2293807, 458752, 4, 2359343, 458752, 5, 2097200, 524288, 1, 2162736, 524288, 2, 2228272, 524288, 3, 2293808, 524288, 4, 2162737, 589824, 2, 2228273, 589824, 3, 3080236, 262144, 2, 3145772, 262144, 3, 3014701, 327680, 1, 3080237, 327680, 2, 3145773, 327680, 3, 3211309, 327680, 4, 2949166, 393216, 0, 3014702, 393216, 1, 3080238, 393216, 2, 3145774, 393216, 3, 3211310, 393216, 4, 3276846, 393216, 5, 2949167, 458752, 0, 3014703, 458752, 1, 3080239, 458752, 2, 3145775, 458752, 3, 3211311, 458752, 4, 3276847, 458752, 5, 3014704, 524288, 1, 3080240, 524288, 2, 3145776, 524288, 3, 3211312, 524288, 4, 3080241, 589824, 2, 3145777, 589824, 3, 327724, 262144, 2, 393260, 262144, 3, 262189, 327680, 1, 327725, 327680, 2, 393261, 327680, 3, 458797, 327680, 4, 196654, 393216, 0, 262190, 393216, 1, 327726, 393216, 2, 393262, 393216, 3, 458798, 393216, 4, 524334, 393216, 5, 196655, 458752, 0, 262191, 458752, 1, 327727, 458752, 2, 393263, 458752, 3, 458799, 458752, 4, 524335, 458752, 5, 262192, 524288, 1, 327728, 524288, 2, 393264, 524288, 3, 458800, 524288, 4, 327729, 589824, 2, 393265, 589824, 3, 786484, 262144, 2, 852020, 262144, 3, 720949, 327680, 1, 786485, 327680, 2, 852021, 327680, 3, 917557, 327680, 4, 655414, 393216, 0, 720950, 393216, 1, 786486, 393216, 2, 852022, 393216, 3, 917558, 393216, 4, 983094, 393216, 5, 655415, 458752, 0, 720951, 458752, 1, 786487, 458752, 2, 852023, 458752, 3, 917559, 458752, 4, 983095, 458752, 5, 720952, 524288, 1, 786488, 524288, 2, 852024, 524288, 3, 917560, 524288, 4, 786489, 589824, 2, 852025, 589824, 3, 1703988, 262144, 2, 1769524, 262144, 3, 1638453, 327680, 1, 1703989, 327680, 2, 1769525, 327680, 3, 1835061, 327680, 4, 1572918, 393216, 0, 1638454, 393216, 1, 1703990, 393216, 2, 1769526, 393216, 3, 1835062, 393216, 4, 1900598, 393216, 5, 1572919, 458752, 0, 1638455, 458752, 1, 1703991, 458752, 2, 1769527, 458752, 3, 1835063, 458752, 4, 1900599, 458752, 5, 1638456, 524288, 1, 1703992, 524288, 2, 1769528, 524288, 3, 1835064, 524288, 4, 1703993, 589824, 2, 1769529, 589824, 3, 2621492, 262144, 2, 2687028, 262144, 3, 2555957, 327680, 1, 2621493, 327680, 2, 2687029, 327680, 3, 2752565, 327680, 4, 2490422, 393216, 0, 2555958, 393216, 1, 2621494, 393216, 2, 2687030, 393216, 3, 2752566, 393216, 4, 2818102, 393216, 5, 2490423, 458752, 0, 2555959, 458752, 1, 2621495, 458752, 2, 2687031, 458752, 3, 2752567, 458752, 4, 2818103, 458752, 5, 2555960, 524288, 1, 2621496, 524288, 2, 2687032, 524288, 3, 2752568, 524288, 4, 2621497, 589824, 2, 2687033, 589824, 3)
+
+[node name="StaticBody2D9" type="StaticBody2D" parent="."]
+position = Vector2(1480, 1080)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D9"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D10" type="StaticBody2D" parent="."]
+position = Vector2(1160, 1360)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D10"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D11" type="StaticBody2D" parent="."]
+position = Vector2(1800, 1360)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D11"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D12" type="StaticBody2D" parent="."]
+position = Vector2(1480, 1640)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D12"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D13" type="StaticBody2D" parent="."]
+position = Vector2(1160, 1920)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D13"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D14" type="StaticBody2D" parent="."]
+position = Vector2(1800, 1920)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D14"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D15" type="StaticBody2D" parent="."]
+position = Vector2(1480, 2200)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D15"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D18" type="StaticBody2D" parent="."]
+position = Vector2(1480, 2760)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D18"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D16" type="StaticBody2D" parent="."]
+position = Vector2(1160, 2480)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D16"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
+
+[node name="StaticBody2D17" type="StaticBody2D" parent="."]
+position = Vector2(1800, 2480)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_ssur4")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D17"]
+position = Vector2(-953.412, 1208)
+polygon = PackedVector2Array(1231.49, -2048, 1350.67, -2168, 1469.84, -2048, 1350.67, -1928)
