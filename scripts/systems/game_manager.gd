@@ -29,7 +29,14 @@ const LEVEL_PARS = {
 	9: 1,
 	10: 1,
 	11: 3,
-	12: 3,
+	13: 3,
+	14: 3,
+	15: 3,
+	16: 3,
+	17: 3,
+	18: 3,
+	19: 3,
+	20: 3,
 }
 
 # Called when the node enters the scene tree for the first time
