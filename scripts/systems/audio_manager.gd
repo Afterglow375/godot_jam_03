@@ -93,7 +93,7 @@ var _audio_data = {
 	},
 	Audio.SUN_HIT: {
 		"path": "res://assets/audio/sun hit sound.wav", 
-		"volume": -14.0
+		"volume": -15.0
 	},
 	Audio.EARTH_PUSH: {
 		"path": "res://assets/audio/earth push sound.wav", 
