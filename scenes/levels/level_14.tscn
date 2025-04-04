@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://b443n5vxus7sp"]
+[gd_scene load_steps=26 format=3 uid="uid://2hivfxif54h"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_iqsi7"]
 [ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="2_jktli"]

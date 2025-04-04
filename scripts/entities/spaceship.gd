@@ -88,6 +88,12 @@ func _ready():
 	# Connect mouse enter/exit signals
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
+	
+	# Connect to scene change signals to reset mouse state
+	SceneManager.scene_change_started.connect(_on_scene_change_started)
+	
+	# Also connect to tree_exiting to ensure mouse is released when scene changes
+	tree_exiting.connect(_on_tree_exiting)
 
 func connect_to_win_popup() -> void:
 	var win_popup = get_node("../UI/WinPopup")
@@ -461,3 +467,26 @@ func update_projectile_overlays() -> void:
 
 func _on_projectile_type_changed(_using_pull: bool) -> void:
 	update_projectile_overlays()
+
+# Ensure mouse mode is reset when scene is changing
+func _on_scene_change_started(_path: String) -> void:
+	reset_mouse_state()
+
+# Ensure mouse mode is reset when node is exiting the tree
+func _on_tree_exiting() -> void:
+	reset_mouse_state()
+
+# Reset mouse state to normal
+func reset_mouse_state() -> void:
+	if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		is_mouse_held = false
+		drag_started_in_area = false
+		
+		# Clear any lines that might be visible
+		if line:
+			line.clear_points()
+		if trajectory_line:
+			trajectory_line.clear_points()
+		if trajectory_end:
+			trajectory_end.visible = false
