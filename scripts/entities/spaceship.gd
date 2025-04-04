@@ -8,7 +8,7 @@ signal add_shot_requested(value)
 const MAX_LINE_LENGTH: float = 500.0  # Adjust this value to change max length
 const PushProjectileScene: PackedScene = preload("res://scenes/entities/push_projectile.tscn")
 const PullProjectileScene: PackedScene = preload("res://scenes/entities/pull_projectile.tscn")
-const MAX_BOUNCES: int = 5  # Maximum number of bounces to simulate
+const MAX_BOUNCES: int = 8  # Maximum number of bounces to simulate
 const BASE_SPEED: float = 2000.0  # Match the value from projectile_container.gd
 
 var is_mouse_held: bool = false
@@ -46,6 +46,7 @@ var bobbing_speed: float = 2.0
 var bobbing_amount: float = 5.0
 var bobbing_time: float = 0.0
 var original_position: Vector2 = Vector2.ZERO
+var stored_mouse_position: Vector2 = Vector2.ZERO  # Store mouse position when capturing it
 
 func _ready():
 	line = $SlingshotLine
@@ -99,6 +100,12 @@ func _input_event(viewport, event, shape_idx):
 			is_mouse_held = true
 			is_calculating_trajectory = true
 			
+			# Store the current mouse position before capturing
+			stored_mouse_position = get_viewport().get_mouse_position()
+			
+			# Capture mouse for unlimited movement
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			
 			# Reset accumulated mouse position when starting a new drag
 			accumulated_mouse_pos = Vector2.ZERO
 			last_mouse_pos = get_local_mouse_position()
@@ -116,10 +123,30 @@ func _input(event):
 				# Hide trajectory end sprite
 				if trajectory_end:
 					trajectory_end.visible = false
-					
+			
+				# Only release mouse capture if we had captured it
+				if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+					Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+					get_viewport().warp_mouse(stored_mouse_position)
+			
 			is_mouse_held = false
+			
 			# Reset accumulated mouse position when releasing
 			accumulated_mouse_pos = Vector2.ZERO
+	
+	# Handle mouse movement only when drag started in spaceship area
+	elif event is InputEventMouseMotion and is_mouse_held and drag_started_in_area and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		var motion = event.relative
+		
+		# Apply the motion to our accumulated position with sensitivity adjustments
+		if is_precision_aiming:
+			accumulated_mouse_pos += motion * precision_factor
+		else:
+			accumulated_mouse_pos += motion
+		
+		# Clamp the accumulated mouse position to MAX_LINE_LENGTH
+		if accumulated_mouse_pos.length() > MAX_LINE_LENGTH:
+			accumulated_mouse_pos = accumulated_mouse_pos.normalized() * MAX_LINE_LENGTH
 	
 	# Toggle between push and pull projectiles with spacebar
 	if event is InputEventKey and event.pressed and event.keycode == KEY_SPACE and can_shoot:
@@ -206,18 +233,26 @@ func _process(delta):
 	is_precision_aiming = Input.is_key_pressed(KEY_SHIFT)
 	
 	if is_mouse_held:
-		var current_mouse_pos: Vector2 = get_local_mouse_position()
+		var current_mouse_pos: Vector2 = Vector2.ZERO
 		var mouse_delta: Vector2 = Vector2.ZERO
 		
-		if last_mouse_pos != Vector2.ZERO:
-			mouse_delta = current_mouse_pos - last_mouse_pos
-		
-		last_mouse_pos = current_mouse_pos
-		
-		if is_precision_aiming:
-			accumulated_mouse_pos += mouse_delta * precision_factor
-		else:
-			accumulated_mouse_pos = current_mouse_pos
+		# If not in captured mode (fallback), use the normal local mouse position
+		if Input.get_mouse_mode() != Input.MOUSE_MODE_CAPTURED:
+			current_mouse_pos = get_local_mouse_position()
+			
+			if last_mouse_pos != Vector2.ZERO:
+				mouse_delta = current_mouse_pos - last_mouse_pos
+			
+			last_mouse_pos = current_mouse_pos
+			
+			if is_precision_aiming:
+				accumulated_mouse_pos += mouse_delta * precision_factor
+			else:
+				accumulated_mouse_pos = current_mouse_pos
+			
+			# Clamp the accumulated mouse position to MAX_LINE_LENGTH
+			if accumulated_mouse_pos.length() > MAX_LINE_LENGTH:
+				accumulated_mouse_pos = accumulated_mouse_pos.normalized() * MAX_LINE_LENGTH
 		
 		var mouse_pos: Vector2 = accumulated_mouse_pos
 		var original_length: float = mouse_pos.length()
@@ -238,6 +273,7 @@ func _process(delta):
 		
 		# Draw the line with clamped length if needed
 		current_line_end = mouse_pos
+		# We still need to apply MAX_LINE_LENGTH clamping to the line itself
 		if original_length > MAX_LINE_LENGTH:
 			current_line_end = mouse_pos.normalized() * MAX_LINE_LENGTH
 		
@@ -392,6 +428,12 @@ func _on_earth_stopped_moving() -> void:
 
 func _on_victory_achieved() -> void:
 	can_shoot = false
+	
+	# Release mouse capture if it was captured and drag started in area
+	if drag_started_in_area and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		get_viewport().warp_mouse(stored_mouse_position)
+		drag_started_in_area = false
 	
 	# Clear any active shooting UI
 	if is_mouse_held:
