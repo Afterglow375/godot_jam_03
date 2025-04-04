@@ -15,12 +15,27 @@ func _ready() -> void:
 		var level_label = buttons[i].get_node("HBoxContainer/VBoxContainer/LevelLabel")
 		level_label.text = "Level %d" % (i + 1)
 		var level_number: int = i + 1
-		var high_score: int = GameManager.get_high_score(level_number)
-		if high_score > 0:
-			var score_label = buttons[i].get_node("HBoxContainer/VBoxContainer2/ScoreLabel")
-			score_label.text = str(high_score)
-			
-			display_stars(buttons[i], high_score)
+		
+		# Check if level is unlocked
+		if is_level_unlocked(level_number):
+			var high_score: int = GameManager.get_high_score(level_number)
+			if high_score > 0:
+				var score_label = buttons[i].get_node("HBoxContainer/VBoxContainer2/ScoreLabel")
+				score_label.text = str(high_score)
+				display_stars(buttons[i], high_score)
+		else:
+			# Disable and gray out locked levels
+			buttons[i].disabled = true
+			buttons[i].modulate = Color("#505050")
+
+func is_level_unlocked(level_number: int) -> bool:
+	# Level 1 is always unlocked
+	if level_number == 1:
+		return true
+		
+	# Check if previous level has been completed
+	var previous_level_score = GameManager.get_high_score(level_number - 1)
+	return previous_level_score > 0
 
 func display_stars(button: Button, score: int) -> void:
 	var stars_container = button.get_node("HBoxContainer/VBoxContainer2/MarginContainer/StarsHboxContainer")
