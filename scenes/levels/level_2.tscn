@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://6sgn2tbvxsie"]
+[gd_scene load_steps=24 format=3 uid="uid://bs8doyh74vmn4"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_pjvny"]
 [ext_resource type="Texture2D" uid="uid://cqmcfme5ob1i7" path="res://addons/kenney_particle_pack/star_04.png" id="2_g44wc"]
@@ -8,29 +8,28 @@
 [ext_resource type="PackedScene" uid="uid://bk1ng8ft4k13r" path="res://scenes/entities/sun.tscn" id="4_63k5r"]
 [ext_resource type="Texture2D" uid="uid://cydcmq3u4et4h" path="res://assets/sprites/background.png" id="5_gdxui"]
 [ext_resource type="PackedScene" uid="uid://cretaomdthfnc" path="res://scenes/levels/world_environment.tscn" id="6_oplmq"]
-[ext_resource type="PackedScene" uid="uid://bgkxutxm3c7mm" path="res://scenes/levels/tile_map.tscn" id="7_n2qvt"]
 [ext_resource type="PackedScene" uid="uid://ta2p14py4etx" path="res://scenes/ui/HUD.tscn" id="7_q1du5"]
 [ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="8_lx2pu"]
 [ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_kyxo4"]
 [ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="12_gxv68"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_lfmv0"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_b8cef"]
 blend_mode = 1
 
-[sub_resource type="Curve" id="Curve_hh8je"]
+[sub_resource type="Curve" id="Curve_e15en"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_fnnc0"]
-curve = SubResource("Curve_hh8je")
+[sub_resource type="CurveTexture" id="CurveTexture_vhevg"]
+curve = SubResource("Curve_e15en")
 
-[sub_resource type="Gradient" id="Gradient_66k75"]
+[sub_resource type="Gradient" id="Gradient_ohwat"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_peuld"]
-gradient = SubResource("Gradient_66k75")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0iejr"]
+gradient = SubResource("Gradient_ohwat")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_o2o1n"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vdoid"]
 lifetime_randomness = 0.3
 particle_flag_disable_z = true
 emission_shape = 3
@@ -39,15 +38,15 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.15
-color_ramp = SubResource("GradientTexture1D_peuld")
-alpha_curve = SubResource("CurveTexture_fnnc0")
+color_ramp = SubResource("GradientTexture1D_0iejr")
+alpha_curve = SubResource("CurveTexture_vhevg")
 hue_variation_min = -0.2
 hue_variation_max = 0.34
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_t47c8"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6btxy"]
 blend_mode = 1
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_weabr"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t0wm8"]
 lifetime_randomness = 0.3
 particle_flag_disable_z = true
 emission_shape = 3
@@ -56,8 +55,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.08
-color_ramp = SubResource("GradientTexture1D_peuld")
-alpha_curve = SubResource("CurveTexture_fnnc0")
+color_ramp = SubResource("GradientTexture1D_0iejr")
+alpha_curve = SubResource("CurveTexture_vhevg")
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -69,17 +68,14 @@ size = Vector2(3813.63, 79)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
 size = Vector2(71.5058, 2200)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_r2ehn"]
-size = Vector2(119.176, 1200)
-
 [node name="Main" type="Node"]
 script = ExtResource("1_pjvny")
 
 [node name="StaticStarsCross" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_lfmv0")
+material = SubResource("CanvasItemMaterial_b8cef")
 position = Vector2(1920, 1080)
 amount = 40
-process_material = SubResource("ParticleProcessMaterial_o2o1n")
+process_material = SubResource("ParticleProcessMaterial_vdoid")
 texture = ExtResource("2_g44wc")
 lifetime = 60.0
 preprocess = 60.0
@@ -89,10 +85,10 @@ trail_sections = 2
 trail_section_subdivisions = 1
 
 [node name="StaticStarsCircle" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_t47c8")
+material = SubResource("CanvasItemMaterial_6btxy")
 position = Vector2(1920, 1080)
 amount = 80
-process_material = SubResource("ParticleProcessMaterial_weabr")
+process_material = SubResource("ParticleProcessMaterial_t0wm8")
 texture = ExtResource("3_evi28")
 lifetime = 60.0
 preprocess = 60.0
@@ -102,13 +98,13 @@ trail_sections = 2
 trail_section_subdivisions = 1
 
 [node name="Sun" parent="." instance=ExtResource("4_63k5r")]
-position = Vector2(3264, 520)
+position = Vector2(1920, 520)
 
 [node name="Earth" parent="." instance=ExtResource("3_efpp3")]
-position = Vector2(1613, 1725)
+position = Vector2(1920, 1968)
 
 [node name="Spaceship" parent="." instance=ExtResource("2_hylch")]
-position = Vector2(856, 1728)
+position = Vector2(1920, 1480)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = -79.0
@@ -175,7 +171,7 @@ shape = SubResource("RectangleShape2D_ab1l3")
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -1
-position = Vector2(1896, 1080)
+position = Vector2(1880, 1096)
 scale = Vector2(1.05926, 1.05926)
 texture = ExtResource("5_gdxui")
 
@@ -193,17 +189,3 @@ visible = false
 
 [node name="SettingsCanvas" parent="UI" instance=ExtResource("12_gxv68")]
 visible = false
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(2599.51, -984)
-scale = Vector2(1.00691, 1)
-collision_layer = 3
-collision_mask = 2
-physics_material_override = SubResource("PhysicsMaterial_cpj0v")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(20.354, 1584)
-shape = SubResource("RectangleShape2D_r2ehn")
-
-[node name="TileMap" parent="." instance=ExtResource("7_n2qvt")]
-layer_0/tile_data = PackedInt32Array(1835072, 0, 1, 1900608, 0, 2, 1835073, 65536, 1, 1900609, 65536, 2, 1835074, 131072, 1, 1900610, 131072, 2, 1769536, 0, 1, 1769537, 65536, 1, 1769538, 131072, 1, 1704000, 0, 1, 1704001, 65536, 1, 1704002, 131072, 1, 1638464, 0, 1, 1638465, 65536, 1, 1638466, 131072, 1, 1572928, 0, 1, 1572929, 65536, 1, 1572930, 131072, 1, 1507392, 0, 1, 1507393, 65536, 1, 1507394, 131072, 1, 1441856, 0, 1, 1441857, 65536, 1, 1441858, 131072, 1, 1376320, 0, 1, 1376321, 65536, 1, 1376322, 131072, 1, 1310784, 0, 1, 1310785, 65536, 1, 1310786, 131072, 1, 1245248, 0, 1, 1245249, 65536, 1, 1245250, 131072, 1, 1179712, 0, 1, 1179713, 65536, 1, 1179714, 131072, 1, 1114176, 0, 1, 1114177, 65536, 1, 1114178, 131072, 1, 1048640, 0, 1, 1048641, 65536, 1, 1048642, 131072, 1, 983104, 0, 1, 983105, 65536, 1, 983106, 131072, 1, 917568, 0, 1, 917569, 65536, 1, 917570, 131072, 1, 852032, 0, 1, 852033, 65536, 1, 852034, 131072, 1, 786496, 0, 1, 786497, 65536, 1, 786498, 131072, 1, 720960, 0, 1, 720961, 65536, 1, 720962, 131072, 1, 655424, 0, 1, 655425, 65536, 1, 655426, 131072, 1, 589888, 0, 1, 589889, 65536, 1, 589890, 131072, 1, 524352, 0, 1, 524353, 65536, 1, 524354, 131072, 1, 458816, 0, 1, 458817, 65536, 1, 458818, 131072, 1, 393280, 0, 1, 393281, 65536, 1, 393282, 131072, 1, 327744, 0, 1, 327745, 65536, 1, 327746, 131072, 1, 262208, 0, 1, 262209, 65536, 1, 262210, 131072, 1, 196672, 0, 1, 196673, 65536, 1, 196674, 131072, 1, 131136, 0, 1, 131137, 65536, 1, 131138, 131072, 1, 65600, 0, 1, 65601, 65536, 1, 65602, 131072, 1, 64, 0, 1, 65, 65536, 1, 66, 131072, 1, -65472, 0, 1, -65471, 65536, 1, -65470, 131072, 1, -131008, 0, 1, -131007, 65536, 1, -131006, 131072, 1)

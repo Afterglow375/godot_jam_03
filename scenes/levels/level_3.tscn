@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bs8doyh74vmn4"]
+[gd_scene load_steps=24 format=3 uid="uid://bx8qv1ooubncg"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_bq1fo"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_mypxp"]
@@ -13,23 +13,23 @@
 [ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_57gai"]
 [ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="12_e6x2p"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_b8cef"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_p01rn"]
 blend_mode = 1
 
-[sub_resource type="Curve" id="Curve_e15en"]
+[sub_resource type="Curve" id="Curve_d2k46"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_vhevg"]
-curve = SubResource("Curve_e15en")
+[sub_resource type="CurveTexture" id="CurveTexture_g3fhn"]
+curve = SubResource("Curve_d2k46")
 
-[sub_resource type="Gradient" id="Gradient_ohwat"]
+[sub_resource type="Gradient" id="Gradient_oiltc"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_0iejr"]
-gradient = SubResource("Gradient_ohwat")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8w4e0"]
+gradient = SubResource("Gradient_oiltc")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_vdoid"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bswh7"]
 lifetime_randomness = 0.3
 particle_flag_disable_z = true
 emission_shape = 3
@@ -38,15 +38,15 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.15
-color_ramp = SubResource("GradientTexture1D_0iejr")
-alpha_curve = SubResource("CurveTexture_vhevg")
+color_ramp = SubResource("GradientTexture1D_8w4e0")
+alpha_curve = SubResource("CurveTexture_g3fhn")
 hue_variation_min = -0.2
 hue_variation_max = 0.34
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6btxy"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_05ysp"]
 blend_mode = 1
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_t0wm8"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_03d4r"]
 lifetime_randomness = 0.3
 particle_flag_disable_z = true
 emission_shape = 3
@@ -55,8 +55,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.08
-color_ramp = SubResource("GradientTexture1D_0iejr")
-alpha_curve = SubResource("CurveTexture_vhevg")
+color_ramp = SubResource("GradientTexture1D_8w4e0")
+alpha_curve = SubResource("CurveTexture_g3fhn")
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -72,10 +72,10 @@ size = Vector2(71.5058, 2200)
 script = ExtResource("1_bq1fo")
 
 [node name="StaticStarsCross" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_b8cef")
+material = SubResource("CanvasItemMaterial_p01rn")
 position = Vector2(1920, 1080)
 amount = 40
-process_material = SubResource("ParticleProcessMaterial_vdoid")
+process_material = SubResource("ParticleProcessMaterial_bswh7")
 texture = ExtResource("2_x6gud")
 lifetime = 60.0
 preprocess = 60.0
@@ -85,10 +85,10 @@ trail_sections = 2
 trail_section_subdivisions = 1
 
 [node name="StaticStarsCircle" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_6btxy")
+material = SubResource("CanvasItemMaterial_05ysp")
 position = Vector2(1920, 1080)
 amount = 80
-process_material = SubResource("ParticleProcessMaterial_t0wm8")
+process_material = SubResource("ParticleProcessMaterial_03d4r")
 texture = ExtResource("3_nt42d")
 lifetime = 60.0
 preprocess = 60.0
@@ -98,13 +98,13 @@ trail_sections = 2
 trail_section_subdivisions = 1
 
 [node name="Sun" parent="." instance=ExtResource("4_furej")]
-position = Vector2(1920, 520)
+position = Vector2(1965, 1080)
 
 [node name="Earth" parent="." instance=ExtResource("3_yccj3")]
-position = Vector2(1920, 1968)
+position = Vector2(716, 717)
 
 [node name="Spaceship" parent="." instance=ExtResource("2_mypxp")]
-position = Vector2(1920, 1480)
+position = Vector2(3281, 1552)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = -79.0

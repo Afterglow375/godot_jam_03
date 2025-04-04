@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bx8qv1ooubncg"]
+[gd_scene load_steps=27 format=3 uid="uid://3uvcf8uyyg8l"]
 
 [ext_resource type="Script" path="res://scripts/systems/level.gd" id="1_7tt28"]
 [ext_resource type="PackedScene" uid="uid://ctfq16ucdtgys" path="res://scenes/entities/spaceship.tscn" id="2_23vaq"]
@@ -12,24 +12,25 @@
 [ext_resource type="PackedScene" uid="uid://du7btdyj4ge44" path="res://scenes/ui/pause_menu.tscn" id="8_l6mww"]
 [ext_resource type="PackedScene" uid="uid://bm8xkbphah7sv" path="res://scenes/ui/win_popup.tscn" id="9_acqsv"]
 [ext_resource type="PackedScene" uid="uid://bg7ae6tu6myde" path="res://scenes/ui/settings.tscn" id="12_c6rxf"]
+[ext_resource type="PackedScene" uid="uid://bgkxutxm3c7mm" path="res://scenes/levels/tile_map.tscn" id="13_vgsh5"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_p01rn"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_hs1he"]
 blend_mode = 1
 
-[sub_resource type="Curve" id="Curve_d2k46"]
+[sub_resource type="Curve" id="Curve_do4n0"]
 _data = [Vector2(0.133333, 0), 0.0, 0.0, 0, 0, Vector2(0.306667, 1), 0.0, 0.0, 0, 0, Vector2(0.933333, 0), 0.0, 0.0, 0, 0]
 point_count = 3
 
-[sub_resource type="CurveTexture" id="CurveTexture_g3fhn"]
-curve = SubResource("Curve_d2k46")
+[sub_resource type="CurveTexture" id="CurveTexture_e00dy"]
+curve = SubResource("Curve_do4n0")
 
-[sub_resource type="Gradient" id="Gradient_oiltc"]
+[sub_resource type="Gradient" id="Gradient_7yddt"]
 colors = PackedColorArray(0.599971, 0.731474, 1, 1, 1, 1, 1, 1)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_8w4e0"]
-gradient = SubResource("Gradient_oiltc")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8jtcg"]
+gradient = SubResource("Gradient_7yddt")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_bswh7"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_yfc3m"]
 lifetime_randomness = 0.3
 particle_flag_disable_z = true
 emission_shape = 3
@@ -38,15 +39,15 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.15
-color_ramp = SubResource("GradientTexture1D_8w4e0")
-alpha_curve = SubResource("CurveTexture_g3fhn")
+color_ramp = SubResource("GradientTexture1D_8jtcg")
+alpha_curve = SubResource("CurveTexture_e00dy")
 hue_variation_min = -0.2
 hue_variation_max = 0.34
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_05ysp"]
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_su0in"]
 blend_mode = 1
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_03d4r"]
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1xxb2"]
 lifetime_randomness = 0.3
 particle_flag_disable_z = true
 emission_shape = 3
@@ -55,8 +56,8 @@ direction = Vector3(0, 0, 1)
 gravity = Vector3(0, 0, 0)
 scale_min = 0.02
 scale_max = 0.08
-color_ramp = SubResource("GradientTexture1D_8w4e0")
-alpha_curve = SubResource("CurveTexture_g3fhn")
+color_ramp = SubResource("GradientTexture1D_8jtcg")
+alpha_curve = SubResource("CurveTexture_e00dy")
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_cpj0v"]
 friction = 0.0
@@ -66,16 +67,24 @@ bounce = 1.0
 size = Vector2(3813.63, 79)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ab1l3"]
-size = Vector2(71.5058, 2200)
+size = Vector2(78.457, 2221)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_0ecah"]
+friction = 0.0
+bounce = 1.0
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_456qc"]
+friction = 0.0
+bounce = 1.0
 
 [node name="Main" type="Node"]
 script = ExtResource("1_7tt28")
 
 [node name="StaticStarsCross" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_p01rn")
+material = SubResource("CanvasItemMaterial_hs1he")
 position = Vector2(1920, 1080)
 amount = 40
-process_material = SubResource("ParticleProcessMaterial_bswh7")
+process_material = SubResource("ParticleProcessMaterial_yfc3m")
 texture = ExtResource("2_tv35p")
 lifetime = 60.0
 preprocess = 60.0
@@ -85,10 +94,10 @@ trail_sections = 2
 trail_section_subdivisions = 1
 
 [node name="StaticStarsCircle" type="GPUParticles2D" parent="."]
-material = SubResource("CanvasItemMaterial_05ysp")
+material = SubResource("CanvasItemMaterial_su0in")
 position = Vector2(1920, 1080)
 amount = 80
-process_material = SubResource("ParticleProcessMaterial_03d4r")
+process_material = SubResource("ParticleProcessMaterial_1xxb2")
 texture = ExtResource("3_1blcy")
 lifetime = 60.0
 preprocess = 60.0
@@ -98,13 +107,13 @@ trail_sections = 2
 trail_section_subdivisions = 1
 
 [node name="Sun" parent="." instance=ExtResource("4_3qygo")]
-position = Vector2(1965, 1080)
+position = Vector2(3128, 1088)
 
 [node name="Earth" parent="." instance=ExtResource("3_0owft")]
-position = Vector2(716, 717)
+position = Vector2(2304, 1088)
 
 [node name="Spaceship" parent="." instance=ExtResource("2_23vaq")]
-position = Vector2(3281, 1552)
+position = Vector2(720, 1088)
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_top = -79.0
@@ -166,7 +175,7 @@ collision_mask = 2
 physics_material_override = SubResource("PhysicsMaterial_cpj0v")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="ColorRect4/StaticBody2D"]
-position = Vector2(39.2288, 1081)
+position = Vector2(39.2288, 1091.5)
 shape = SubResource("RectangleShape2D_ab1l3")
 
 [node name="Background" type="Sprite2D" parent="."]
@@ -189,3 +198,37 @@ visible = false
 
 [node name="SettingsCanvas" parent="UI" instance=ExtResource("12_c6rxf")]
 visible = false
+
+[node name="TileMap" parent="." instance=ExtResource("13_vgsh5")]
+layer_0/tile_data = PackedInt32Array(1703973, 262144, 2, 1769509, 262144, 3, 1638438, 327680, 1, 1703974, 327680, 2, 1769510, 327680, 3, 1835046, 327680, 4, 1572903, 393216, 0, 1638439, 393216, 1, 1703975, 393216, 2, 1769511, 393216, 3, 1835047, 393216, 4, 1900583, 393216, 5, 1507368, 262144, 2, 1572904, 65536, 1, 1638440, 65536, 1, 1703976, 65536, 1, 1769512, 65536, 1, 1835048, 65536, 1, 1900584, 65536, 1, 1966120, 262144, 3, 1441833, 327680, 1, 1507369, 327680, 2, 1572905, 65536, 1, 1638441, 65536, 1, 1703977, 65536, 1, 1769513, 65536, 1, 1835049, 65536, 1, 1900585, 65536, 1, 1966121, 327680, 3, 2031657, 327680, 4, 1376298, 393216, 0, 1441834, 393216, 1, 1507370, 393216, 2, 1572906, 65536, 1, 1638442, 65536, 1, 1703978, 0, 0, 1769514, 0, 2, 1835050, 65536, 1, 1900586, 65536, 1, 1966122, 393216, 3, 2031658, 393216, 4, 2097194, 393216, 5, 1441835, 458752, 1, 1507371, 458752, 2, 1572907, 65536, 1, 1638443, 65536, 1, 1703979, 131072, 0, 1769515, 131072, 2, 1835051, 65536, 1, 1900587, 65536, 1, 1966123, 458752, 3, 2031659, 458752, 4, 1507372, 524288, 2, 1572908, 65536, 1, 1638444, 65536, 1, 1703980, 65536, 1, 1769516, 65536, 1, 1835052, 65536, 1, 1900588, 65536, 1, 1966124, 524288, 3, 1572909, 65536, 1, 1638445, 65536, 1, 1703981, 65536, 1, 1769517, 65536, 1, 1835053, 65536, 1, 1900589, 65536, 1, 1638446, 458752, 1, 1703982, 458752, 2, 1769518, 458752, 3, 1835054, 458752, 4, 1703983, 524288, 2, 1769519, 524288, 3, 1376299, 458752, 0, 2097195, 458752, 5, 1441836, 524288, 1, 2031660, 524288, 4, 1507373, 589824, 2, 1966125, 589824, 3, 1572910, 458752, 0, 1900590, 458752, 5, 1638447, 524288, 1, 1835055, 524288, 4, 1703984, 589824, 2, 1769520, 589824, 3, -65514, 131072, 0, 22, 131072, 2, 3473430, 131072, 0, 3538966, 131072, 2, -131049, 65536, 1, -65513, 65536, 1, 23, 65536, 1, 65559, 65536, 1, 3407895, 65536, 1, 3473431, 65536, 1, 3538967, 65536, 1, 3604503, 65536, 1, -196584, 65536, 1, -131048, 65536, 1, -65512, 65536, 1, 24, 65536, 1, 65560, 65536, 1, 131096, 65536, 1, 3342360, 65536, 1, 3407896, 65536, 1, 3473432, 65536, 1, 3538968, 65536, 1, 3604504, 65536, 1, 3670040, 65536, 1, -196583, 458752, 0, -131047, 458752, 1, -65511, 458752, 2, 25, 458752, 3, 65561, 458752, 4, 131097, 458752, 5, 3342361, 458752, 0, 3407897, 458752, 1, 3473433, 458752, 2, 3538969, 458752, 3, 3604505, 458752, 4, 3670041, 458752, 5, -131046, 524288, 1, -65510, 524288, 2, 26, 524288, 3, 65562, 524288, 4, 3407898, 524288, 1, 3473434, 524288, 2, 3538970, 524288, 3, 3604506, 524288, 4, -65509, 589824, 2, 27, 589824, 3, 3473435, 589824, 2, 3538971, 589824, 3, -65520, 262144, 2, 16, 262144, 3, 3473424, 262144, 2, 3538960, 262144, 3, -131055, 327680, 1, -65519, 327680, 2, 17, 327680, 3, 65553, 327680, 4, 3407889, 327680, 1, 3473425, 327680, 2, 3538961, 327680, 3, 3604497, 327680, 4, -196590, 393216, 0, -131054, 393216, 1, -65518, 393216, 2, 18, 393216, 3, 65554, 393216, 4, 131090, 393216, 5, 3342354, 393216, 0, 3407890, 393216, 1, 3473426, 393216, 2, 3538962, 393216, 3, 3604498, 393216, 4, 3670034, 393216, 5, -262125, 262144, 2, -196589, 65536, 1, -131053, 65536, 1, -65517, 65536, 1, 19, 65536, 1, 65555, 65536, 1, 131091, 65536, 1, 196627, 262144, 3, 3276819, 262144, 2, 3342355, 65536, 1, 3407891, 65536, 1, 3473427, 65536, 1, 3538963, 65536, 1, 3604499, 65536, 1, 3670035, 65536, 1, 3735571, 262144, 3, -327660, 327680, 1, -262124, 327680, 2, -196588, 65536, 1, -131052, 65536, 1, -65516, 65536, 1, 20, 65536, 1, 65556, 65536, 1, 131092, 65536, 1, 196628, 327680, 3, 262164, 327680, 4, 3211284, 327680, 1, 3276820, 327680, 2, 3342356, 65536, 1, 3407892, 65536, 1, 3473428, 65536, 1, 3538964, 65536, 1, 3604500, 65536, 1, 3670036, 65536, 1, 3735572, 327680, 3, 3801108, 327680, 4, -393195, 393216, 0, -327659, 393216, 1, -262123, 393216, 2, -196587, 65536, 1, -131051, 65536, 1, -65515, 0, 0, 21, 0, 2, 65557, 65536, 1, 131093, 65536, 1, 196629, 393216, 3, 262165, 393216, 4, 327701, 393216, 5, 3145749, 393216, 0, 3211285, 393216, 1, 3276821, 393216, 2, 3342357, 65536, 1, 3407893, 65536, 1, 3473429, 0, 0, 3538965, 0, 2, 3604501, 65536, 1, 3670037, 65536, 1, 3735573, 393216, 3, 3801109, 393216, 4, 3866645, 393216, 5, -393194, 458752, 0, -327658, 458752, 1, -262122, 458752, 2, -196586, 65536, 1, -131050, 65536, 1, 65558, 65536, 1, 131094, 65536, 1, 196630, 458752, 3, 262166, 458752, 4, 327702, 458752, 5, 3145750, 458752, 0, 3211286, 458752, 1, 3276822, 458752, 2, 3342358, 65536, 1, 3407894, 65536, 1, 3604502, 65536, 1, 3670038, 65536, 1, 3735574, 458752, 3, 3801110, 458752, 4, 3866646, 458752, 5, -327657, 524288, 1, -262121, 524288, 2, -196585, 65536, 1, 131095, 65536, 1, 196631, 524288, 3, 262167, 524288, 4, 3211287, 524288, 1, 3276823, 524288, 2, 3342359, 65536, 1, 3670039, 65536, 1, 3735575, 524288, 3, 3801111, 524288, 4, -262120, 589824, 2, 196632, 589824, 3, 3276824, 589824, 2, 3735576, 589824, 3)
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2(1720, 1080)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_0ecah")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D3"]
+polygon = PackedVector2Array(0, -240, 238.353, 0, 0, 240, -238.353, 0)
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="."]
+position = Vector2(880, 0)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_0ecah")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D5"]
+polygon = PackedVector2Array(0, -240, 238.353, 0, 0, 240, -238.353, 0)
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+position = Vector2(1480, 1080)
+scale = Vector2(1.00691, 1)
+collision_layer = 3
+collision_mask = 2
+physics_material_override = SubResource("PhysicsMaterial_456qc")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D4"]
+position = Vector2(-595.883, 1080)
+polygon = PackedVector2Array(0, -240, 238.353, 0, 0, 240, -238.353, 0)

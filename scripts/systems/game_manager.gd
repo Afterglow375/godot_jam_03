@@ -19,7 +19,7 @@ const HIGHSCORES_FILE: String = "user://highscores.cfg"
 # Level number : par for that level
 const LEVEL_PARS = {
 	1: 1,
-	2: 2,
+	2: 1,
 	3: 1,
 	4: 2,
 	5: 2,
@@ -29,14 +29,15 @@ const LEVEL_PARS = {
 	9: 1,
 	10: 1,
 	11: 3,
-	13: 3,
-	14: 3,
-	15: 3,
-	16: 3,
-	17: 3,
-	18: 3,
-	19: 3,
-	20: 3,
+	12: 3,
+	13: 2,
+	14: 4,
+	15: 4,
+	16: 5,
+	17: 5,
+	18: 4,
+	19: 5,
+	20: 4,
 }
 
 # Called when the node enters the scene tree for the first time
