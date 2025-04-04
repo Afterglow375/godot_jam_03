@@ -41,6 +41,12 @@ var accumulated_mouse_pos: Vector2 = Vector2.ZERO  # Accumulated mouse position 
 var raw_mouse_pos: Vector2 = Vector2.ZERO  # Original mouse position without any processing
 var aim_position: Vector2 = Vector2.ZERO  # Position used for aiming that accounts for precision
 
+# Bobbing animation variables
+var bobbing_speed: float = 2.0
+var bobbing_amount: float = 5.0
+var bobbing_time: float = 0.0
+var original_position: Vector2 = Vector2.ZERO
+
 func _ready():
 	line = $SlingshotLine
 	trajectory_line = $TrajectoryLine
@@ -48,6 +54,9 @@ func _ready():
 	ray_cast = $TrajectoryRaycast
 	sprite = $Sprite2D  # Get reference to the spaceship sprite
 	base_scale = sprite.scale  # Store the original scale
+	
+	# Store the original position of the sprite
+	original_position = sprite.position
 	
 	# Initialize accumulated mouse position
 	accumulated_mouse_pos = Vector2.ZERO
@@ -187,6 +196,11 @@ func calculate_trajectory_points(direction: Vector2) -> void:
 func _process(delta):
 	if GameManager.is_paused():
 		return
+	
+	# Update bobbing animation
+	bobbing_time += delta * bobbing_speed
+	var bobbing_offset = sin(bobbing_time) * bobbing_amount
+	sprite.position.y = original_position.y + bobbing_offset
 	
 	# Check shift key state every frame
 	is_precision_aiming = Input.is_key_pressed(KEY_SHIFT)
