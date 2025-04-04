@@ -102,7 +102,14 @@ func level_won() -> void:
 		
 	# Wait a short moment to ensure bonus points are calculated
 	await get_tree().create_timer(0.1).timeout
-	win_popup.show_victory_screen(num_shots, accuracy_score, bonus_points, total_score, par_penalty)
+	var total_score: int = accuracy_score + bonus_points - par_penalty
+	var level_number: int = get_current_level_number()
+	
+	# Check if we have a new high score
+	var current_high_score = GameManager.get_high_score(level_number)
+	win_popup.show_victory_screen(accuracy_score, bonus_points, par_penalty, current_high_score)
+	if total_score > current_high_score:
+		GameManager.save_high_score(level_number, total_score)
 
 func _on_next_level():
 	var next_level_path = get_next_level_path()
@@ -124,10 +131,6 @@ func get_next_level_path() -> String:
 				return next_level_path
 
 	return ""  # No next level found
-
-func show_win_popup() -> void:
-	win_popup.show_victory_screen(num_shots, accuracy_score, bonus_points)
-	win_popup.show()
 
 func _on_bonus_points_changed(points: int) -> void:
 	bonus_points = points

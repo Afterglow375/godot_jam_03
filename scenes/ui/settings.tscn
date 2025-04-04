@@ -135,11 +135,13 @@ theme_override_constants/separation = 200
 [node name="AcceptButton" type="Button" parent="Settings/Panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 64
 text = "ACCEPT"
 
 [node name="BackButton" type="Button" parent="Settings/Panel/VBoxContainer/HBoxContainer"]
 custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 64
 text = "BACK"

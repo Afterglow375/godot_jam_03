@@ -6,6 +6,7 @@ extends Node
 # Global game state variables
 var is_game_paused: bool = false
 var using_pull_projectile: bool = false  # Track which projectile type is currently selected
+var high_scores: Dictionary = {}  # Store high scores for each level
 
 # Game state signals
 signal game_paused(is_paused)
@@ -13,6 +14,7 @@ signal projectile_type_changed(using_pull: bool)  # Signal for projectile type c
 
 # Settings file path
 const SETTINGS_FILE: String = "user://settings.cfg"
+const HIGHSCORES_FILE: String = "user://highscores.cfg"
 
 # Level number : par for that level
 const LEVEL_PARS = {
@@ -35,6 +37,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	print("GameManager initialized")
 	load_settings()
+	load_high_scores()
 
 # Set the pause state of the game
 func set_pause_state(paused: bool) -> void:
@@ -92,3 +95,66 @@ func load_settings() -> void:
 	
 	# Apply loaded settings
 	AudioManager.apply_volume_settings() 
+
+# Save high score for a level if it's better than the current high score
+func save_high_score(level_number: int, score: int) -> bool:
+	var current_high_score: int = get_high_score(level_number)
+	
+	# Only save if the new score is higher than the existing one
+	if score > current_high_score:
+		high_scores[str(level_number)] = score
+		save_high_scores()
+		return true
+	
+	return false
+
+# Get the high score for a specific level
+func get_high_score(level_number: int) -> int:
+	var level_key: String = str(level_number)
+	return high_scores.get(level_key, 0)
+
+# Load high scores from file
+func load_high_scores() -> void:
+	var config = ConfigFile.new()
+	var err = config.load(HIGHSCORES_FILE)
+	
+	if err == OK:
+		for level_key in config.get_section_keys("highscores"):
+			high_scores[level_key] = config.get_value("highscores", level_key, 0)
+		print("High scores loaded from file")
+	else:
+		print("No high scores file found, using empty dictionary")
+		high_scores = {}
+
+# Save high scores to file
+func save_high_scores() -> void:
+	var config = ConfigFile.new()
+	
+	for level_key in high_scores.keys():
+		config.set_value("highscores", level_key, high_scores[level_key])
+	
+	var err = config.save(HIGHSCORES_FILE)
+	if err == OK:
+		print("High scores saved to file")
+	else:
+		print("Failed to save high scores to file")
+
+# Calculate number of stars based on score
+# 100-139: 1 star
+# 140-179: 2 stars
+# 180-219: 3 stars
+# 220-259: 4 stars
+# 260-300: 5 stars
+func calculate_stars(score: int) -> int:
+	if score < 100:
+		return 0
+	elif score < 140:
+		return 1
+	elif score < 180:
+		return 2
+	elif score < 220:
+		return 3
+	elif score < 260:
+		return 4
+	else:
+		return 5 
